@@ -14,6 +14,7 @@
 import re
 import subprocess
 
+WORD_SEPARATORS = [".", "-", "/", "::", "_"]
 
 def add_indent(text, num_spaces=4):
     """
@@ -48,7 +49,21 @@ def convert_to_snake_case(entity_name):
     Returns:
         str: The converted string in snake_case.
     """
-    snake_case_string = re.sub(r'(?<!^)(?=[A-Z])', '_', entity_name).lower()
+    
+    # Replace any separator with an "_"
+    modified_string = entity_name
+    for separator in WORD_SEPARATORS:
+        modified_string = modified_string.replace(separator, "_")
+    
+    # check if it is already in upper snake case
+    if all(part.isupper() for part in modified_string.split("_")):
+        return modified_string.lower()
+    
+    snake_case_string = re.sub(r'(?<!^)(?=[A-Z])', '_', modified_string).lower()
+
+    # Remove consecutive "_"
+    snake_case_string = re.sub(r'_{2,}', '_', snake_case_string)
+    
     return snake_case_string
 
 

@@ -14,7 +14,7 @@
 import pprint
 import textwrap
 
-from constants import BASIC_JSON_TYPES_TO_PYTHON_TYPES, SHAPE_DAG_FILE_PATH
+from src.tools.constants import BASIC_JSON_TYPES_TO_PYTHON_TYPES, SHAPE_DAG_FILE_PATH
 from src.util.util import reformat_file_with_black, convert_to_snake_case
 
 
@@ -178,6 +178,8 @@ class ShapesExtractor():
                     member_type = self._evaluate_list_type(member_shape)
                 elif member_shape_type == "map":
                     member_type = self._evaluate_map_type(member_shape)
+                elif member_shape_type == "string" and "enum" in member_shape:
+                    member_type = member_shape_name
                 else:
                     # Shape is a simple type like string
                     member_type = BASIC_JSON_TYPES_TO_PYTHON_TYPES[member_shape_type]

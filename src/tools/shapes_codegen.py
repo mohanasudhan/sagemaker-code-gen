@@ -19,14 +19,14 @@ import json
 import os
 import textwrap
 
-from constants import LICENCES_STRING
+from src.tools.constants import LICENCES_STRING
 from src.tools.shapes_extractor import ShapesExtractor
 from src.util.util import add_indent, convert_to_snake_case
-from templates import SHAPE_CLASS_TEMPLATE, SHAPE_BASE_CLASS_TEMPLATE
+from src.tools.templates import SHAPE_CLASS_TEMPLATE, SHAPE_BASE_CLASS_TEMPLATE, SHAPE_EMUM_CLASS_TEMPLATE
 
 from pydantic import BaseModel
 
-class ShapesCodeGen(BaseModel):
+class ShapesCodeGen():
     """
     Generates shape classes based on an input Botocore service.json.
 
@@ -43,7 +43,6 @@ class ShapesCodeGen(BaseModel):
         _filter_input_output_shapes(shape): Filters out shapes that are used as input or output for operations.
         generate_shapes(output_folder): Generates the shape classes and writes them to the specified output folder.
     """
-
     def __init__(self, service_json):
         self.service_json = service_json
         # TODO: Inject shapes_extractor than initializaing.
@@ -128,7 +127,7 @@ class ShapesCodeGen(BaseModel):
         :return: The generated data class as a string.
         """
         class_name = shape
-        init_data = self.generate_data_shape_members(shape)
+        init_data = self.shapes_extractor.generate_data_shape_members(shape)
         try:
             data_class_members = add_indent(init_data, 4)
         except Exception:
@@ -139,6 +138,26 @@ class ShapesCodeGen(BaseModel):
             data_class_members=data_class_members,
             docstring=self._generate_doc_string_for_shape(shape),
         )
+
+    def generate_enum_class_for_shape(self, shape):
+        class_name = shape
+        shape_dict = self.service_json["shapes"][shape]
+        
+        if "documentation" in shape_dict:
+            docstring = shape_dict["documentation"]
+        else:
+            docstring = f"Enum class for {class_name}."
+        
+        enum_members = "\n"
+        for enum_string in shape_dict["enum"]:
+            enum_members += f"{convert_to_snake_case(enum_string).upper()} = '{enum_string}'\n"
+            
+        return SHAPE_EMUM_CLASS_TEMPLATE.format(
+            class_name=class_name + "(str, Enum)",
+            docstring=docstring,
+            enum_members=add_indent(enum_members, 4)
+        )
+        
 
     def _generate_doc_string_for_shape(self, shape):
         """
@@ -181,6 +200,7 @@ class ShapesCodeGen(BaseModel):
         """
         imports = "import datetime\n"
         imports += "\n"
+        imports += "from enum import Enum\n"
         imports += "from pydantic import BaseModel\n"
         imports += "from typing import List, Dict, Optional\n"
         imports += "\n"
@@ -217,7 +237,7 @@ class ShapesCodeGen(BaseModel):
             return False
         return True
 
-    def generate_shapes(self, output_folder="../../src/generated"):
+    def generate_shapes(self, output_folder=os.getcwd() + "/src/generated"):
         """
         Generates the shape classes and writes them to the specified output folder.
 
@@ -261,11 +281,13 @@ class ShapesCodeGen(BaseModel):
                     if shape_type == "structure":
                         shape_class = self.generate_data_class_for_shape(shape)
                         file.write(shape_class)
+                    if shape_type == "string" and "enum" in shape_dict:
+                        shape_class = self.generate_enum_class_for_shape(shape)
+                        file.write(shape_class)
 
 
-with open('../../sample/sagemaker/2017-07-24/service-2.json') as f:
+with open(os.getcwd() + '/sample/sagemaker/2017-07-24/service-2.json') as f:
     data = json.load(f)
 
 codegen = ShapesCodeGen(service_json=data)
-
 codegen.generate_shapes()
