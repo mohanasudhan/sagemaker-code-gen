@@ -84,3 +84,9 @@ class {class_name}:
     """
 {data_class_members}
 '''
+
+SHAPE_EMUM_CLASS_TEMPLATE='''
+class {class_name}:
+    """{docstring}"""
+{enum_members}
+'''

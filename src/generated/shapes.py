@@ -1,5 +1,19 @@
+
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"). You
+# may not use this file except in compliance with the License. A copy of
+# the License is located at
+#
+#     http://aws.amazon.com/apache2.0/
+#
+# or in the "license" file accompanying this file. This file is
+# distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+# ANY KIND, either express or implied. See the License for the specific
+# language governing permissions and limitations under the License.
 import datetime
 
+from strenum import StrEnum
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 
@@ -35,6 +49,17 @@ class ActionSource(Base):
     source_id: Optional[str] = Unassigned()
 
 
+class ActionStatus(StrEnum):
+    """Enum class for ActionStatus."""
+    
+    UNKNOWN = 'Unknown'
+    IN_PROGRESS = 'InProgress'
+    COMPLETED = 'Completed'
+    FAILED = 'Failed'
+    STOPPING = 'Stopping'
+    STOPPED = 'Stopped'
+
+
 class ActionSummary(Base):
     """
      ActionSummary
@@ -54,9 +79,19 @@ class ActionSummary(Base):
     action_name: Optional[str] = Unassigned()
     source: Optional[ActionSource] = Unassigned()
     action_type: Optional[str] = Unassigned()
-    status: Optional[str] = Unassigned()
+    status: Optional[ActionStatus] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
+
+
+class AssociationEdgeType(StrEnum):
+    """Enum class for AssociationEdgeType."""
+    
+    CONTRIBUTED_TO = 'ContributedTo'
+    ASSOCIATED_WITH = 'AssociatedWith'
+    DERIVED_FROM = 'DerivedFrom'
+    PRODUCED = 'Produced'
+    SAME_AS = 'SameAs'
 
 
 class Tag(Base):
@@ -71,6 +106,20 @@ class Tag(Base):
     """
     key: str
     value: str
+
+
+class S3ModelDataType(StrEnum):
+    """Enum class for S3ModelDataType."""
+    
+    S3_PREFIX = 'S3Prefix'
+    S3_OBJECT = 'S3Object'
+
+
+class ModelCompressionType(StrEnum):
+    """Enum class for ModelCompressionType."""
+    
+    NONE = 'None'
+    GZIP = 'Gzip'
 
 
 class ModelAccessConfig(Base):
@@ -98,8 +147,8 @@ class S3ModelDataSource(Base):
  	model_access_config: 	 <p>Specifies the access configuration file for the ML model. You can explicitly accept the model end-user license agreement (EULA) within the <code>ModelAccessConfig</code>. You are responsible for reviewing and complying with any applicable license terms and making sure they are acceptable for your use case before downloading or using a model.</p>
     """
     s3_uri: str
-    s3_data_type: str
-    compression_type: str
+    s3_data_type: S3ModelDataType
+    compression_type: ModelCompressionType
     model_access_config: Optional[ModelAccessConfig] = Unassigned()
 
 
@@ -127,6 +176,20 @@ class ModelInput(Base):
     data_input_config: str
 
 
+class AdditionalS3DataSourceDataType(StrEnum):
+    """Enum class for AdditionalS3DataSourceDataType."""
+    
+    S3_OBJECT = 'S3Object'
+    S3_PREFIX = 'S3Prefix'
+
+
+class CompressionType(StrEnum):
+    """Enum class for CompressionType."""
+    
+    NONE = 'None'
+    GZIP = 'Gzip'
+
+
 class AdditionalS3DataSource(Base):
     """
      AdditionalS3DataSource
@@ -138,9 +201,9 @@ class AdditionalS3DataSource(Base):
  	s3_uri: 	 <p>The uniform resource identifier (URI) used to identify an additional data source used in inference or training.</p>
  	compression_type: 	 <p>The type of compression used for an additional data source used in inference or training. Specify <code>None</code> if your additional data source is not compressed.</p>
     """
-    s3_data_type: str
+    s3_data_type: AdditionalS3DataSourceDataType
     s3_uri: str
-    compression_type: Optional[str] = Unassigned()
+    compression_type: Optional[CompressionType] = Unassigned()
 
 
 class ModelPackageContainerDefinition(Base):
@@ -175,6 +238,225 @@ class ModelPackageContainerDefinition(Base):
     framework_version: Optional[str] = Unassigned()
     nearest_model_name: Optional[str] = Unassigned()
     additional_s3_data_source: Optional[AdditionalS3DataSource] = Unassigned()
+
+
+class TransformInstanceType(StrEnum):
+    """Enum class for TransformInstanceType."""
+    
+    ML_M4_XLARGE = 'ml.m4.xlarge'
+    ML_M4_2XLARGE = 'ml.m4.2xlarge'
+    ML_M4_4XLARGE = 'ml.m4.4xlarge'
+    ML_M4_10XLARGE = 'ml.m4.10xlarge'
+    ML_M4_16XLARGE = 'ml.m4.16xlarge'
+    ML_C4_XLARGE = 'ml.c4.xlarge'
+    ML_C4_2XLARGE = 'ml.c4.2xlarge'
+    ML_C4_4XLARGE = 'ml.c4.4xlarge'
+    ML_C4_8XLARGE = 'ml.c4.8xlarge'
+    ML_P2_XLARGE = 'ml.p2.xlarge'
+    ML_P2_8XLARGE = 'ml.p2.8xlarge'
+    ML_P2_16XLARGE = 'ml.p2.16xlarge'
+    ML_P3_2XLARGE = 'ml.p3.2xlarge'
+    ML_P3_8XLARGE = 'ml.p3.8xlarge'
+    ML_P3_16XLARGE = 'ml.p3.16xlarge'
+    ML_C5_XLARGE = 'ml.c5.xlarge'
+    ML_C5_2XLARGE = 'ml.c5.2xlarge'
+    ML_C5_4XLARGE = 'ml.c5.4xlarge'
+    ML_C5_9XLARGE = 'ml.c5.9xlarge'
+    ML_C5_18XLARGE = 'ml.c5.18xlarge'
+    ML_M5_LARGE = 'ml.m5.large'
+    ML_M5_XLARGE = 'ml.m5.xlarge'
+    ML_M5_2XLARGE = 'ml.m5.2xlarge'
+    ML_M5_4XLARGE = 'ml.m5.4xlarge'
+    ML_M5_12XLARGE = 'ml.m5.12xlarge'
+    ML_M5_24XLARGE = 'ml.m5.24xlarge'
+    ML_G4DN_XLARGE = 'ml.g4dn.xlarge'
+    ML_G4DN_2XLARGE = 'ml.g4dn.2xlarge'
+    ML_G4DN_4XLARGE = 'ml.g4dn.4xlarge'
+    ML_G4DN_8XLARGE = 'ml.g4dn.8xlarge'
+    ML_G4DN_12XLARGE = 'ml.g4dn.12xlarge'
+    ML_G4DN_16XLARGE = 'ml.g4dn.16xlarge'
+
+
+class ProductionVariantInstanceType(StrEnum):
+    """Enum class for ProductionVariantInstanceType."""
+    
+    ML_T2_MEDIUM = 'ml.t2.medium'
+    ML_T2_LARGE = 'ml.t2.large'
+    ML_T2_XLARGE = 'ml.t2.xlarge'
+    ML_T2_2XLARGE = 'ml.t2.2xlarge'
+    ML_M4_XLARGE = 'ml.m4.xlarge'
+    ML_M4_2XLARGE = 'ml.m4.2xlarge'
+    ML_M4_4XLARGE = 'ml.m4.4xlarge'
+    ML_M4_10XLARGE = 'ml.m4.10xlarge'
+    ML_M4_16XLARGE = 'ml.m4.16xlarge'
+    ML_M5_LARGE = 'ml.m5.large'
+    ML_M5_XLARGE = 'ml.m5.xlarge'
+    ML_M5_2XLARGE = 'ml.m5.2xlarge'
+    ML_M5_4XLARGE = 'ml.m5.4xlarge'
+    ML_M5_12XLARGE = 'ml.m5.12xlarge'
+    ML_M5_24XLARGE = 'ml.m5.24xlarge'
+    ML_M5D_LARGE = 'ml.m5d.large'
+    ML_M5D_XLARGE = 'ml.m5d.xlarge'
+    ML_M5D_2XLARGE = 'ml.m5d.2xlarge'
+    ML_M5D_4XLARGE = 'ml.m5d.4xlarge'
+    ML_M5D_12XLARGE = 'ml.m5d.12xlarge'
+    ML_M5D_24XLARGE = 'ml.m5d.24xlarge'
+    ML_C4_LARGE = 'ml.c4.large'
+    ML_C4_XLARGE = 'ml.c4.xlarge'
+    ML_C4_2XLARGE = 'ml.c4.2xlarge'
+    ML_C4_4XLARGE = 'ml.c4.4xlarge'
+    ML_C4_8XLARGE = 'ml.c4.8xlarge'
+    ML_P2_XLARGE = 'ml.p2.xlarge'
+    ML_P2_8XLARGE = 'ml.p2.8xlarge'
+    ML_P2_16XLARGE = 'ml.p2.16xlarge'
+    ML_P3_2XLARGE = 'ml.p3.2xlarge'
+    ML_P3_8XLARGE = 'ml.p3.8xlarge'
+    ML_P3_16XLARGE = 'ml.p3.16xlarge'
+    ML_C5_LARGE = 'ml.c5.large'
+    ML_C5_XLARGE = 'ml.c5.xlarge'
+    ML_C5_2XLARGE = 'ml.c5.2xlarge'
+    ML_C5_4XLARGE = 'ml.c5.4xlarge'
+    ML_C5_9XLARGE = 'ml.c5.9xlarge'
+    ML_C5_18XLARGE = 'ml.c5.18xlarge'
+    ML_C5D_LARGE = 'ml.c5d.large'
+    ML_C5D_XLARGE = 'ml.c5d.xlarge'
+    ML_C5D_2XLARGE = 'ml.c5d.2xlarge'
+    ML_C5D_4XLARGE = 'ml.c5d.4xlarge'
+    ML_C5D_9XLARGE = 'ml.c5d.9xlarge'
+    ML_C5D_18XLARGE = 'ml.c5d.18xlarge'
+    ML_G4DN_XLARGE = 'ml.g4dn.xlarge'
+    ML_G4DN_2XLARGE = 'ml.g4dn.2xlarge'
+    ML_G4DN_4XLARGE = 'ml.g4dn.4xlarge'
+    ML_G4DN_8XLARGE = 'ml.g4dn.8xlarge'
+    ML_G4DN_12XLARGE = 'ml.g4dn.12xlarge'
+    ML_G4DN_16XLARGE = 'ml.g4dn.16xlarge'
+    ML_R5_LARGE = 'ml.r5.large'
+    ML_R5_XLARGE = 'ml.r5.xlarge'
+    ML_R5_2XLARGE = 'ml.r5.2xlarge'
+    ML_R5_4XLARGE = 'ml.r5.4xlarge'
+    ML_R5_12XLARGE = 'ml.r5.12xlarge'
+    ML_R5_24XLARGE = 'ml.r5.24xlarge'
+    ML_R5D_LARGE = 'ml.r5d.large'
+    ML_R5D_XLARGE = 'ml.r5d.xlarge'
+    ML_R5D_2XLARGE = 'ml.r5d.2xlarge'
+    ML_R5D_4XLARGE = 'ml.r5d.4xlarge'
+    ML_R5D_12XLARGE = 'ml.r5d.12xlarge'
+    ML_R5D_24XLARGE = 'ml.r5d.24xlarge'
+    ML_INF1_XLARGE = 'ml.inf1.xlarge'
+    ML_INF1_2XLARGE = 'ml.inf1.2xlarge'
+    ML_INF1_6XLARGE = 'ml.inf1.6xlarge'
+    ML_INF1_24XLARGE = 'ml.inf1.24xlarge'
+    ML_DL1_24XLARGE = 'ml.dl1.24xlarge'
+    ML_C6I_LARGE = 'ml.c6i.large'
+    ML_C6I_XLARGE = 'ml.c6i.xlarge'
+    ML_C6I_2XLARGE = 'ml.c6i.2xlarge'
+    ML_C6I_4XLARGE = 'ml.c6i.4xlarge'
+    ML_C6I_8XLARGE = 'ml.c6i.8xlarge'
+    ML_C6I_12XLARGE = 'ml.c6i.12xlarge'
+    ML_C6I_16XLARGE = 'ml.c6i.16xlarge'
+    ML_C6I_24XLARGE = 'ml.c6i.24xlarge'
+    ML_C6I_32XLARGE = 'ml.c6i.32xlarge'
+    ML_G5_XLARGE = 'ml.g5.xlarge'
+    ML_G5_2XLARGE = 'ml.g5.2xlarge'
+    ML_G5_4XLARGE = 'ml.g5.4xlarge'
+    ML_G5_8XLARGE = 'ml.g5.8xlarge'
+    ML_G5_12XLARGE = 'ml.g5.12xlarge'
+    ML_G5_16XLARGE = 'ml.g5.16xlarge'
+    ML_G5_24XLARGE = 'ml.g5.24xlarge'
+    ML_G5_48XLARGE = 'ml.g5.48xlarge'
+    ML_P4D_24XLARGE = 'ml.p4d.24xlarge'
+    ML_C7G_LARGE = 'ml.c7g.large'
+    ML_C7G_XLARGE = 'ml.c7g.xlarge'
+    ML_C7G_2XLARGE = 'ml.c7g.2xlarge'
+    ML_C7G_4XLARGE = 'ml.c7g.4xlarge'
+    ML_C7G_8XLARGE = 'ml.c7g.8xlarge'
+    ML_C7G_12XLARGE = 'ml.c7g.12xlarge'
+    ML_C7G_16XLARGE = 'ml.c7g.16xlarge'
+    ML_M6G_LARGE = 'ml.m6g.large'
+    ML_M6G_XLARGE = 'ml.m6g.xlarge'
+    ML_M6G_2XLARGE = 'ml.m6g.2xlarge'
+    ML_M6G_4XLARGE = 'ml.m6g.4xlarge'
+    ML_M6G_8XLARGE = 'ml.m6g.8xlarge'
+    ML_M6G_12XLARGE = 'ml.m6g.12xlarge'
+    ML_M6G_16XLARGE = 'ml.m6g.16xlarge'
+    ML_M6GD_LARGE = 'ml.m6gd.large'
+    ML_M6GD_XLARGE = 'ml.m6gd.xlarge'
+    ML_M6GD_2XLARGE = 'ml.m6gd.2xlarge'
+    ML_M6GD_4XLARGE = 'ml.m6gd.4xlarge'
+    ML_M6GD_8XLARGE = 'ml.m6gd.8xlarge'
+    ML_M6GD_12XLARGE = 'ml.m6gd.12xlarge'
+    ML_M6GD_16XLARGE = 'ml.m6gd.16xlarge'
+    ML_C6G_LARGE = 'ml.c6g.large'
+    ML_C6G_XLARGE = 'ml.c6g.xlarge'
+    ML_C6G_2XLARGE = 'ml.c6g.2xlarge'
+    ML_C6G_4XLARGE = 'ml.c6g.4xlarge'
+    ML_C6G_8XLARGE = 'ml.c6g.8xlarge'
+    ML_C6G_12XLARGE = 'ml.c6g.12xlarge'
+    ML_C6G_16XLARGE = 'ml.c6g.16xlarge'
+    ML_C6GD_LARGE = 'ml.c6gd.large'
+    ML_C6GD_XLARGE = 'ml.c6gd.xlarge'
+    ML_C6GD_2XLARGE = 'ml.c6gd.2xlarge'
+    ML_C6GD_4XLARGE = 'ml.c6gd.4xlarge'
+    ML_C6GD_8XLARGE = 'ml.c6gd.8xlarge'
+    ML_C6GD_12XLARGE = 'ml.c6gd.12xlarge'
+    ML_C6GD_16XLARGE = 'ml.c6gd.16xlarge'
+    ML_C6GN_LARGE = 'ml.c6gn.large'
+    ML_C6GN_XLARGE = 'ml.c6gn.xlarge'
+    ML_C6GN_2XLARGE = 'ml.c6gn.2xlarge'
+    ML_C6GN_4XLARGE = 'ml.c6gn.4xlarge'
+    ML_C6GN_8XLARGE = 'ml.c6gn.8xlarge'
+    ML_C6GN_12XLARGE = 'ml.c6gn.12xlarge'
+    ML_C6GN_16XLARGE = 'ml.c6gn.16xlarge'
+    ML_R6G_LARGE = 'ml.r6g.large'
+    ML_R6G_XLARGE = 'ml.r6g.xlarge'
+    ML_R6G_2XLARGE = 'ml.r6g.2xlarge'
+    ML_R6G_4XLARGE = 'ml.r6g.4xlarge'
+    ML_R6G_8XLARGE = 'ml.r6g.8xlarge'
+    ML_R6G_12XLARGE = 'ml.r6g.12xlarge'
+    ML_R6G_16XLARGE = 'ml.r6g.16xlarge'
+    ML_R6GD_LARGE = 'ml.r6gd.large'
+    ML_R6GD_XLARGE = 'ml.r6gd.xlarge'
+    ML_R6GD_2XLARGE = 'ml.r6gd.2xlarge'
+    ML_R6GD_4XLARGE = 'ml.r6gd.4xlarge'
+    ML_R6GD_8XLARGE = 'ml.r6gd.8xlarge'
+    ML_R6GD_12XLARGE = 'ml.r6gd.12xlarge'
+    ML_R6GD_16XLARGE = 'ml.r6gd.16xlarge'
+    ML_P4DE_24XLARGE = 'ml.p4de.24xlarge'
+    ML_TRN1_2XLARGE = 'ml.trn1.2xlarge'
+    ML_TRN1_32XLARGE = 'ml.trn1.32xlarge'
+    ML_TRN1N_32XLARGE = 'ml.trn1n.32xlarge'
+    ML_INF2_XLARGE = 'ml.inf2.xlarge'
+    ML_INF2_8XLARGE = 'ml.inf2.8xlarge'
+    ML_INF2_24XLARGE = 'ml.inf2.24xlarge'
+    ML_INF2_48XLARGE = 'ml.inf2.48xlarge'
+    ML_P5_48XLARGE = 'ml.p5.48xlarge'
+    ML_M7I_LARGE = 'ml.m7i.large'
+    ML_M7I_XLARGE = 'ml.m7i.xlarge'
+    ML_M7I_2XLARGE = 'ml.m7i.2xlarge'
+    ML_M7I_4XLARGE = 'ml.m7i.4xlarge'
+    ML_M7I_8XLARGE = 'ml.m7i.8xlarge'
+    ML_M7I_12XLARGE = 'ml.m7i.12xlarge'
+    ML_M7I_16XLARGE = 'ml.m7i.16xlarge'
+    ML_M7I_24XLARGE = 'ml.m7i.24xlarge'
+    ML_M7I_48XLARGE = 'ml.m7i.48xlarge'
+    ML_C7I_LARGE = 'ml.c7i.large'
+    ML_C7I_XLARGE = 'ml.c7i.xlarge'
+    ML_C7I_2XLARGE = 'ml.c7i.2xlarge'
+    ML_C7I_4XLARGE = 'ml.c7i.4xlarge'
+    ML_C7I_8XLARGE = 'ml.c7i.8xlarge'
+    ML_C7I_12XLARGE = 'ml.c7i.12xlarge'
+    ML_C7I_16XLARGE = 'ml.c7i.16xlarge'
+    ML_C7I_24XLARGE = 'ml.c7i.24xlarge'
+    ML_C7I_48XLARGE = 'ml.c7i.48xlarge'
+    ML_R7I_LARGE = 'ml.r7i.large'
+    ML_R7I_XLARGE = 'ml.r7i.xlarge'
+    ML_R7I_2XLARGE = 'ml.r7i.2xlarge'
+    ML_R7I_4XLARGE = 'ml.r7i.4xlarge'
+    ML_R7I_8XLARGE = 'ml.r7i.8xlarge'
+    ML_R7I_12XLARGE = 'ml.r7i.12xlarge'
+    ML_R7I_16XLARGE = 'ml.r7i.16xlarge'
+    ML_R7I_24XLARGE = 'ml.r7i.24xlarge'
+    ML_R7I_48XLARGE = 'ml.r7i.48xlarge'
 
 
 class AdditionalInferenceSpecificationDefinition(Base):
@@ -215,6 +497,16 @@ class AgentVersion(Base):
     agent_count: int
 
 
+class AggregationTransformationValue(StrEnum):
+    """Enum class for AggregationTransformationValue."""
+    
+    SUM = 'sum'
+    AVG = 'avg'
+    FIRST = 'first'
+    MIN = 'min'
+    MAX = 'max'
+
+
 class Alarm(Base):
     """
      Alarm
@@ -225,6 +517,21 @@ class Alarm(Base):
  	alarm_name: 	 <p>The name of a CloudWatch alarm in your account.</p>
     """
     alarm_name: Optional[str] = Unassigned()
+
+
+class AlgorithmSortBy(StrEnum):
+    """Enum class for AlgorithmSortBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+
+
+class TrainingInputMode(StrEnum):
+    """<p>The training input mode that the algorithm supports. For more information about input modes, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html">Algorithms</a>.</p> <p> <b>Pipe mode</b> </p> <p>If an algorithm supports <code>Pipe</code> mode, Amazon SageMaker streams data directly from Amazon S3 to the container.</p> <p> <b>File mode</b> </p> <p>If an algorithm supports <code>File</code> mode, SageMaker downloads the training data from S3 to the provisioned ML storage volume, and mounts the directory to the Docker volume for the training container.</p> <p>You must provision the ML storage volume with sufficient capacity to accommodate the data downloaded from S3. In addition to the training data, the ML storage volume also stores the output model. The algorithm container uses the ML storage volume to also store intermediate information, if any.</p> <p>For distributed algorithms, training data is distributed uniformly. Your training duration is predictable if the input data objects sizes are approximately the same. SageMaker does not split the files any further for model training. If the object sizes are skewed, training won't be optimal as the data distribution is also skewed when one host in a training cluster is overloaded, thus becoming a bottleneck in training.</p> <p> <b>FastFile mode</b> </p> <p>If an algorithm supports <code>FastFile</code> mode, SageMaker streams data directly from S3 to the container with no code changes, and provides file system access to the data. Users can author their training script to interact with these files as if they were stored on disk.</p> <p> <code>FastFile</code> mode works best when the data is read sequentially. Augmented manifest files aren't supported. The startup time is lower when there are fewer files in the S3 bucket provided.</p>"""
+    
+    PIPE = 'Pipe'
+    FILE = 'File'
+    FAST_FILE = 'FastFile'
 
 
 class MetricDefinition(Base):
@@ -239,6 +546,13 @@ class MetricDefinition(Base):
     """
     name: str
     regex: str
+
+
+class TrainingRepositoryAccessMode(StrEnum):
+    """Enum class for TrainingRepositoryAccessMode."""
+    
+    PLATFORM = 'Platform'
+    VPC = 'Vpc'
 
 
 class TrainingRepositoryAuthConfig(Base):
@@ -263,7 +577,7 @@ class TrainingImageConfig(Base):
  	training_repository_access_mode: 	 <p>The method that your training job will use to gain access to the images in your private Docker registry. For access to an image in a private Docker registry, set to <code>Vpc</code>.</p>
  	training_repository_auth_config: 	 <p>An object containing authentication information for a private Docker registry containing your training images.</p>
     """
-    training_repository_access_mode: str
+    training_repository_access_mode: TrainingRepositoryAccessMode
     training_repository_auth_config: Optional[TrainingRepositoryAuthConfig] = Unassigned()
 
 
@@ -283,7 +597,7 @@ class AlgorithmSpecification(Base):
  	container_arguments: 	 <p>The arguments for a container used to run a training job. See <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/your-algorithms-training-algo-dockerfile.html">How Amazon SageMaker Runs Your Training Image</a> for additional information.</p>
  	training_image_config: 	 <p>The configuration to use an image from a private Docker registry for a training job.</p>
     """
-    training_input_mode: str
+    training_input_mode: TrainingInputMode
     training_image: Optional[str] = Unassigned()
     algorithm_name: Optional[str] = Unassigned()
     metric_definitions: Optional[List[MetricDefinition]] = Unassigned()
@@ -291,6 +605,25 @@ class AlgorithmSpecification(Base):
     container_entrypoint: Optional[List[str]] = Unassigned()
     container_arguments: Optional[List[str]] = Unassigned()
     training_image_config: Optional[TrainingImageConfig] = Unassigned()
+
+
+class AlgorithmStatus(StrEnum):
+    """Enum class for AlgorithmStatus."""
+    
+    PENDING = 'Pending'
+    IN_PROGRESS = 'InProgress'
+    COMPLETED = 'Completed'
+    FAILED = 'Failed'
+    DELETING = 'Deleting'
+
+
+class DetailedAlgorithmStatus(StrEnum):
+    """Enum class for DetailedAlgorithmStatus."""
+    
+    NOT_STARTED = 'NotStarted'
+    IN_PROGRESS = 'InProgress'
+    COMPLETED = 'Completed'
+    FAILED = 'Failed'
 
 
 class AlgorithmStatusItem(Base):
@@ -305,7 +638,7 @@ class AlgorithmStatusItem(Base):
  	failure_reason: 	 <p>if the overall status is <code>Failed</code>, the reason for the failure.</p>
     """
     name: str
-    status: str
+    status: DetailedAlgorithmStatus
     failure_reason: Optional[str] = Unassigned()
 
 
@@ -339,8 +672,23 @@ class AlgorithmSummary(Base):
     algorithm_name: str
     algorithm_arn: str
     creation_time: datetime.datetime
-    algorithm_status: str
+    algorithm_status: AlgorithmStatus
     algorithm_description: Optional[str] = Unassigned()
+
+
+class S3DataType(StrEnum):
+    """Enum class for S3DataType."""
+    
+    MANIFEST_FILE = 'ManifestFile'
+    S3_PREFIX = 'S3Prefix'
+    AUGMENTED_MANIFEST_FILE = 'AugmentedManifestFile'
+
+
+class S3DataDistribution(StrEnum):
+    """Enum class for S3DataDistribution."""
+    
+    FULLY_REPLICATED = 'FullyReplicated'
+    SHARDED_BY_S3_KEY = 'ShardedByS3Key'
 
 
 class S3DataSource(Base):
@@ -356,11 +704,25 @@ class S3DataSource(Base):
  	attribute_names: 	 <p>A list of one or more attribute names to use that are found in a specified augmented manifest file.</p>
  	instance_group_names: 	 <p>A list of names of instance groups that get data from the S3 data source.</p>
     """
-    s3_data_type: str
+    s3_data_type: S3DataType
     s3_uri: str
-    s3_data_distribution_type: Optional[str] = Unassigned()
+    s3_data_distribution_type: Optional[S3DataDistribution] = Unassigned()
     attribute_names: Optional[List[str]] = Unassigned()
     instance_group_names: Optional[List[str]] = Unassigned()
+
+
+class FileSystemAccessMode(StrEnum):
+    """Enum class for FileSystemAccessMode."""
+    
+    RW = 'rw'
+    RO = 'ro'
+
+
+class FileSystemType(StrEnum):
+    """Enum class for FileSystemType."""
+    
+    EFS = 'EFS'
+    F_SX_LUSTRE = 'FSxLustre'
 
 
 class FileSystemDataSource(Base):
@@ -376,8 +738,8 @@ class FileSystemDataSource(Base):
  	directory_path: 	 <p>The full path to the directory to associate with the channel.</p>
     """
     file_system_id: str
-    file_system_access_mode: str
-    file_system_type: str
+    file_system_access_mode: FileSystemAccessMode
+    file_system_type: FileSystemType
     directory_path: str
 
 
@@ -393,6 +755,13 @@ class DataSource(Base):
     """
     s3_data_source: Optional[S3DataSource] = Unassigned()
     file_system_data_source: Optional[FileSystemDataSource] = Unassigned()
+
+
+class RecordWrapper(StrEnum):
+    """Enum class for RecordWrapper."""
+    
+    NONE = 'None'
+    RECORD_I_O = 'RecordIO'
 
 
 class ShuffleConfig(Base):
@@ -425,10 +794,17 @@ class Channel(Base):
     channel_name: str
     data_source: DataSource
     content_type: Optional[str] = Unassigned()
-    compression_type: Optional[str] = Unassigned()
-    record_wrapper_type: Optional[str] = Unassigned()
-    input_mode: Optional[str] = Unassigned()
+    compression_type: Optional[CompressionType] = Unassigned()
+    record_wrapper_type: Optional[RecordWrapper] = Unassigned()
+    input_mode: Optional[TrainingInputMode] = Unassigned()
     shuffle_config: Optional[ShuffleConfig] = Unassigned()
+
+
+class OutputCompressionType(StrEnum):
+    """Enum class for OutputCompressionType."""
+    
+    GZIP = 'GZIP'
+    NONE = 'NONE'
 
 
 class OutputDataConfig(Base):
@@ -444,7 +820,81 @@ class OutputDataConfig(Base):
     """
     s3_output_path: str
     kms_key_id: Optional[str] = Unassigned()
-    compression_type: Optional[str] = Unassigned()
+    compression_type: Optional[OutputCompressionType] = Unassigned()
+
+
+class TrainingInstanceType(StrEnum):
+    """Enum class for TrainingInstanceType."""
+    
+    ML_M4_XLARGE = 'ml.m4.xlarge'
+    ML_M4_2XLARGE = 'ml.m4.2xlarge'
+    ML_M4_4XLARGE = 'ml.m4.4xlarge'
+    ML_M4_10XLARGE = 'ml.m4.10xlarge'
+    ML_M4_16XLARGE = 'ml.m4.16xlarge'
+    ML_G4DN_XLARGE = 'ml.g4dn.xlarge'
+    ML_G4DN_2XLARGE = 'ml.g4dn.2xlarge'
+    ML_G4DN_4XLARGE = 'ml.g4dn.4xlarge'
+    ML_G4DN_8XLARGE = 'ml.g4dn.8xlarge'
+    ML_G4DN_12XLARGE = 'ml.g4dn.12xlarge'
+    ML_G4DN_16XLARGE = 'ml.g4dn.16xlarge'
+    ML_M5_LARGE = 'ml.m5.large'
+    ML_M5_XLARGE = 'ml.m5.xlarge'
+    ML_M5_2XLARGE = 'ml.m5.2xlarge'
+    ML_M5_4XLARGE = 'ml.m5.4xlarge'
+    ML_M5_12XLARGE = 'ml.m5.12xlarge'
+    ML_M5_24XLARGE = 'ml.m5.24xlarge'
+    ML_C4_XLARGE = 'ml.c4.xlarge'
+    ML_C4_2XLARGE = 'ml.c4.2xlarge'
+    ML_C4_4XLARGE = 'ml.c4.4xlarge'
+    ML_C4_8XLARGE = 'ml.c4.8xlarge'
+    ML_P2_XLARGE = 'ml.p2.xlarge'
+    ML_P2_8XLARGE = 'ml.p2.8xlarge'
+    ML_P2_16XLARGE = 'ml.p2.16xlarge'
+    ML_P3_2XLARGE = 'ml.p3.2xlarge'
+    ML_P3_8XLARGE = 'ml.p3.8xlarge'
+    ML_P3_16XLARGE = 'ml.p3.16xlarge'
+    ML_P3DN_24XLARGE = 'ml.p3dn.24xlarge'
+    ML_P4D_24XLARGE = 'ml.p4d.24xlarge'
+    ML_P4DE_24XLARGE = 'ml.p4de.24xlarge'
+    ML_P5_48XLARGE = 'ml.p5.48xlarge'
+    ML_C5_XLARGE = 'ml.c5.xlarge'
+    ML_C5_2XLARGE = 'ml.c5.2xlarge'
+    ML_C5_4XLARGE = 'ml.c5.4xlarge'
+    ML_C5_9XLARGE = 'ml.c5.9xlarge'
+    ML_C5_18XLARGE = 'ml.c5.18xlarge'
+    ML_C5N_XLARGE = 'ml.c5n.xlarge'
+    ML_C5N_2XLARGE = 'ml.c5n.2xlarge'
+    ML_C5N_4XLARGE = 'ml.c5n.4xlarge'
+    ML_C5N_9XLARGE = 'ml.c5n.9xlarge'
+    ML_C5N_18XLARGE = 'ml.c5n.18xlarge'
+    ML_G5_XLARGE = 'ml.g5.xlarge'
+    ML_G5_2XLARGE = 'ml.g5.2xlarge'
+    ML_G5_4XLARGE = 'ml.g5.4xlarge'
+    ML_G5_8XLARGE = 'ml.g5.8xlarge'
+    ML_G5_16XLARGE = 'ml.g5.16xlarge'
+    ML_G5_12XLARGE = 'ml.g5.12xlarge'
+    ML_G5_24XLARGE = 'ml.g5.24xlarge'
+    ML_G5_48XLARGE = 'ml.g5.48xlarge'
+    ML_TRN1_2XLARGE = 'ml.trn1.2xlarge'
+    ML_TRN1_32XLARGE = 'ml.trn1.32xlarge'
+    ML_TRN1N_32XLARGE = 'ml.trn1n.32xlarge'
+    ML_M6I_LARGE = 'ml.m6i.large'
+    ML_M6I_XLARGE = 'ml.m6i.xlarge'
+    ML_M6I_2XLARGE = 'ml.m6i.2xlarge'
+    ML_M6I_4XLARGE = 'ml.m6i.4xlarge'
+    ML_M6I_8XLARGE = 'ml.m6i.8xlarge'
+    ML_M6I_12XLARGE = 'ml.m6i.12xlarge'
+    ML_M6I_16XLARGE = 'ml.m6i.16xlarge'
+    ML_M6I_24XLARGE = 'ml.m6i.24xlarge'
+    ML_M6I_32XLARGE = 'ml.m6i.32xlarge'
+    ML_C6I_XLARGE = 'ml.c6i.xlarge'
+    ML_C6I_2XLARGE = 'ml.c6i.2xlarge'
+    ML_C6I_8XLARGE = 'ml.c6i.8xlarge'
+    ML_C6I_4XLARGE = 'ml.c6i.4xlarge'
+    ML_C6I_12XLARGE = 'ml.c6i.12xlarge'
+    ML_C6I_16XLARGE = 'ml.c6i.16xlarge'
+    ML_C6I_24XLARGE = 'ml.c6i.24xlarge'
+    ML_C6I_32XLARGE = 'ml.c6i.32xlarge'
 
 
 class InstanceGroup(Base):
@@ -458,7 +908,7 @@ class InstanceGroup(Base):
  	instance_count: 	 <p>Specifies the number of instances of the instance group.</p>
  	instance_group_name: 	 <p>Specifies the name of the instance group.</p>
     """
-    instance_type: str
+    instance_type: TrainingInstanceType
     instance_count: int
     instance_group_name: str
 
@@ -478,7 +928,7 @@ class ResourceConfig(Base):
  	instance_groups: 	 <p>The configuration of a heterogeneous cluster in JSON format.</p>
     """
     volume_size_in_g_b: int
-    instance_type: Optional[str] = Unassigned()
+    instance_type: Optional[TrainingInstanceType] = Unassigned()
     instance_count: Optional[int] = Unassigned()
     volume_kms_key_id: Optional[str] = Unassigned()
     keep_alive_period_in_seconds: Optional[int] = Unassigned()
@@ -515,12 +965,19 @@ class TrainingJobDefinition(Base):
  	resource_config: 	 <p>The resources, including the ML compute instances and ML storage volumes, to use for model training.</p>
  	stopping_condition: 	 <p>Specifies a limit to how long a model training job can run. It also specifies how long a managed Spot training job has to complete. When the job reaches the time limit, SageMaker ends the training job. Use this API to cap model training costs.</p> <p>To stop a job, SageMaker sends the algorithm the SIGTERM signal, which delays job termination for 120 seconds. Algorithms can use this 120-second window to save the model artifacts.</p>
     """
-    training_input_mode: str
+    training_input_mode: TrainingInputMode
     input_data_config: List[Channel]
     output_data_config: OutputDataConfig
     resource_config: ResourceConfig
     stopping_condition: StoppingCondition
     hyper_parameters: Optional[Dict[str, str]] = Unassigned()
+
+
+class BatchStrategy(StrEnum):
+    """Enum class for BatchStrategy."""
+    
+    MULTI_RECORD = 'MultiRecord'
+    SINGLE_RECORD = 'SingleRecord'
 
 
 class TransformS3DataSource(Base):
@@ -533,7 +990,7 @@ class TransformS3DataSource(Base):
  	s3_data_type: 	 <p>If you choose <code>S3Prefix</code>, <code>S3Uri</code> identifies a key name prefix. Amazon SageMaker uses all objects with the specified key name prefix for batch transform. </p> <p>If you choose <code>ManifestFile</code>, <code>S3Uri</code> identifies an object that is a manifest file containing a list of object keys that you want Amazon SageMaker to use for batch transform. </p> <p>The following values are compatible: <code>ManifestFile</code>, <code>S3Prefix</code> </p> <p>The following value is not compatible: <code>AugmentedManifestFile</code> </p>
  	s3_uri: 	 <p>Depending on the value specified for the <code>S3DataType</code>, identifies either a key name prefix or a manifest. For example:</p> <ul> <li> <p> A key name prefix might look like this: <code>s3://bucketname/exampleprefix/</code>. </p> </li> <li> <p> A manifest might look like this: <code>s3://bucketname/example.manifest</code> </p> <p> The manifest is an S3 object which is a JSON file with the following format: </p> <p> <code>[ {"prefix": "s3://customer_bucket/some/prefix/"},</code> </p> <p> <code>"relative/path/to/custdata-1",</code> </p> <p> <code>"relative/path/custdata-2",</code> </p> <p> <code>...</code> </p> <p> <code>"relative/path/custdata-N"</code> </p> <p> <code>]</code> </p> <p> The preceding JSON matches the following <code>S3Uris</code>: </p> <p> <code>s3://customer_bucket/some/prefix/relative/path/to/custdata-1</code> </p> <p> <code>s3://customer_bucket/some/prefix/relative/path/custdata-2</code> </p> <p> <code>...</code> </p> <p> <code>s3://customer_bucket/some/prefix/relative/path/custdata-N</code> </p> <p> The complete set of <code>S3Uris</code> in this manifest constitutes the input data for the channel for this datasource. The object that each <code>S3Uris</code> points to must be readable by the IAM role that Amazon SageMaker uses to perform tasks on your behalf.</p> </li> </ul>
     """
-    s3_data_type: str
+    s3_data_type: S3DataType
     s3_uri: str
 
 
@@ -547,6 +1004,15 @@ class TransformDataSource(Base):
  	s3_data_source: 	 <p>The S3 location of the data source that is associated with a channel.</p>
     """
     s3_data_source: TransformS3DataSource
+
+
+class SplitType(StrEnum):
+    """Enum class for SplitType."""
+    
+    NONE = 'None'
+    LINE = 'Line'
+    RECORD_I_O = 'RecordIO'
+    T_F_RECORD = 'TFRecord'
 
 
 class TransformInput(Base):
@@ -563,8 +1029,15 @@ class TransformInput(Base):
     """
     data_source: TransformDataSource
     content_type: Optional[str] = Unassigned()
-    compression_type: Optional[str] = Unassigned()
-    split_type: Optional[str] = Unassigned()
+    compression_type: Optional[CompressionType] = Unassigned()
+    split_type: Optional[SplitType] = Unassigned()
+
+
+class AssemblyType(StrEnum):
+    """Enum class for AssemblyType."""
+    
+    NONE = 'None'
+    LINE = 'Line'
 
 
 class TransformOutput(Base):
@@ -581,7 +1054,7 @@ class TransformOutput(Base):
     """
     s3_output_path: str
     accept: Optional[str] = Unassigned()
-    assemble_with: Optional[str] = Unassigned()
+    assemble_with: Optional[AssemblyType] = Unassigned()
     kms_key_id: Optional[str] = Unassigned()
 
 
@@ -596,7 +1069,7 @@ class TransformResources(Base):
  	instance_count: 	 <p>The number of ML compute instances to use in the transform job. The default value is <code>1</code>, and the maximum is <code>100</code>. For distributed transform jobs, specify a value greater than <code>1</code>.</p>
  	volume_kms_key_id: 	 <p>The Amazon Web Services Key Management Service (Amazon Web Services KMS) key that Amazon SageMaker uses to encrypt model data on the storage volume attached to the ML compute instance(s) that run the batch transform job.</p> <note> <p>Certain Nitro-based instances include local storage, dependent on the instance type. Local storage volumes are encrypted using a hardware module on the instance. You can't request a <code>VolumeKmsKeyId</code> when using an instance type with local storage.</p> <p>For a list of instance types that support local instance storage, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html#instance-store-volumes">Instance Store Volumes</a>.</p> <p>For more information about local instance storage encryption, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ssd-instance-store.html">SSD Instance Store Volumes</a>.</p> </note> <p> The <code>VolumeKmsKeyId</code> can be any of the following formats:</p> <ul> <li> <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Key ARN: <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Alias name: <code>alias/ExampleAlias</code> </p> </li> <li> <p>Alias name ARN: <code>arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias</code> </p> </li> </ul>
     """
-    instance_type: str
+    instance_type: TransformInstanceType
     instance_count: int
     volume_kms_key_id: Optional[str] = Unassigned()
 
@@ -621,7 +1094,7 @@ class TransformJobDefinition(Base):
     transform_resources: TransformResources
     max_concurrent_transforms: Optional[int] = Unassigned()
     max_payload_in_m_b: Optional[int] = Unassigned()
-    batch_strategy: Optional[str] = Unassigned()
+    batch_strategy: Optional[BatchStrategy] = Unassigned()
     environment: Optional[Dict[str, str]] = Unassigned()
 
 
@@ -667,6 +1140,98 @@ class AnnotationConsolidationConfig(Base):
     annotation_consolidation_lambda_arn: str
 
 
+class AppType(StrEnum):
+    """Enum class for AppType."""
+    
+    JUPYTER_SERVER = 'JupyterServer'
+    KERNEL_GATEWAY = 'KernelGateway'
+    DETAILED_PROFILER = 'DetailedProfiler'
+    TENSOR_BOARD = 'TensorBoard'
+    CODE_EDITOR = 'CodeEditor'
+    JUPYTER_LAB = 'JupyterLab'
+    R_STUDIO_SERVER_PRO = 'RStudioServerPro'
+    R_SESSION_GATEWAY = 'RSessionGateway'
+    CANVAS = 'Canvas'
+
+
+class AppStatus(StrEnum):
+    """Enum class for AppStatus."""
+    
+    DELETED = 'Deleted'
+    DELETING = 'Deleting'
+    FAILED = 'Failed'
+    IN_SERVICE = 'InService'
+    PENDING = 'Pending'
+
+
+class AppInstanceType(StrEnum):
+    """Enum class for AppInstanceType."""
+    
+    SYSTEM = 'system'
+    ML_T3_MICRO = 'ml.t3.micro'
+    ML_T3_SMALL = 'ml.t3.small'
+    ML_T3_MEDIUM = 'ml.t3.medium'
+    ML_T3_LARGE = 'ml.t3.large'
+    ML_T3_XLARGE = 'ml.t3.xlarge'
+    ML_T3_2XLARGE = 'ml.t3.2xlarge'
+    ML_M5_LARGE = 'ml.m5.large'
+    ML_M5_XLARGE = 'ml.m5.xlarge'
+    ML_M5_2XLARGE = 'ml.m5.2xlarge'
+    ML_M5_4XLARGE = 'ml.m5.4xlarge'
+    ML_M5_8XLARGE = 'ml.m5.8xlarge'
+    ML_M5_12XLARGE = 'ml.m5.12xlarge'
+    ML_M5_16XLARGE = 'ml.m5.16xlarge'
+    ML_M5_24XLARGE = 'ml.m5.24xlarge'
+    ML_M5D_LARGE = 'ml.m5d.large'
+    ML_M5D_XLARGE = 'ml.m5d.xlarge'
+    ML_M5D_2XLARGE = 'ml.m5d.2xlarge'
+    ML_M5D_4XLARGE = 'ml.m5d.4xlarge'
+    ML_M5D_8XLARGE = 'ml.m5d.8xlarge'
+    ML_M5D_12XLARGE = 'ml.m5d.12xlarge'
+    ML_M5D_16XLARGE = 'ml.m5d.16xlarge'
+    ML_M5D_24XLARGE = 'ml.m5d.24xlarge'
+    ML_C5_LARGE = 'ml.c5.large'
+    ML_C5_XLARGE = 'ml.c5.xlarge'
+    ML_C5_2XLARGE = 'ml.c5.2xlarge'
+    ML_C5_4XLARGE = 'ml.c5.4xlarge'
+    ML_C5_9XLARGE = 'ml.c5.9xlarge'
+    ML_C5_12XLARGE = 'ml.c5.12xlarge'
+    ML_C5_18XLARGE = 'ml.c5.18xlarge'
+    ML_C5_24XLARGE = 'ml.c5.24xlarge'
+    ML_P3_2XLARGE = 'ml.p3.2xlarge'
+    ML_P3_8XLARGE = 'ml.p3.8xlarge'
+    ML_P3_16XLARGE = 'ml.p3.16xlarge'
+    ML_P3DN_24XLARGE = 'ml.p3dn.24xlarge'
+    ML_G4DN_XLARGE = 'ml.g4dn.xlarge'
+    ML_G4DN_2XLARGE = 'ml.g4dn.2xlarge'
+    ML_G4DN_4XLARGE = 'ml.g4dn.4xlarge'
+    ML_G4DN_8XLARGE = 'ml.g4dn.8xlarge'
+    ML_G4DN_12XLARGE = 'ml.g4dn.12xlarge'
+    ML_G4DN_16XLARGE = 'ml.g4dn.16xlarge'
+    ML_R5_LARGE = 'ml.r5.large'
+    ML_R5_XLARGE = 'ml.r5.xlarge'
+    ML_R5_2XLARGE = 'ml.r5.2xlarge'
+    ML_R5_4XLARGE = 'ml.r5.4xlarge'
+    ML_R5_8XLARGE = 'ml.r5.8xlarge'
+    ML_R5_12XLARGE = 'ml.r5.12xlarge'
+    ML_R5_16XLARGE = 'ml.r5.16xlarge'
+    ML_R5_24XLARGE = 'ml.r5.24xlarge'
+    ML_G5_XLARGE = 'ml.g5.xlarge'
+    ML_G5_2XLARGE = 'ml.g5.2xlarge'
+    ML_G5_4XLARGE = 'ml.g5.4xlarge'
+    ML_G5_8XLARGE = 'ml.g5.8xlarge'
+    ML_G5_16XLARGE = 'ml.g5.16xlarge'
+    ML_G5_12XLARGE = 'ml.g5.12xlarge'
+    ML_G5_24XLARGE = 'ml.g5.24xlarge'
+    ML_G5_48XLARGE = 'ml.g5.48xlarge'
+    ML_GEOSPATIAL_INTERACTIVE = 'ml.geospatial.interactive'
+    ML_P4D_24XLARGE = 'ml.p4d.24xlarge'
+    ML_P4DE_24XLARGE = 'ml.p4de.24xlarge'
+    ML_TRN1_2XLARGE = 'ml.trn1.2xlarge'
+    ML_TRN1_32XLARGE = 'ml.trn1.32xlarge'
+    ML_TRN1N_32XLARGE = 'ml.trn1n.32xlarge'
+
+
 class ResourceSpec(Base):
     """
      ResourceSpec
@@ -683,7 +1248,7 @@ class ResourceSpec(Base):
     sage_maker_image_arn: Optional[str] = Unassigned()
     sage_maker_image_version_arn: Optional[str] = Unassigned()
     sage_maker_image_version_alias: Optional[str] = Unassigned()
-    instance_type: Optional[str] = Unassigned()
+    instance_type: Optional[AppInstanceType] = Unassigned()
     lifecycle_config_arn: Optional[str] = Unassigned()
 
 
@@ -706,9 +1271,9 @@ class AppDetails(Base):
     domain_id: Optional[str] = Unassigned()
     user_profile_name: Optional[str] = Unassigned()
     space_name: Optional[str] = Unassigned()
-    app_type: Optional[str] = Unassigned()
+    app_type: Optional[AppType] = Unassigned()
     app_name: Optional[str] = Unassigned()
-    status: Optional[str] = Unassigned()
+    status: Optional[AppStatus] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     resource_spec: Optional[ResourceSpec] = Unassigned()
 
@@ -809,6 +1374,34 @@ class AppImageConfigDetails(Base):
     jupyter_lab_app_image_config: Optional[JupyterLabAppImageConfig] = Unassigned()
 
 
+class AppImageConfigSortKey(StrEnum):
+    """Enum class for AppImageConfigSortKey."""
+    
+    CREATION_TIME = 'CreationTime'
+    LAST_MODIFIED_TIME = 'LastModifiedTime'
+    NAME = 'Name'
+
+
+class AppNetworkAccessType(StrEnum):
+    """Enum class for AppNetworkAccessType."""
+    
+    PUBLIC_INTERNET_ONLY = 'PublicInternetOnly'
+    VPC_ONLY = 'VpcOnly'
+
+
+class AppSecurityGroupManagement(StrEnum):
+    """Enum class for AppSecurityGroupManagement."""
+    
+    SERVICE = 'Service'
+    CUSTOMER = 'Customer'
+
+
+class AppSortKey(StrEnum):
+    """Enum class for AppSortKey."""
+    
+    CREATION_TIME = 'CreationTime'
+
+
 class AppSpecification(Base):
     """
      AppSpecification
@@ -825,6 +1418,15 @@ class AppSpecification(Base):
     container_arguments: Optional[List[str]] = Unassigned()
 
 
+class ArtifactSourceIdType(StrEnum):
+    """Enum class for ArtifactSourceIdType."""
+    
+    M_D5_HASH = 'MD5Hash'
+    S3_E_TAG = 'S3ETag'
+    S3_VERSION = 'S3Version'
+    CUSTOM = 'Custom'
+
+
 class ArtifactSourceType(Base):
     """
      ArtifactSourceType
@@ -835,7 +1437,7 @@ class ArtifactSourceType(Base):
  	source_id_type: 	 <p>The type of ID.</p>
  	value: 	 <p>The ID.</p>
     """
-    source_id_type: str
+    source_id_type: ArtifactSourceIdType
     value: str
 
 
@@ -930,7 +1532,7 @@ class AssociationSummary(Base):
     destination_arn: Optional[str] = Unassigned()
     source_type: Optional[str] = Unassigned()
     destination_type: Optional[str] = Unassigned()
-    association_type: Optional[str] = Unassigned()
+    association_type: Optional[AssociationEdgeType] = Unassigned()
     source_name: Optional[str] = Unassigned()
     destination_name: Optional[str] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
@@ -947,6 +1549,13 @@ class AsyncInferenceClientConfig(Base):
  	max_concurrent_invocations_per_instance: 	 <p>The maximum number of concurrent requests sent by the SageMaker client to the model container. If no value is provided, SageMaker chooses an optimal value.</p>
     """
     max_concurrent_invocations_per_instance: Optional[int] = Unassigned()
+
+
+class AsyncNotificationTopicTypes(StrEnum):
+    """Enum class for AsyncNotificationTopicTypes."""
+    
+    SUCCESS_NOTIFICATION_TOPIC = 'SUCCESS_NOTIFICATION_TOPIC'
+    ERROR_NOTIFICATION_TOPIC = 'ERROR_NOTIFICATION_TOPIC'
 
 
 class AsyncInferenceNotificationConfig(Base):
@@ -997,6 +1606,24 @@ class AsyncInferenceConfig(Base):
     client_config: Optional[AsyncInferenceClientConfig] = Unassigned()
 
 
+class AthenaResultFormat(StrEnum):
+    """<p>The data storage format for Athena query results.</p>"""
+    
+    PARQUET = 'PARQUET'
+    ORC = 'ORC'
+    AVRO = 'AVRO'
+    JSON = 'JSON'
+    TEXTFILE = 'TEXTFILE'
+
+
+class AthenaResultCompressionType(StrEnum):
+    """<p>The compression used for Athena query results.</p>"""
+    
+    GZIP = 'GZIP'
+    SNAPPY = 'SNAPPY'
+    ZLIB = 'ZLIB'
+
+
 class AthenaDatasetDefinition(Base):
     """
      AthenaDatasetDefinition
@@ -1017,10 +1644,31 @@ class AthenaDatasetDefinition(Base):
     database: str
     query_string: str
     output_s3_uri: str
-    output_format: str
+    output_format: AthenaResultFormat
     work_group: Optional[str] = Unassigned()
     kms_key_id: Optional[str] = Unassigned()
-    output_compression: Optional[str] = Unassigned()
+    output_compression: Optional[AthenaResultCompressionType] = Unassigned()
+
+
+class AuthMode(StrEnum):
+    """Enum class for AuthMode."""
+    
+    SSO = 'SSO'
+    IAM = 'IAM'
+
+
+class AutoMLAlgorithm(StrEnum):
+    """Enum class for AutoMLAlgorithm."""
+    
+    XGBOOST = 'xgboost'
+    LINEAR_LEARNER = 'linear-learner'
+    MLP = 'mlp'
+    LIGHTGBM = 'lightgbm'
+    CATBOOST = 'catboost'
+    RANDOMFOREST = 'randomforest'
+    EXTRA_TREES = 'extra-trees'
+    NN_TORCH = 'nn-torch'
+    FASTAI = 'fastai'
 
 
 class AutoMLAlgorithmConfig(Base):
@@ -1035,6 +1683,35 @@ class AutoMLAlgorithmConfig(Base):
     auto_m_l_algorithms: List[str]
 
 
+class AutoMLJobObjectiveType(StrEnum):
+    """Enum class for AutoMLJobObjectiveType."""
+    
+    MAXIMIZE = 'Maximize'
+    MINIMIZE = 'Minimize'
+
+
+class AutoMLMetricEnum(StrEnum):
+    """Enum class for AutoMLMetricEnum."""
+    
+    ACCURACY = 'Accuracy'
+    MSE = 'MSE'
+    F1 = 'F1'
+    F1MACRO = 'F1macro'
+    AUC = 'AUC'
+    RMSE = 'RMSE'
+    BALANCED_ACCURACY = 'BalancedAccuracy'
+    R2 = 'R2'
+    RECALL = 'Recall'
+    RECALL_MACRO = 'RecallMacro'
+    PRECISION = 'Precision'
+    PRECISION_MACRO = 'PrecisionMacro'
+    MAE = 'MAE'
+    MAPE = 'MAPE'
+    MASE = 'MASE'
+    WAPE = 'WAPE'
+    AVERAGE_WEIGHTED_QUANTILE_LOSS = 'AverageWeightedQuantileLoss'
+
+
 class FinalAutoMLJobObjectiveMetric(Base):
     """
      FinalAutoMLJobObjectiveMetric
@@ -1047,10 +1724,26 @@ class FinalAutoMLJobObjectiveMetric(Base):
  	value: 	 <p>The value of the metric with the best result.</p>
  	standard_metric_name: 	 <p>The name of the standard metric. For a description of the standard metrics, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html#autopilot-metrics">Autopilot candidate metrics</a>.</p>
     """
-    metric_name: str
+    metric_name: AutoMLMetricEnum
     value: float
-    type: Optional[str] = Unassigned()
-    standard_metric_name: Optional[str] = Unassigned()
+    type: Optional[AutoMLJobObjectiveType] = Unassigned()
+    standard_metric_name: Optional[AutoMLMetricEnum] = Unassigned()
+
+
+class ObjectiveStatus(StrEnum):
+    """Enum class for ObjectiveStatus."""
+    
+    SUCCEEDED = 'Succeeded'
+    PENDING = 'Pending'
+    FAILED = 'Failed'
+
+
+class CandidateStepType(StrEnum):
+    """Enum class for CandidateStepType."""
+    
+    A_W_S_SAGE_MAKER_TRAINING_JOB = 'AWS::SageMaker::TrainingJob'
+    A_W_S_SAGE_MAKER_TRANSFORM_JOB = 'AWS::SageMaker::TransformJob'
+    A_W_S_SAGE_MAKER_PROCESSING_JOB = 'AWS::SageMaker::ProcessingJob'
 
 
 class AutoMLCandidateStep(Base):
@@ -1064,9 +1757,19 @@ class AutoMLCandidateStep(Base):
  	candidate_step_arn: 	 <p>The ARN for the candidate's step.</p>
  	candidate_step_name: 	 <p>The name for the candidate's step.</p>
     """
-    candidate_step_type: str
+    candidate_step_type: CandidateStepType
     candidate_step_arn: str
     candidate_step_name: str
+
+
+class CandidateStatus(StrEnum):
+    """Enum class for CandidateStatus."""
+    
+    COMPLETED = 'Completed'
+    IN_PROGRESS = 'InProgress'
+    FAILED = 'Failed'
+    STOPPED = 'Stopped'
+    STOPPING = 'Stopping'
 
 
 class AutoMLContainerDefinition(Base):
@@ -1101,6 +1804,45 @@ class CandidateArtifactLocations(Base):
     backtest_results: Optional[str] = Unassigned()
 
 
+class MetricSetSource(StrEnum):
+    """Enum class for MetricSetSource."""
+    
+    TRAIN = 'Train'
+    VALIDATION = 'Validation'
+    TEST = 'Test'
+
+
+class AutoMLMetricExtendedEnum(StrEnum):
+    """Enum class for AutoMLMetricExtendedEnum."""
+    
+    ACCURACY = 'Accuracy'
+    MSE = 'MSE'
+    F1 = 'F1'
+    F1MACRO = 'F1macro'
+    AUC = 'AUC'
+    RMSE = 'RMSE'
+    MAE = 'MAE'
+    R2 = 'R2'
+    BALANCED_ACCURACY = 'BalancedAccuracy'
+    PRECISION = 'Precision'
+    PRECISION_MACRO = 'PrecisionMacro'
+    RECALL = 'Recall'
+    RECALL_MACRO = 'RecallMacro'
+    LOG_LOSS = 'LogLoss'
+    INFERENCE_LATENCY = 'InferenceLatency'
+    MAPE = 'MAPE'
+    MASE = 'MASE'
+    WAPE = 'WAPE'
+    AVERAGE_WEIGHTED_QUANTILE_LOSS = 'AverageWeightedQuantileLoss'
+    ROUGE1 = 'Rouge1'
+    ROUGE2 = 'Rouge2'
+    ROUGE_L = 'RougeL'
+    ROUGE_L_SUM = 'RougeLSum'
+    PERPLEXITY = 'Perplexity'
+    VALIDATION_LOSS = 'ValidationLoss'
+    TRAINING_LOSS = 'TrainingLoss'
+
+
 class MetricDatum(Base):
     """
      MetricDatum
@@ -1113,10 +1855,10 @@ class MetricDatum(Base):
  	set: 	 <p>The dataset split from which the AutoML job produced the metric.</p>
  	standard_metric_name: 	 <p>The name of the standard metric. </p> <note> <p>For definitions of the standard metrics, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-model-support-validation.html#autopilot-metrics"> <code>Autopilot candidate metrics</code> </a>.</p> </note>
     """
-    metric_name: Optional[str] = Unassigned()
+    metric_name: Optional[AutoMLMetricEnum] = Unassigned()
     value: Optional[float] = Unassigned()
-    set: Optional[str] = Unassigned()
-    standard_metric_name: Optional[str] = Unassigned()
+    set: Optional[MetricSetSource] = Unassigned()
+    standard_metric_name: Optional[AutoMLMetricExtendedEnum] = Unassigned()
 
 
 class CandidateProperties(Base):
@@ -1131,6 +1873,13 @@ class CandidateProperties(Base):
     """
     candidate_artifact_locations: Optional[CandidateArtifactLocations] = Unassigned()
     candidate_metrics: Optional[List[MetricDatum]] = Unassigned()
+
+
+class AutoMLProcessingUnit(StrEnum):
+    """Enum class for AutoMLProcessingUnit."""
+    
+    CPU = 'CPU'
+    GPU = 'GPU'
 
 
 class AutoMLCandidate(Base):
@@ -1154,9 +1903,9 @@ class AutoMLCandidate(Base):
  	inference_container_definitions: 	 <p>The mapping of all supported processing unit (CPU, GPU, etc...) to inference container definitions for the candidate. This field is populated for the AutoML jobs V2 (for example, for jobs created by calling <code>CreateAutoMLJobV2</code>) related to image or text classification problem types only.</p>
     """
     candidate_name: str
-    objective_status: str
+    objective_status: ObjectiveStatus
     candidate_steps: List[AutoMLCandidateStep]
-    candidate_status: str
+    candidate_status: CandidateStatus
     creation_time: datetime.datetime
     last_modified_time: datetime.datetime
     final_auto_m_l_job_objective_metric: Optional[FinalAutoMLJobObjectiveMetric] = Unassigned()
@@ -1181,6 +1930,14 @@ class AutoMLCandidateGenerationConfig(Base):
     algorithms_config: Optional[List[AutoMLAlgorithmConfig]] = Unassigned()
 
 
+class AutoMLS3DataType(StrEnum):
+    """Enum class for AutoMLS3DataType."""
+    
+    MANIFEST_FILE = 'ManifestFile'
+    S3_PREFIX = 'S3Prefix'
+    AUGMENTED_MANIFEST_FILE = 'AugmentedManifestFile'
+
+
 class AutoMLS3DataSource(Base):
     """
      AutoMLS3DataSource
@@ -1191,7 +1948,7 @@ class AutoMLS3DataSource(Base):
  	s3_data_type: 	 <p>The data type. </p> <ul> <li> <p>If you choose <code>S3Prefix</code>, <code>S3Uri</code> identifies a key name prefix. SageMaker uses all objects that match the specified key name prefix for model training.</p> <p>The <code>S3Prefix</code> should have the following format:</p> <p> <code>s3://DOC-EXAMPLE-BUCKET/DOC-EXAMPLE-FOLDER-OR-FILE</code> </p> </li> <li> <p>If you choose <code>ManifestFile</code>, <code>S3Uri</code> identifies an object that is a manifest file containing a list of object keys that you want SageMaker to use for model training.</p> <p>A <code>ManifestFile</code> should have the format shown below:</p> <p> <code>[ {"prefix": "s3://DOC-EXAMPLE-BUCKET/DOC-EXAMPLE-FOLDER/DOC-EXAMPLE-PREFIX/"}, </code> </p> <p> <code>"DOC-EXAMPLE-RELATIVE-PATH/DOC-EXAMPLE-FOLDER/DATA-1",</code> </p> <p> <code>"DOC-EXAMPLE-RELATIVE-PATH/DOC-EXAMPLE-FOLDER/DATA-2",</code> </p> <p> <code>... "DOC-EXAMPLE-RELATIVE-PATH/DOC-EXAMPLE-FOLDER/DATA-N" ]</code> </p> </li> <li> <p>If you choose <code>AugmentedManifestFile</code>, <code>S3Uri</code> identifies an object that is an augmented manifest file in JSON lines format. This file contains the data you want to use for model training. <code>AugmentedManifestFile</code> is available for V2 API jobs only (for example, for jobs created by calling <code>CreateAutoMLJobV2</code>).</p> <p>Here is a minimal, single-record example of an <code>AugmentedManifestFile</code>:</p> <p> <code>{"source-ref": "s3://DOC-EXAMPLE-BUCKET/DOC-EXAMPLE-FOLDER/cats/cat.jpg",</code> </p> <p> <code>"label-metadata": {"class-name": "cat"</code> }</p> <p>For more information on <code>AugmentedManifestFile</code>, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/augmented-manifest.html">Provide Dataset Metadata to Training Jobs with an Augmented Manifest File</a>.</p> </li> </ul>
  	s3_uri: 	 <p>The URL to the Amazon S3 data source. The Uri refers to the Amazon S3 prefix or ManifestFile depending on the data type.</p>
     """
-    s3_data_type: str
+    s3_data_type: AutoMLS3DataType
     s3_uri: str
 
 
@@ -1205,6 +1962,13 @@ class AutoMLDataSource(Base):
  	s3_data_source: 	 <p>The Amazon S3 location of the input data.</p>
     """
     s3_data_source: AutoMLS3DataSource
+
+
+class AutoMLChannelType(StrEnum):
+    """Enum class for AutoMLChannelType."""
+    
+    TRAINING = 'training'
+    VALIDATION = 'validation'
 
 
 class AutoMLChannel(Base):
@@ -1223,9 +1987,9 @@ class AutoMLChannel(Base):
     """
     target_attribute_name: str
     data_source: Optional[AutoMLDataSource] = Unassigned()
-    compression_type: Optional[str] = Unassigned()
+    compression_type: Optional[CompressionType] = Unassigned()
     content_type: Optional[str] = Unassigned()
-    channel_type: Optional[str] = Unassigned()
+    channel_type: Optional[AutoMLChannelType] = Unassigned()
     sample_weight_attribute_name: Optional[str] = Unassigned()
 
 
@@ -1267,9 +2031,9 @@ class AutoMLJobChannel(Base):
  	compression_type: 	 <p>The allowed compression types depend on the input format and problem type. We allow the compression type <code>Gzip</code> for <code>S3Prefix</code> inputs on tabular data only. For all other inputs, the compression type should be <code>None</code>. If no compression type is provided, we default to <code>None</code>.</p>
  	data_source: 	 <p>The data source for an AutoML channel (Required).</p>
     """
-    channel_type: Optional[str] = Unassigned()
+    channel_type: Optional[AutoMLChannelType] = Unassigned()
     content_type: Optional[str] = Unassigned()
-    compression_type: Optional[str] = Unassigned()
+    compression_type: Optional[CompressionType] = Unassigned()
     data_source: Optional[AutoMLDataSource] = Unassigned()
 
 
@@ -1319,6 +2083,14 @@ class AutoMLSecurityConfig(Base):
     vpc_config: Optional[VpcConfig] = Unassigned()
 
 
+class AutoMLMode(StrEnum):
+    """Enum class for AutoMLMode."""
+    
+    AUTO = 'AUTO'
+    ENSEMBLING = 'ENSEMBLING'
+    HYPERPARAMETER_TUNING = 'HYPERPARAMETER_TUNING'
+
+
 class AutoMLJobConfig(Base):
     """
      AutoMLJobConfig
@@ -1336,7 +2108,7 @@ class AutoMLJobConfig(Base):
     security_config: Optional[AutoMLSecurityConfig] = Unassigned()
     candidate_generation_config: Optional[AutoMLCandidateGenerationConfig] = Unassigned()
     data_split_config: Optional[AutoMLDataSplitConfig] = Unassigned()
-    mode: Optional[str] = Unassigned()
+    mode: Optional[AutoMLMode] = Unassigned()
 
 
 class AutoMLJobObjective(Base):
@@ -1348,7 +2120,41 @@ class AutoMLJobObjective(Base):
 	----------------------
  	metric_name: 	 <p>The name of the objective metric used to measure the predictive quality of a machine learning system. During training, the model's parameters are updated iteratively to optimize its performance based on the feedback provided by the objective metric when evaluating the model on the validation dataset.</p> <p>The list of available metrics supported by Autopilot and the default metric applied when you do not specify a metric name explicitly depend on the problem type.</p> <ul> <li> <p>For tabular problem types:</p> <ul> <li> <p>List of available metrics: </p> <ul> <li> <p> Regression: <code>MAE</code>, <code>MSE</code>, <code>R2</code>, <code>RMSE</code> </p> </li> <li> <p> Binary classification: <code>Accuracy</code>, <code>AUC</code>, <code>BalancedAccuracy</code>, <code>F1</code>, <code>Precision</code>, <code>Recall</code> </p> </li> <li> <p> Multiclass classification: <code>Accuracy</code>, <code>BalancedAccuracy</code>, <code>F1macro</code>, <code>PrecisionMacro</code>, <code>RecallMacro</code> </p> </li> </ul> <p>For a description of each metric, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-metrics-validation.html#autopilot-metrics">Autopilot metrics for classification and regression</a>.</p> </li> <li> <p>Default objective metrics:</p> <ul> <li> <p>Regression: <code>MSE</code>.</p> </li> <li> <p>Binary classification: <code>F1</code>.</p> </li> <li> <p>Multiclass classification: <code>Accuracy</code>.</p> </li> </ul> </li> </ul> </li> <li> <p>For image or text classification problem types:</p> <ul> <li> <p>List of available metrics: <code>Accuracy</code> </p> <p>For a description of each metric, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/text-classification-data-format-and-metric.html">Autopilot metrics for text and image classification</a>.</p> </li> <li> <p>Default objective metrics: <code>Accuracy</code> </p> </li> </ul> </li> <li> <p>For time-series forecasting problem types:</p> <ul> <li> <p>List of available metrics: <code>RMSE</code>, <code>wQL</code>, <code>Average wQL</code>, <code>MASE</code>, <code>MAPE</code>, <code>WAPE</code> </p> <p>For a description of each metric, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/timeseries-objective-metric.html">Autopilot metrics for time-series forecasting</a>.</p> </li> <li> <p>Default objective metrics: <code>AverageWeightedQuantileLoss</code> </p> </li> </ul> </li> <li> <p>For text generation problem types (LLMs fine-tuning): Fine-tuning language models in Autopilot does not require setting the <code>AutoMLJobObjective</code> field. Autopilot fine-tunes LLMs without requiring multiple candidates to be trained and evaluated. Instead, using your dataset, Autopilot directly fine-tunes your target model to enhance a default objective metric, the cross-entropy loss. After fine-tuning a language model, you can evaluate the quality of its generated text using different metrics. For a list of the available metrics, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-llms-finetuning-metrics.html">Metrics for fine-tuning LLMs in Autopilot</a>.</p> </li> </ul>
     """
-    metric_name: str
+    metric_name: AutoMLMetricEnum
+
+
+class AutoMLJobSecondaryStatus(StrEnum):
+    """Enum class for AutoMLJobSecondaryStatus."""
+    
+    STARTING = 'Starting'
+    MAX_CANDIDATES_REACHED = 'MaxCandidatesReached'
+    FAILED = 'Failed'
+    STOPPED = 'Stopped'
+    MAX_AUTO_M_L_JOB_RUNTIME_REACHED = 'MaxAutoMLJobRuntimeReached'
+    STOPPING = 'Stopping'
+    CANDIDATE_DEFINITIONS_GENERATED = 'CandidateDefinitionsGenerated'
+    COMPLETED = 'Completed'
+    EXPLAINABILITY_ERROR = 'ExplainabilityError'
+    DEPLOYING_MODEL = 'DeployingModel'
+    MODEL_DEPLOYMENT_ERROR = 'ModelDeploymentError'
+    GENERATING_MODEL_INSIGHTS_REPORT = 'GeneratingModelInsightsReport'
+    MODEL_INSIGHTS_ERROR = 'ModelInsightsError'
+    ANALYZING_DATA = 'AnalyzingData'
+    FEATURE_ENGINEERING = 'FeatureEngineering'
+    MODEL_TUNING = 'ModelTuning'
+    GENERATING_EXPLAINABILITY_REPORT = 'GeneratingExplainabilityReport'
+    TRAINING_MODELS = 'TrainingModels'
+    PRE_TRAINING = 'PreTraining'
+
+
+class AutoMLJobStatus(StrEnum):
+    """Enum class for AutoMLJobStatus."""
+    
+    COMPLETED = 'Completed'
+    IN_PROGRESS = 'InProgress'
+    FAILED = 'Failed'
+    STOPPED = 'Stopped'
+    STOPPING = 'Stopping'
 
 
 class AutoMLJobStepMetadata(Base):
@@ -1394,8 +2200,8 @@ class AutoMLJobSummary(Base):
     """
     auto_m_l_job_name: str
     auto_m_l_job_arn: str
-    auto_m_l_job_status: str
-    auto_m_l_job_secondary_status: str
+    auto_m_l_job_status: AutoMLJobStatus
+    auto_m_l_job_secondary_status: AutoMLJobSecondaryStatus
     creation_time: datetime.datetime
     last_modified_time: datetime.datetime
     end_time: Optional[datetime.datetime] = Unassigned()
@@ -1527,6 +2333,14 @@ class CandidateGenerationConfig(Base):
     algorithms_config: Optional[List[AutoMLAlgorithmConfig]] = Unassigned()
 
 
+class ProblemType(StrEnum):
+    """Enum class for ProblemType."""
+    
+    BINARY_CLASSIFICATION = 'BinaryClassification'
+    MULTICLASS_CLASSIFICATION = 'MulticlassClassification'
+    REGRESSION = 'Regression'
+
+
 class TabularJobConfig(Base):
     """
      TabularJobConfig
@@ -1547,9 +2361,9 @@ class TabularJobConfig(Base):
     candidate_generation_config: Optional[CandidateGenerationConfig] = Unassigned()
     completion_criteria: Optional[AutoMLJobCompletionCriteria] = Unassigned()
     feature_specification_s3_uri: Optional[str] = Unassigned()
-    mode: Optional[str] = Unassigned()
+    mode: Optional[AutoMLMode] = Unassigned()
     generate_candidate_definitions_only: Optional[bool] = Unassigned()
-    problem_type: Optional[str] = Unassigned()
+    problem_type: Optional[ProblemType] = Unassigned()
     sample_weight_attribute_name: Optional[str] = Unassigned()
 
 
@@ -1591,6 +2405,16 @@ class AutoMLProblemTypeConfig(Base):
     text_generation_job_config: Optional[TextGenerationJobConfig] = Unassigned()
 
 
+class AutoMLProblemTypeConfigName(StrEnum):
+    """Enum class for AutoMLProblemTypeConfigName."""
+    
+    IMAGE_CLASSIFICATION = 'ImageClassification'
+    TEXT_CLASSIFICATION = 'TextClassification'
+    TIME_SERIES_FORECASTING = 'TimeSeriesForecasting'
+    TABULAR = 'Tabular'
+    TEXT_GENERATION = 'TextGeneration'
+
+
 class TabularResolvedAttributes(Base):
     """
      TabularResolvedAttributes
@@ -1600,7 +2424,7 @@ class TabularResolvedAttributes(Base):
 	----------------------
  	problem_type: 	 <p>The type of supervised learning problem available for the model candidates of the AutoML job V2 (Binary Classification, Multiclass Classification, Regression). For more information, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-datasets-problem-types.html#autopilot-problem-types"> SageMaker Autopilot problem types</a>.</p>
     """
-    problem_type: Optional[str] = Unassigned()
+    problem_type: Optional[ProblemType] = Unassigned()
 
 
 class TextGenerationResolvedAttributes(Base):
@@ -1645,6 +2469,21 @@ class AutoMLResolvedAttributes(Base):
     auto_m_l_problem_type_resolved_attributes: Optional[AutoMLProblemTypeResolvedAttributes] = Unassigned()
 
 
+class AutoMLSortBy(StrEnum):
+    """Enum class for AutoMLSortBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+    STATUS = 'Status'
+
+
+class AutoMLSortOrder(StrEnum):
+    """Enum class for AutoMLSortOrder."""
+    
+    ASCENDING = 'Ascending'
+    DESCENDING = 'Descending'
+
+
 class AutoParameter(Base):
     """
      AutoParameter
@@ -1671,6 +2510,12 @@ class AutoRollbackConfig(Base):
     alarms: Optional[List[Alarm]] = Unassigned()
 
 
+class AutotuneMode(StrEnum):
+    """Enum class for AutotuneMode."""
+    
+    ENABLED = 'Enabled'
+
+
 class Autotune(Base):
     """
      Autotune
@@ -1680,7 +2525,17 @@ class Autotune(Base):
 	----------------------
  	mode: 	 <p>Set <code>Mode</code> to <code>Enabled</code> if you want to use Autotune.</p>
     """
-    mode: str
+    mode: AutotuneMode
+
+
+class AwsManagedHumanLoopRequestSource(StrEnum):
+    """Enum class for AwsManagedHumanLoopRequestSource."""
+    
+    A_W_S_REKOGNITION_DETECT_MODERATION_LABELS_IMAGE_V3 = 'AWS/Rekognition/DetectModerationLabels/Image/V3'
+    A_W_S_TEXTRACT_ANALYZE_DOCUMENT_FORMS_V1 = 'AWS/Textract/AnalyzeDocument/Forms/V1'
+    A_W_S_TEXTRACT_ANALYZE_EXPENSE = 'AWS/Textract/AnalyzeExpense'
+    A_W_S_HANDSHAKE_VERIFY_IDENTITY = 'AWS/Handshake/VerifyIdentity'
+    A_W_S_BEDROCK_MODEL_EVALUATION = 'AWS/Bedrock/ModelEvaluation'
 
 
 class BatchDataCaptureConfig(Base):
@@ -1733,6 +2588,24 @@ class InferenceSpecification(Base):
     supported_response_m_i_m_e_types: Optional[List[str]] = Unassigned()
 
 
+class ModelPackageStatus(StrEnum):
+    """Enum class for ModelPackageStatus."""
+    
+    PENDING = 'Pending'
+    IN_PROGRESS = 'InProgress'
+    COMPLETED = 'Completed'
+    FAILED = 'Failed'
+    DELETING = 'Deleting'
+
+
+class ModelApprovalStatus(StrEnum):
+    """Enum class for ModelApprovalStatus."""
+    
+    APPROVED = 'Approved'
+    REJECTED = 'Rejected'
+    PENDING_MANUAL_APPROVAL = 'PendingManualApproval'
+
+
 class BatchDescribeModelPackageSummary(Base):
     """
      BatchDescribeModelPackageSummary
@@ -1753,10 +2626,10 @@ class BatchDescribeModelPackageSummary(Base):
     model_package_arn: str
     creation_time: datetime.datetime
     inference_specification: InferenceSpecification
-    model_package_status: str
+    model_package_status: ModelPackageStatus
     model_package_version: Optional[int] = Unassigned()
     model_package_description: Optional[str] = Unassigned()
-    model_approval_status: Optional[str] = Unassigned()
+    model_approval_status: Optional[ModelApprovalStatus] = Unassigned()
 
 
 class MonitoringCsvDatasetFormat(Base):
@@ -1809,6 +2682,20 @@ class MonitoringDatasetFormat(Base):
     parquet: Optional[MonitoringParquetDatasetFormat] = Unassigned()
 
 
+class ProcessingS3InputMode(StrEnum):
+    """Enum class for ProcessingS3InputMode."""
+    
+    PIPE = 'Pipe'
+    FILE = 'File'
+
+
+class ProcessingS3DataDistributionType(StrEnum):
+    """Enum class for ProcessingS3DataDistributionType."""
+    
+    FULLY_REPLICATED = 'FullyReplicated'
+    SHARDED_BY_S3_KEY = 'ShardedByS3Key'
+
+
 class BatchTransformInput(Base):
     """
      BatchTransformInput
@@ -1832,8 +2719,8 @@ class BatchTransformInput(Base):
     data_captured_destination_s3_uri: str
     dataset_format: MonitoringDatasetFormat
     local_path: str
-    s3_input_mode: Optional[str] = Unassigned()
-    s3_data_distribution_type: Optional[str] = Unassigned()
+    s3_input_mode: Optional[ProcessingS3InputMode] = Unassigned()
+    s3_data_distribution_type: Optional[ProcessingS3DataDistributionType] = Unassigned()
     features_attribute: Optional[str] = Unassigned()
     inference_attribute: Optional[str] = Unassigned()
     probability_attribute: Optional[str] = Unassigned()
@@ -1887,6 +2774,21 @@ class Bias(Base):
     post_training_report: Optional[MetricsSource] = Unassigned()
 
 
+class TrafficRoutingConfigType(StrEnum):
+    """Enum class for TrafficRoutingConfigType."""
+    
+    ALL_AT_ONCE = 'ALL_AT_ONCE'
+    CANARY = 'CANARY'
+    LINEAR = 'LINEAR'
+
+
+class CapacitySizeType(StrEnum):
+    """Enum class for CapacitySizeType."""
+    
+    INSTANCE_COUNT = 'INSTANCE_COUNT'
+    CAPACITY_PERCENT = 'CAPACITY_PERCENT'
+
+
 class CapacitySize(Base):
     """
      CapacitySize
@@ -1897,7 +2799,7 @@ class CapacitySize(Base):
  	type: 	 <p>Specifies the endpoint capacity type.</p> <ul> <li> <p> <code>INSTANCE_COUNT</code>: The endpoint activates based on the number of instances.</p> </li> <li> <p> <code>CAPACITY_PERCENT</code>: The endpoint activates based on the specified percentage of capacity.</p> </li> </ul>
  	value: 	 <p>Defines the capacity size, either as a number of instances or a capacity percentage.</p>
     """
-    type: str
+    type: CapacitySizeType
     value: int
 
 
@@ -1913,7 +2815,7 @@ class TrafficRoutingConfig(Base):
  	canary_size: 	 <p>Batch size for the first step to turn on traffic on the new endpoint fleet. <code>Value</code> must be less than or equal to 50% of the variant's total instance count.</p>
  	linear_step_size: 	 <p>Batch size for each step to turn on traffic on the new endpoint fleet. <code>Value</code> must be 10-50% of the variant's total instance count.</p>
     """
-    type: str
+    type: TrafficRoutingConfigType
     wait_interval_in_seconds: int
     canary_size: Optional[CapacitySize] = Unassigned()
     linear_step_size: Optional[CapacitySize] = Unassigned()
@@ -1933,6 +2835,13 @@ class BlueGreenUpdatePolicy(Base):
     traffic_routing_configuration: TrafficRoutingConfig
     termination_wait_in_seconds: Optional[int] = Unassigned()
     maximum_execution_timeout_in_seconds: Optional[int] = Unassigned()
+
+
+class BooleanOperator(StrEnum):
+    """Enum class for BooleanOperator."""
+    
+    AND = 'And'
+    OR = 'Or'
 
 
 class CacheHitResult(Base):
@@ -1977,6 +2886,21 @@ class CallbackStepMetadata(Base):
     output_parameters: Optional[List[OutputParameter]] = Unassigned()
 
 
+class CandidateSortBy(StrEnum):
+    """Enum class for CandidateSortBy."""
+    
+    CREATION_TIME = 'CreationTime'
+    STATUS = 'Status'
+    FINAL_OBJECTIVE_METRIC_VALUE = 'FinalObjectiveMetricValue'
+
+
+class FeatureStatus(StrEnum):
+    """Enum class for FeatureStatus."""
+    
+    ENABLED = 'ENABLED'
+    DISABLED = 'DISABLED'
+
+
 class TimeSeriesForecastingSettings(Base):
     """
      TimeSeriesForecastingSettings
@@ -1987,7 +2911,7 @@ class TimeSeriesForecastingSettings(Base):
  	status: 	 <p>Describes whether time series forecasting is enabled or disabled in the Canvas application.</p>
  	amazon_forecast_role_arn: 	 <p>The IAM role that Canvas passes to Amazon Forecast for time series forecasting. By default, Canvas uses the execution role specified in the <code>UserProfile</code> that launches the Canvas application. If an execution role is not specified in the <code>UserProfile</code>, Canvas uses the execution role specified in the Domain that owns the <code>UserProfile</code>. To allow time series forecasting, this IAM role should have the <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/security-iam-awsmanpol-canvas.html#security-iam-awsmanpol-AmazonSageMakerCanvasForecastAccess"> AmazonSageMakerCanvasForecastAccess</a> policy attached and <code>forecast.amazonaws.com</code> added in the trust relationship as a service principal.</p>
     """
-    status: Optional[str] = Unassigned()
+    status: Optional[FeatureStatus] = Unassigned()
     amazon_forecast_role_arn: Optional[str] = Unassigned()
 
 
@@ -2001,7 +2925,7 @@ class ModelRegisterSettings(Base):
  	status: 	 <p>Describes whether the integration to the model registry is enabled or disabled in the Canvas application.</p>
  	cross_account_model_register_role_arn: 	 <p>The Amazon Resource Name (ARN) of the SageMaker model registry account. Required only to register model versions created by a different SageMaker Canvas Amazon Web Services account than the Amazon Web Services account in which SageMaker model registry is set up.</p>
     """
-    status: Optional[str] = Unassigned()
+    status: Optional[FeatureStatus] = Unassigned()
     cross_account_model_register_role_arn: Optional[str] = Unassigned()
 
 
@@ -2019,6 +2943,13 @@ class WorkspaceSettings(Base):
     s3_kms_key_id: Optional[str] = Unassigned()
 
 
+class DataSourceName(StrEnum):
+    """Enum class for DataSourceName."""
+    
+    SALESFORCE_GENIE = 'SalesforceGenie'
+    SNOWFLAKE = 'Snowflake'
+
+
 class IdentityProviderOAuthSetting(Base):
     """
      IdentityProviderOAuthSetting
@@ -2030,8 +2961,8 @@ class IdentityProviderOAuthSetting(Base):
  	status: 	 <p>Describes whether OAuth for a data source is enabled or disabled in the Canvas application.</p>
  	secret_arn: 	 <p>The ARN of an Amazon Web Services Secrets Manager secret that stores the credentials from your identity provider, such as the client ID and secret, authorization URL, and token URL. </p>
     """
-    data_source_name: Optional[str] = Unassigned()
-    status: Optional[str] = Unassigned()
+    data_source_name: Optional[DataSourceName] = Unassigned()
+    status: Optional[FeatureStatus] = Unassigned()
     secret_arn: Optional[str] = Unassigned()
 
 
@@ -2044,7 +2975,7 @@ class DirectDeploySettings(Base):
 	----------------------
  	status: 	 <p>Describes whether model deployment permissions are enabled or disabled in the Canvas application.</p>
     """
-    status: Optional[str] = Unassigned()
+    status: Optional[FeatureStatus] = Unassigned()
 
 
 class KendraSettings(Base):
@@ -2056,7 +2987,7 @@ class KendraSettings(Base):
 	----------------------
  	status: 	 <p>Describes whether the document querying feature is enabled or disabled in the Canvas application.</p>
     """
-    status: Optional[str] = Unassigned()
+    status: Optional[FeatureStatus] = Unassigned()
 
 
 class GenerativeAiSettings(Base):
@@ -2109,6 +3040,14 @@ class CaptureContentTypeHeader(Base):
     json_content_types: Optional[List[str]] = Unassigned()
 
 
+class CaptureMode(StrEnum):
+    """Enum class for CaptureMode."""
+    
+    INPUT = 'Input'
+    OUTPUT = 'Output'
+    INPUT_AND_OUTPUT = 'InputAndOutput'
+
+
 class CaptureOption(Base):
     """
      CaptureOption
@@ -2118,7 +3057,14 @@ class CaptureOption(Base):
 	----------------------
  	capture_mode: 	 <p>Specify the boundary of data to capture.</p>
     """
-    capture_mode: str
+    capture_mode: CaptureMode
+
+
+class CaptureStatus(StrEnum):
+    """Enum class for CaptureStatus."""
+    
+    STARTED = 'Started'
+    STOPPED = 'Stopped'
 
 
 class CategoricalParameter(Base):
@@ -2223,6 +3169,14 @@ class ClarifyCheckStepMetadata(Base):
     register_new_baseline: Optional[bool] = Unassigned()
 
 
+class ClarifyFeatureType(StrEnum):
+    """Enum class for ClarifyFeatureType."""
+    
+    NUMERICAL = 'numerical'
+    CATEGORICAL = 'categorical'
+    TEXT = 'text'
+
+
 class ClarifyInferenceConfig(Base):
     """
      ClarifyInferenceConfig
@@ -2271,6 +3225,79 @@ class ClarifyShapBaselineConfig(Base):
     shap_baseline_uri: Optional[str] = Unassigned()
 
 
+class ClarifyTextLanguage(StrEnum):
+    """Enum class for ClarifyTextLanguage."""
+    
+    AF = 'af'
+    SQ = 'sq'
+    AR = 'ar'
+    HY = 'hy'
+    EU = 'eu'
+    BN = 'bn'
+    BG = 'bg'
+    CA = 'ca'
+    ZH = 'zh'
+    HR = 'hr'
+    CS = 'cs'
+    DA = 'da'
+    NL = 'nl'
+    EN = 'en'
+    ET = 'et'
+    FI = 'fi'
+    FR = 'fr'
+    DE = 'de'
+    EL = 'el'
+    GU = 'gu'
+    HE = 'he'
+    HI = 'hi'
+    HU = 'hu'
+    IS = 'is'
+    ID = 'id'
+    GA = 'ga'
+    IT = 'it'
+    KN = 'kn'
+    KY = 'ky'
+    LV = 'lv'
+    LT = 'lt'
+    LB = 'lb'
+    MK = 'mk'
+    ML = 'ml'
+    MR = 'mr'
+    NE = 'ne'
+    NB = 'nb'
+    FA = 'fa'
+    PL = 'pl'
+    PT = 'pt'
+    RO = 'ro'
+    RU = 'ru'
+    SA = 'sa'
+    SR = 'sr'
+    TN = 'tn'
+    SI = 'si'
+    SK = 'sk'
+    SL = 'sl'
+    ES = 'es'
+    SV = 'sv'
+    TL = 'tl'
+    TA = 'ta'
+    TT = 'tt'
+    TE = 'te'
+    TR = 'tr'
+    UK = 'uk'
+    UR = 'ur'
+    YO = 'yo'
+    LIJ = 'lij'
+    XX = 'xx'
+
+
+class ClarifyTextGranularity(StrEnum):
+    """Enum class for ClarifyTextGranularity."""
+    
+    TOKEN = 'token'
+    SENTENCE = 'sentence'
+    PARAGRAPH = 'paragraph'
+
+
 class ClarifyTextConfig(Base):
     """
      ClarifyTextConfig
@@ -2281,8 +3308,8 @@ class ClarifyTextConfig(Base):
  	language: 	 <p>Specifies the language of the text features in <a href=" https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes">ISO 639-1</a> or <a href="https://en.wikipedia.org/wiki/ISO_639-3">ISO 639-3</a> code of a supported language. </p> <note> <p>For a mix of multiple languages, use code <code>'xx'</code>.</p> </note>
  	granularity: 	 <p>The unit of granularity for the analysis of text features. For example, if the unit is <code>'token'</code>, then each token (like a word in English) of the text is treated as a feature. SHAP values are computed for each unit/feature.</p>
     """
-    language: str
-    granularity: str
+    language: ClarifyTextLanguage
+    granularity: ClarifyTextGranularity
 
 
 class ClarifyShapConfig(Base):
@@ -2321,6 +3348,49 @@ class ClarifyExplainerConfig(Base):
     inference_config: Optional[ClarifyInferenceConfig] = Unassigned()
 
 
+class ClusterInstanceType(StrEnum):
+    """Enum class for ClusterInstanceType."""
+    
+    ML_P4D_24XLARGE = 'ml.p4d.24xlarge'
+    ML_P4DE_24XLARGE = 'ml.p4de.24xlarge'
+    ML_P5_48XLARGE = 'ml.p5.48xlarge'
+    ML_TRN1_32XLARGE = 'ml.trn1.32xlarge'
+    ML_TRN1N_32XLARGE = 'ml.trn1n.32xlarge'
+    ML_G5_XLARGE = 'ml.g5.xlarge'
+    ML_G5_2XLARGE = 'ml.g5.2xlarge'
+    ML_G5_4XLARGE = 'ml.g5.4xlarge'
+    ML_G5_8XLARGE = 'ml.g5.8xlarge'
+    ML_G5_12XLARGE = 'ml.g5.12xlarge'
+    ML_G5_16XLARGE = 'ml.g5.16xlarge'
+    ML_G5_24XLARGE = 'ml.g5.24xlarge'
+    ML_G5_48XLARGE = 'ml.g5.48xlarge'
+    ML_C5_LARGE = 'ml.c5.large'
+    ML_C5_XLARGE = 'ml.c5.xlarge'
+    ML_C5_2XLARGE = 'ml.c5.2xlarge'
+    ML_C5_4XLARGE = 'ml.c5.4xlarge'
+    ML_C5_9XLARGE = 'ml.c5.9xlarge'
+    ML_C5_12XLARGE = 'ml.c5.12xlarge'
+    ML_C5_18XLARGE = 'ml.c5.18xlarge'
+    ML_C5_24XLARGE = 'ml.c5.24xlarge'
+    ML_C5N_LARGE = 'ml.c5n.large'
+    ML_C5N_2XLARGE = 'ml.c5n.2xlarge'
+    ML_C5N_4XLARGE = 'ml.c5n.4xlarge'
+    ML_C5N_9XLARGE = 'ml.c5n.9xlarge'
+    ML_C5N_18XLARGE = 'ml.c5n.18xlarge'
+    ML_M5_LARGE = 'ml.m5.large'
+    ML_M5_XLARGE = 'ml.m5.xlarge'
+    ML_M5_2XLARGE = 'ml.m5.2xlarge'
+    ML_M5_4XLARGE = 'ml.m5.4xlarge'
+    ML_M5_8XLARGE = 'ml.m5.8xlarge'
+    ML_M5_12XLARGE = 'ml.m5.12xlarge'
+    ML_M5_16XLARGE = 'ml.m5.16xlarge'
+    ML_M5_24XLARGE = 'ml.m5.24xlarge'
+    ML_T3_MEDIUM = 'ml.t3.medium'
+    ML_T3_LARGE = 'ml.t3.large'
+    ML_T3_XLARGE = 'ml.t3.xlarge'
+    ML_T3_2XLARGE = 'ml.t3.2xlarge'
+
+
 class ClusterLifeCycleConfig(Base):
     """
      ClusterLifeCycleConfig
@@ -2353,7 +3423,7 @@ class ClusterInstanceGroupDetails(Base):
     current_count: Optional[int] = Unassigned()
     target_count: Optional[int] = Unassigned()
     instance_group_name: Optional[str] = Unassigned()
-    instance_type: Optional[str] = Unassigned()
+    instance_type: Optional[ClusterInstanceType] = Unassigned()
     life_cycle_config: Optional[ClusterLifeCycleConfig] = Unassigned()
     execution_role: Optional[str] = Unassigned()
     threads_per_core: Optional[int] = Unassigned()
@@ -2375,10 +3445,20 @@ class ClusterInstanceGroupSpecification(Base):
     """
     instance_count: int
     instance_group_name: str
-    instance_type: str
+    instance_type: ClusterInstanceType
     life_cycle_config: ClusterLifeCycleConfig
     execution_role: str
     threads_per_core: Optional[int] = Unassigned()
+
+
+class ClusterInstanceStatus(StrEnum):
+    """Enum class for ClusterInstanceStatus."""
+    
+    RUNNING = 'Running'
+    FAILURE = 'Failure'
+    PENDING = 'Pending'
+    SHUTTING_DOWN = 'ShuttingDown'
+    SYSTEM_UPDATING = 'SystemUpdating'
 
 
 class ClusterInstanceStatusDetails(Base):
@@ -2391,7 +3471,7 @@ class ClusterInstanceStatusDetails(Base):
  	status: 	 <p>The status of an instance in a SageMaker HyperPod cluster.</p>
  	message: 	 <p>The message from an instance in a SageMaker HyperPod cluster.</p>
     """
-    status: str
+    status: ClusterInstanceStatus
     message: Optional[str] = Unassigned()
 
 
@@ -2413,7 +3493,7 @@ class ClusterNodeDetails(Base):
     instance_group_name: Optional[str] = Unassigned()
     instance_id: Optional[str] = Unassigned()
     instance_status: Optional[ClusterInstanceStatusDetails] = Unassigned()
-    instance_type: Optional[str] = Unassigned()
+    instance_type: Optional[ClusterInstanceType] = Unassigned()
     launch_time: Optional[datetime.datetime] = Unassigned()
     life_cycle_config: Optional[ClusterLifeCycleConfig] = Unassigned()
     threads_per_core: Optional[int] = Unassigned()
@@ -2434,9 +3514,28 @@ class ClusterNodeSummary(Base):
     """
     instance_group_name: str
     instance_id: str
-    instance_type: str
+    instance_type: ClusterInstanceType
     launch_time: datetime.datetime
     instance_status: ClusterInstanceStatusDetails
+
+
+class ClusterSortBy(StrEnum):
+    """Enum class for ClusterSortBy."""
+    
+    CREATION_TIME = 'CREATION_TIME'
+    NAME = 'NAME'
+
+
+class ClusterStatus(StrEnum):
+    """Enum class for ClusterStatus."""
+    
+    CREATING = 'Creating'
+    DELETING = 'Deleting'
+    FAILED = 'Failed'
+    IN_SERVICE = 'InService'
+    ROLLING_BACK = 'RollingBack'
+    SYSTEM_UPDATING = 'SystemUpdating'
+    UPDATING = 'Updating'
 
 
 class ClusterSummary(Base):
@@ -2454,7 +3553,7 @@ class ClusterSummary(Base):
     cluster_arn: str
     cluster_name: str
     creation_time: datetime.datetime
-    cluster_status: str
+    cluster_status: ClusterStatus
 
 
 class CodeEditorAppSettings(Base):
@@ -2481,6 +3580,21 @@ class CodeRepository(Base):
  	repository_url: 	 <p>The URL of the Git repository.</p>
     """
     repository_url: str
+
+
+class CodeRepositorySortBy(StrEnum):
+    """Enum class for CodeRepositorySortBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+    LAST_MODIFIED_TIME = 'LastModifiedTime'
+
+
+class CodeRepositorySortOrder(StrEnum):
+    """Enum class for CodeRepositorySortOrder."""
+    
+    ASCENDING = 'Ascending'
+    DESCENDING = 'Descending'
 
 
 class GitConfig(Base):
@@ -2587,6 +3701,93 @@ class CollectionConfiguration(Base):
     collection_parameters: Optional[Dict[str, str]] = Unassigned()
 
 
+class CollectionType(StrEnum):
+    """Enum class for CollectionType."""
+    
+    LIST = 'List'
+    SET = 'Set'
+    VECTOR = 'Vector'
+
+
+class CompilationJobStatus(StrEnum):
+    """Enum class for CompilationJobStatus."""
+    
+    INPROGRESS = 'INPROGRESS'
+    COMPLETED = 'COMPLETED'
+    FAILED = 'FAILED'
+    STARTING = 'STARTING'
+    STOPPING = 'STOPPING'
+    STOPPED = 'STOPPED'
+
+
+class TargetDevice(StrEnum):
+    """Enum class for TargetDevice."""
+    
+    LAMBDA = 'lambda'
+    ML_M4 = 'ml_m4'
+    ML_M5 = 'ml_m5'
+    ML_M6G = 'ml_m6g'
+    ML_C4 = 'ml_c4'
+    ML_C5 = 'ml_c5'
+    ML_C6G = 'ml_c6g'
+    ML_P2 = 'ml_p2'
+    ML_P3 = 'ml_p3'
+    ML_G4DN = 'ml_g4dn'
+    ML_INF1 = 'ml_inf1'
+    ML_INF2 = 'ml_inf2'
+    ML_TRN1 = 'ml_trn1'
+    ML_EIA2 = 'ml_eia2'
+    JETSON_TX1 = 'jetson_tx1'
+    JETSON_TX2 = 'jetson_tx2'
+    JETSON_NANO = 'jetson_nano'
+    JETSON_XAVIER = 'jetson_xavier'
+    RASP3B = 'rasp3b'
+    RASP4B = 'rasp4b'
+    IMX8QM = 'imx8qm'
+    DEEPLENS = 'deeplens'
+    RK3399 = 'rk3399'
+    RK3288 = 'rk3288'
+    AISAGE = 'aisage'
+    SBE_C = 'sbe_c'
+    QCS605 = 'qcs605'
+    QCS603 = 'qcs603'
+    SITARA_AM57X = 'sitara_am57x'
+    AMBA_CV2 = 'amba_cv2'
+    AMBA_CV22 = 'amba_cv22'
+    AMBA_CV25 = 'amba_cv25'
+    X86_WIN32 = 'x86_win32'
+    X86_WIN64 = 'x86_win64'
+    COREML = 'coreml'
+    JACINTO_TDA4VM = 'jacinto_tda4vm'
+    IMX8MPLUS = 'imx8mplus'
+
+
+class TargetPlatformOs(StrEnum):
+    """Enum class for TargetPlatformOs."""
+    
+    ANDROID = 'ANDROID'
+    LINUX = 'LINUX'
+
+
+class TargetPlatformArch(StrEnum):
+    """Enum class for TargetPlatformArch."""
+    
+    X86_64 = 'X86_64'
+    X86 = 'X86'
+    ARM64 = 'ARM64'
+    ARM_EABI = 'ARM_EABI'
+    ARM_EABIHF = 'ARM_EABIHF'
+
+
+class TargetPlatformAccelerator(StrEnum):
+    """Enum class for TargetPlatformAccelerator."""
+    
+    INTEL_GRAPHICS = 'INTEL_GRAPHICS'
+    MALI = 'MALI'
+    NVIDIA = 'NVIDIA'
+    NNA = 'NNA'
+
+
 class CompilationJobSummary(Base):
     """
      CompilationJobSummary
@@ -2609,14 +3810,28 @@ class CompilationJobSummary(Base):
     compilation_job_name: str
     compilation_job_arn: str
     creation_time: datetime.datetime
-    compilation_job_status: str
+    compilation_job_status: CompilationJobStatus
     compilation_start_time: Optional[datetime.datetime] = Unassigned()
     compilation_end_time: Optional[datetime.datetime] = Unassigned()
-    compilation_target_device: Optional[str] = Unassigned()
-    compilation_target_platform_os: Optional[str] = Unassigned()
-    compilation_target_platform_arch: Optional[str] = Unassigned()
-    compilation_target_platform_accelerator: Optional[str] = Unassigned()
+    compilation_target_device: Optional[TargetDevice] = Unassigned()
+    compilation_target_platform_os: Optional[TargetPlatformOs] = Unassigned()
+    compilation_target_platform_arch: Optional[TargetPlatformArch] = Unassigned()
+    compilation_target_platform_accelerator: Optional[TargetPlatformAccelerator] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
+
+
+class CompleteOnConvergence(StrEnum):
+    """Enum class for CompleteOnConvergence."""
+    
+    DISABLED = 'Disabled'
+    ENABLED = 'Enabled'
+
+
+class ConditionOutcome(StrEnum):
+    """Enum class for ConditionOutcome."""
+    
+    TRUE = 'True'
+    FALSE = 'False'
 
 
 class ConditionStepMetadata(Base):
@@ -2628,7 +3843,7 @@ class ConditionStepMetadata(Base):
 	----------------------
  	outcome: 	 <p>The outcome of the Condition step evaluation.</p>
     """
-    outcome: Optional[str] = Unassigned()
+    outcome: Optional[ConditionOutcome] = Unassigned()
 
 
 class ConflictException(Base):
@@ -2641,6 +3856,13 @@ class ConflictException(Base):
  	message
     """
     message: Optional[str] = Unassigned()
+
+
+class RepositoryAccessMode(StrEnum):
+    """Enum class for RepositoryAccessMode."""
+    
+    PLATFORM = 'Platform'
+    VPC = 'Vpc'
 
 
 class RepositoryAuthConfig(Base):
@@ -2665,8 +3887,22 @@ class ImageConfig(Base):
  	repository_access_mode: 	 <p>Set this to one of the following values:</p> <ul> <li> <p> <code>Platform</code> - The model image is hosted in Amazon ECR.</p> </li> <li> <p> <code>Vpc</code> - The model image is hosted in a private Docker registry in your VPC.</p> </li> </ul>
  	repository_auth_config: 	 <p>(Optional) Specifies an authentication configuration for the private docker registry where your model image is hosted. Specify a value for this property only if you specified <code>Vpc</code> as the value for the <code>RepositoryAccessMode</code> field, and the private Docker registry where the model image is hosted requires authentication.</p>
     """
-    repository_access_mode: str
+    repository_access_mode: RepositoryAccessMode
     repository_auth_config: Optional[RepositoryAuthConfig] = Unassigned()
+
+
+class ContainerMode(StrEnum):
+    """Enum class for ContainerMode."""
+    
+    SINGLE_MODEL = 'SingleModel'
+    MULTI_MODEL = 'MultiModel'
+
+
+class ModelCacheSetting(StrEnum):
+    """Enum class for ModelCacheSetting."""
+    
+    ENABLED = 'Enabled'
+    DISABLED = 'Disabled'
 
 
 class MultiModelConfig(Base):
@@ -2678,7 +3914,7 @@ class MultiModelConfig(Base):
 	----------------------
  	model_cache_setting: 	 <p>Whether to cache models for a multi-model endpoint. By default, multi-model endpoints cache models so that a model does not have to be loaded into memory each time it is invoked. Some use cases do not benefit from model caching. For example, if an endpoint hosts a large number of models that are each invoked infrequently, the endpoint might perform better if you disable model caching. To disable model caching, set the value of this parameter to <code>Disabled</code>.</p>
     """
-    model_cache_setting: Optional[str] = Unassigned()
+    model_cache_setting: Optional[ModelCacheSetting] = Unassigned()
 
 
 class ContainerDefinition(Base):
@@ -2702,13 +3938,20 @@ class ContainerDefinition(Base):
     container_hostname: Optional[str] = Unassigned()
     image: Optional[str] = Unassigned()
     image_config: Optional[ImageConfig] = Unassigned()
-    mode: Optional[str] = Unassigned()
+    mode: Optional[ContainerMode] = Unassigned()
     model_data_url: Optional[str] = Unassigned()
     model_data_source: Optional[ModelDataSource] = Unassigned()
     environment: Optional[Dict[str, str]] = Unassigned()
     model_package_name: Optional[str] = Unassigned()
     inference_specification_name: Optional[str] = Unassigned()
     multi_model_config: Optional[MultiModelConfig] = Unassigned()
+
+
+class ContentClassifier(StrEnum):
+    """Enum class for ContentClassifier."""
+    
+    FREE_OF_PERSONALLY_IDENTIFIABLE_INFORMATION = 'FreeOfPersonallyIdentifiableInformation'
+    FREE_OF_ADULT_CONTENT = 'FreeOfAdultContent'
 
 
 class ContextSource(Base):
@@ -2749,6 +3992,15 @@ class ContextSummary(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
 
 
+class HyperParameterScalingType(StrEnum):
+    """Enum class for HyperParameterScalingType."""
+    
+    AUTO = 'Auto'
+    LINEAR = 'Linear'
+    LOGARITHMIC = 'Logarithmic'
+    REVERSE_LOGARITHMIC = 'ReverseLogarithmic'
+
+
 class ContinuousParameterRange(Base):
     """
      ContinuousParameterRange
@@ -2764,7 +4016,7 @@ class ContinuousParameterRange(Base):
     name: str
     min_value: str
     max_value: str
-    scaling_type: Optional[str] = Unassigned()
+    scaling_type: Optional[HyperParameterScalingType] = Unassigned()
 
 
 class ContinuousParameterRangeSpecification(Base):
@@ -2790,7 +4042,7 @@ class ConvergenceDetected(Base):
 	----------------------
  	complete_on_convergence: 	 <p>A flag to stop a tuning job once AMT has detected that the job has converged.</p>
     """
-    complete_on_convergence: Optional[str] = Unassigned()
+    complete_on_convergence: Optional[CompleteOnConvergence] = Unassigned()
 
 
 class MetadataProperties(Base):
@@ -2809,6 +4061,15 @@ class MetadataProperties(Base):
     repository: Optional[str] = Unassigned()
     generated_by: Optional[str] = Unassigned()
     project_id: Optional[str] = Unassigned()
+
+
+class ParameterType(StrEnum):
+    """Enum class for ParameterType."""
+    
+    INTEGER = 'Integer'
+    CONTINUOUS = 'Continuous'
+    CATEGORICAL = 'Categorical'
+    FREE_TEXT = 'FreeText'
 
 
 class IntegerParameterRangeSpecification(Base):
@@ -2857,12 +4118,19 @@ class HyperParameterSpecification(Base):
  	default_value: 	 <p>The default value for this hyperparameter. If a default value is specified, a hyperparameter cannot be required.</p>
     """
     name: str
-    type: str
+    type: ParameterType
     description: Optional[str] = Unassigned()
     range: Optional[ParameterRange] = Unassigned()
     is_tunable: Optional[bool] = Unassigned()
     is_required: Optional[bool] = Unassigned()
     default_value: Optional[str] = Unassigned()
+
+
+class HyperParameterTuningJobObjectiveType(StrEnum):
+    """Enum class for HyperParameterTuningJobObjectiveType."""
+    
+    MAXIMIZE = 'Maximize'
+    MINIMIZE = 'Minimize'
 
 
 class HyperParameterTuningJobObjective(Base):
@@ -2875,7 +4143,7 @@ class HyperParameterTuningJobObjective(Base):
  	type: 	 <p>Whether to minimize or maximize the objective metric.</p>
  	metric_name: 	 <p>The name of the metric to use for the objective metric.</p>
     """
-    type: str
+    type: HyperParameterTuningJobObjectiveType
     metric_name: str
 
 
@@ -2921,6 +4189,20 @@ class ModelDeployConfig(Base):
     endpoint_name: Optional[str] = Unassigned()
 
 
+class Framework(StrEnum):
+    """Enum class for Framework."""
+    
+    TENSORFLOW = 'TENSORFLOW'
+    KERAS = 'KERAS'
+    MXNET = 'MXNET'
+    ONNX = 'ONNX'
+    PYTORCH = 'PYTORCH'
+    XGBOOST = 'XGBOOST'
+    TFLITE = 'TFLITE'
+    DARKNET = 'DARKNET'
+    SKLEARN = 'SKLEARN'
+
+
 class InputConfig(Base):
     """
      InputConfig
@@ -2934,7 +4216,7 @@ class InputConfig(Base):
  	framework_version: 	 <p>Specifies the framework version to use. This API field is only supported for the MXNet, PyTorch, TensorFlow and TensorFlow Lite frameworks.</p> <p>For information about framework versions supported for cloud targets and edge devices, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/neo-supported-cloud.html">Cloud Supported Instance Types and Frameworks</a> and <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/neo-supported-devices-edge-frameworks.html">Edge Supported Frameworks</a>.</p>
     """
     s3_uri: str
-    framework: str
+    framework: Framework
     data_input_config: Optional[str] = Unassigned()
     framework_version: Optional[str] = Unassigned()
 
@@ -2950,9 +4232,9 @@ class TargetPlatform(Base):
  	arch: 	 <p>Specifies a target platform architecture.</p> <ul> <li> <p> <code>X86_64</code>: 64-bit version of the x86 instruction set.</p> </li> <li> <p> <code>X86</code>: 32-bit version of the x86 instruction set.</p> </li> <li> <p> <code>ARM64</code>: ARMv8 64-bit CPU.</p> </li> <li> <p> <code>ARM_EABIHF</code>: ARMv7 32-bit, Hard Float.</p> </li> <li> <p> <code>ARM_EABI</code>: ARMv7 32-bit, Soft Float. Used by Android 32-bit ARM platform.</p> </li> </ul>
  	accelerator: 	 <p>Specifies a target platform accelerator (optional).</p> <ul> <li> <p> <code>NVIDIA</code>: Nvidia graphics processing unit. It also requires <code>gpu-code</code>, <code>trt-ver</code>, <code>cuda-ver</code> compiler options</p> </li> <li> <p> <code>MALI</code>: ARM Mali graphics processor</p> </li> <li> <p> <code>INTEL_GRAPHICS</code>: Integrated Intel graphics</p> </li> </ul>
     """
-    os: str
-    arch: str
-    accelerator: Optional[str] = Unassigned()
+    os: TargetPlatformOs
+    arch: TargetPlatformArch
+    accelerator: Optional[TargetPlatformAccelerator] = Unassigned()
 
 
 class OutputConfig(Base):
@@ -2969,7 +4251,7 @@ class OutputConfig(Base):
  	kms_key_id: 	 <p>The Amazon Web Services Key Management Service key (Amazon Web Services KMS) that Amazon SageMaker uses to encrypt your output models with Amazon S3 server-side encryption after compilation job. If you don't provide a KMS key ID, Amazon SageMaker uses the default KMS key for Amazon S3 for your role's account. For more information, see <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html">KMS-Managed Encryption Keys</a> in the <i>Amazon Simple Storage Service Developer Guide.</i> </p> <p>The KmsKeyId can be any of the following formats: </p> <ul> <li> <p>Key ID: <code>1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Key ARN: <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code> </p> </li> <li> <p>Alias name: <code>alias/ExampleAlias</code> </p> </li> <li> <p>Alias name ARN: <code>arn:aws:kms:us-west-2:111122223333:alias/ExampleAlias</code> </p> </li> </ul>
     """
     s3_output_location: str
-    target_device: Optional[str] = Unassigned()
+    target_device: Optional[TargetDevice] = Unassigned()
     target_platform: Optional[TargetPlatform] = Unassigned()
     compiler_options: Optional[str] = Unassigned()
     kms_key_id: Optional[str] = Unassigned()
@@ -3072,8 +4354,8 @@ class EndpointInput(Base):
     """
     endpoint_name: str
     local_path: str
-    s3_input_mode: Optional[str] = Unassigned()
-    s3_data_distribution_type: Optional[str] = Unassigned()
+    s3_input_mode: Optional[ProcessingS3InputMode] = Unassigned()
+    s3_data_distribution_type: Optional[ProcessingS3DataDistributionType] = Unassigned()
     features_attribute: Optional[str] = Unassigned()
     inference_attribute: Optional[str] = Unassigned()
     probability_attribute: Optional[str] = Unassigned()
@@ -3097,6 +4379,13 @@ class DataQualityJobInput(Base):
     batch_transform_input: Optional[BatchTransformInput] = Unassigned()
 
 
+class ProcessingS3UploadMode(StrEnum):
+    """Enum class for ProcessingS3UploadMode."""
+    
+    CONTINUOUS = 'Continuous'
+    END_OF_JOB = 'EndOfJob'
+
+
 class MonitoringS3Output(Base):
     """
      MonitoringS3Output
@@ -3110,7 +4399,7 @@ class MonitoringS3Output(Base):
     """
     s3_uri: str
     local_path: str
-    s3_upload_mode: Optional[str] = Unassigned()
+    s3_upload_mode: Optional[ProcessingS3UploadMode] = Unassigned()
 
 
 class MonitoringOutput(Base):
@@ -3139,6 +4428,55 @@ class MonitoringOutputConfig(Base):
     kms_key_id: Optional[str] = Unassigned()
 
 
+class ProcessingInstanceType(StrEnum):
+    """Enum class for ProcessingInstanceType."""
+    
+    ML_T3_MEDIUM = 'ml.t3.medium'
+    ML_T3_LARGE = 'ml.t3.large'
+    ML_T3_XLARGE = 'ml.t3.xlarge'
+    ML_T3_2XLARGE = 'ml.t3.2xlarge'
+    ML_M4_XLARGE = 'ml.m4.xlarge'
+    ML_M4_2XLARGE = 'ml.m4.2xlarge'
+    ML_M4_4XLARGE = 'ml.m4.4xlarge'
+    ML_M4_10XLARGE = 'ml.m4.10xlarge'
+    ML_M4_16XLARGE = 'ml.m4.16xlarge'
+    ML_C4_XLARGE = 'ml.c4.xlarge'
+    ML_C4_2XLARGE = 'ml.c4.2xlarge'
+    ML_C4_4XLARGE = 'ml.c4.4xlarge'
+    ML_C4_8XLARGE = 'ml.c4.8xlarge'
+    ML_P2_XLARGE = 'ml.p2.xlarge'
+    ML_P2_8XLARGE = 'ml.p2.8xlarge'
+    ML_P2_16XLARGE = 'ml.p2.16xlarge'
+    ML_P3_2XLARGE = 'ml.p3.2xlarge'
+    ML_P3_8XLARGE = 'ml.p3.8xlarge'
+    ML_P3_16XLARGE = 'ml.p3.16xlarge'
+    ML_C5_XLARGE = 'ml.c5.xlarge'
+    ML_C5_2XLARGE = 'ml.c5.2xlarge'
+    ML_C5_4XLARGE = 'ml.c5.4xlarge'
+    ML_C5_9XLARGE = 'ml.c5.9xlarge'
+    ML_C5_18XLARGE = 'ml.c5.18xlarge'
+    ML_M5_LARGE = 'ml.m5.large'
+    ML_M5_XLARGE = 'ml.m5.xlarge'
+    ML_M5_2XLARGE = 'ml.m5.2xlarge'
+    ML_M5_4XLARGE = 'ml.m5.4xlarge'
+    ML_M5_12XLARGE = 'ml.m5.12xlarge'
+    ML_M5_24XLARGE = 'ml.m5.24xlarge'
+    ML_R5_LARGE = 'ml.r5.large'
+    ML_R5_XLARGE = 'ml.r5.xlarge'
+    ML_R5_2XLARGE = 'ml.r5.2xlarge'
+    ML_R5_4XLARGE = 'ml.r5.4xlarge'
+    ML_R5_8XLARGE = 'ml.r5.8xlarge'
+    ML_R5_12XLARGE = 'ml.r5.12xlarge'
+    ML_R5_16XLARGE = 'ml.r5.16xlarge'
+    ML_R5_24XLARGE = 'ml.r5.24xlarge'
+    ML_G4DN_XLARGE = 'ml.g4dn.xlarge'
+    ML_G4DN_2XLARGE = 'ml.g4dn.2xlarge'
+    ML_G4DN_4XLARGE = 'ml.g4dn.4xlarge'
+    ML_G4DN_8XLARGE = 'ml.g4dn.8xlarge'
+    ML_G4DN_12XLARGE = 'ml.g4dn.12xlarge'
+    ML_G4DN_16XLARGE = 'ml.g4dn.16xlarge'
+
+
 class MonitoringClusterConfig(Base):
     """
      MonitoringClusterConfig
@@ -3152,7 +4490,7 @@ class MonitoringClusterConfig(Base):
  	volume_kms_key_id: 	 <p>The Key Management Service (KMS) key that Amazon SageMaker uses to encrypt data on the storage volume attached to the ML compute instance(s) that run the model monitoring job.</p>
     """
     instance_count: int
-    instance_type: str
+    instance_type: ProcessingInstanceType
     volume_size_in_g_b: int
     volume_kms_key_id: Optional[str] = Unassigned()
 
@@ -3197,6 +4535,12 @@ class MonitoringStoppingCondition(Base):
     max_runtime_in_seconds: int
 
 
+class EdgePresetDeploymentType(StrEnum):
+    """Enum class for EdgePresetDeploymentType."""
+    
+    GREENGRASS_V2_COMPONENT = 'GreengrassV2Component'
+
+
 class EdgeOutputConfig(Base):
     """
      EdgeOutputConfig
@@ -3211,8 +4555,15 @@ class EdgeOutputConfig(Base):
     """
     s3_output_location: str
     kms_key_id: Optional[str] = Unassigned()
-    preset_deployment_type: Optional[str] = Unassigned()
+    preset_deployment_type: Optional[EdgePresetDeploymentType] = Unassigned()
     preset_deployment_config: Optional[str] = Unassigned()
+
+
+class NotebookOutputOption(StrEnum):
+    """Enum class for NotebookOutputOption."""
+    
+    ALLOWED = 'Allowed'
+    DISABLED = 'Disabled'
 
 
 class SharingSettings(Base):
@@ -3226,7 +4577,7 @@ class SharingSettings(Base):
  	s3_output_path: 	 <p>When <code>NotebookOutputOption</code> is <code>Allowed</code>, the Amazon S3 bucket used to store the shared notebook snapshots.</p>
  	s3_kms_key_id: 	 <p>When <code>NotebookOutputOption</code> is <code>Allowed</code>, the Amazon Web Services Key Management Service (KMS) encryption key ID used to encrypt the notebook cell output in the Amazon S3 bucket.</p>
     """
-    notebook_output_option: Optional[str] = Unassigned()
+    notebook_output_option: Optional[NotebookOutputOption] = Unassigned()
     s3_output_path: Optional[str] = Unassigned()
     s3_kms_key_id: Optional[str] = Unassigned()
 
@@ -3291,6 +4642,20 @@ class TensorBoardAppSettings(Base):
     default_resource_spec: Optional[ResourceSpec] = Unassigned()
 
 
+class RStudioServerProAccessStatus(StrEnum):
+    """Enum class for RStudioServerProAccessStatus."""
+    
+    ENABLED = 'ENABLED'
+    DISABLED = 'DISABLED'
+
+
+class RStudioServerProUserGroup(StrEnum):
+    """Enum class for RStudioServerProUserGroup."""
+    
+    R_STUDIO_ADMIN = 'R_STUDIO_ADMIN'
+    R_STUDIO_USER = 'R_STUDIO_USER'
+
+
 class RStudioServerProAppSettings(Base):
     """
      RStudioServerProAppSettings
@@ -3301,8 +4666,8 @@ class RStudioServerProAppSettings(Base):
  	access_status: 	 <p>Indicates whether the current user has access to the <code>RStudioServerPro</code> app.</p>
  	user_group: 	 <p>The level of permissions that the user has within the <code>RStudioServerPro</code> app. This value defaults to `User`. The `Admin` value allows the user access to the RStudio Administrative Dashboard.</p>
     """
-    access_status: Optional[str] = Unassigned()
-    user_group: Optional[str] = Unassigned()
+    access_status: Optional[RStudioServerProAccessStatus] = Unassigned()
+    user_group: Optional[RStudioServerProUserGroup] = Unassigned()
 
 
 class RSessionAppSettings(Base):
@@ -3361,6 +4726,13 @@ class DefaultSpaceStorageSettings(Base):
  	default_ebs_storage_settings: 	 <p>The default EBS storage settings for a private space.</p>
     """
     default_ebs_storage_settings: Optional[DefaultEbsStorageSettings] = Unassigned()
+
+
+class StudioWebPortal(StrEnum):
+    """Enum class for StudioWebPortal."""
+    
+    ENABLED = 'ENABLED'
+    DISABLED = 'DISABLED'
 
 
 class CustomPosixUserConfig(Base):
@@ -3440,7 +4812,7 @@ class UserSettings(Base):
     jupyter_lab_app_settings: Optional[JupyterLabAppSettings] = Unassigned()
     space_storage_settings: Optional[DefaultSpaceStorageSettings] = Unassigned()
     default_landing_uri: Optional[str] = Unassigned()
-    studio_web_portal: Optional[str] = Unassigned()
+    studio_web_portal: Optional[StudioWebPortal] = Unassigned()
     custom_posix_user_config: Optional[CustomPosixUserConfig] = Unassigned()
     custom_file_system_configs: Optional[List[CustomFileSystemConfig]] = Unassigned()
 
@@ -3463,6 +4835,13 @@ class RStudioServerProDomainSettings(Base):
     default_resource_spec: Optional[ResourceSpec] = Unassigned()
 
 
+class ExecutionRoleIdentityConfig(StrEnum):
+    """Enum class for ExecutionRoleIdentityConfig."""
+    
+    USER_PROFILE_NAME = 'USER_PROFILE_NAME'
+    DISABLED = 'DISABLED'
+
+
 class DockerSettings(Base):
     """
      DockerSettings
@@ -3473,7 +4852,7 @@ class DockerSettings(Base):
  	enable_docker_access: 	 <p>Indicates whether the domain can access Docker.</p>
  	vpc_only_trusted_accounts: 	 <p>The list of Amazon Web Services accounts that are trusted when the domain is created in VPC-only mode.</p>
     """
-    enable_docker_access: Optional[str] = Unassigned()
+    enable_docker_access: Optional[FeatureStatus] = Unassigned()
     vpc_only_trusted_accounts: Optional[List[str]] = Unassigned()
 
 
@@ -3491,7 +4870,7 @@ class DomainSettings(Base):
     """
     security_group_ids: Optional[List[str]] = Unassigned()
     r_studio_server_pro_domain_settings: Optional[RStudioServerProDomainSettings] = Unassigned()
-    execution_role_identity_config: Optional[str] = Unassigned()
+    execution_role_identity_config: Optional[ExecutionRoleIdentityConfig] = Unassigned()
     docker_settings: Optional[DockerSettings] = Unassigned()
 
 
@@ -3527,6 +4906,14 @@ class EdgeDeploymentModelConfig(Base):
     edge_packaging_job_name: str
 
 
+class DeviceSubsetType(StrEnum):
+    """Enum class for DeviceSubsetType."""
+    
+    PERCENTAGE = 'PERCENTAGE'
+    SELECTION = 'SELECTION'
+    NAMECONTAINS = 'NAMECONTAINS'
+
+
 class DeviceSelectionConfig(Base):
     """
      DeviceSelectionConfig
@@ -3539,10 +4926,17 @@ class DeviceSelectionConfig(Base):
  	device_names: 	 <p>List of devices chosen to deploy.</p>
  	device_name_contains: 	 <p>A filter to select devices with names containing this name.</p>
     """
-    device_subset_type: str
+    device_subset_type: DeviceSubsetType
     percentage: Optional[int] = Unassigned()
     device_names: Optional[List[str]] = Unassigned()
     device_name_contains: Optional[str] = Unassigned()
+
+
+class FailureHandlingPolicy(StrEnum):
+    """Enum class for FailureHandlingPolicy."""
+    
+    ROLLBACK_ON_FAILURE = 'ROLLBACK_ON_FAILURE'
+    DO_NOTHING = 'DO_NOTHING'
 
 
 class EdgeDeploymentConfig(Base):
@@ -3554,7 +4948,7 @@ class EdgeDeploymentConfig(Base):
 	----------------------
  	failure_handling_policy: 	 <p>Toggle that determines whether to rollback to previous configuration if the current deployment fails. By default this is turned on. You may turn this off if you want to investigate the errors yourself.</p>
     """
-    failure_handling_policy: str
+    failure_handling_policy: FailureHandlingPolicy
 
 
 class DeploymentStage(Base):
@@ -3571,6 +4965,17 @@ class DeploymentStage(Base):
     stage_name: str
     device_selection_config: DeviceSelectionConfig
     deployment_config: Optional[EdgeDeploymentConfig] = Unassigned()
+
+
+class ProductionVariantAcceleratorType(StrEnum):
+    """Enum class for ProductionVariantAcceleratorType."""
+    
+    ML_EIA1_MEDIUM = 'ml.eia1.medium'
+    ML_EIA1_LARGE = 'ml.eia1.large'
+    ML_EIA1_XLARGE = 'ml.eia1.xlarge'
+    ML_EIA2_MEDIUM = 'ml.eia2.medium'
+    ML_EIA2_LARGE = 'ml.eia2.large'
+    ML_EIA2_XLARGE = 'ml.eia2.xlarge'
 
 
 class ProductionVariantCoreDumpConfig(Base):
@@ -3603,6 +5008,13 @@ class ProductionVariantServerlessConfig(Base):
     provisioned_concurrency: Optional[int] = Unassigned()
 
 
+class ManagedInstanceScalingStatus(StrEnum):
+    """Enum class for ManagedInstanceScalingStatus."""
+    
+    ENABLED = 'ENABLED'
+    DISABLED = 'DISABLED'
+
+
 class ProductionVariantManagedInstanceScaling(Base):
     """
      ProductionVariantManagedInstanceScaling
@@ -3614,9 +5026,16 @@ class ProductionVariantManagedInstanceScaling(Base):
  	min_instance_count: 	 <p>The minimum number of instances that the endpoint must retain when it scales down to accommodate a decrease in traffic.</p>
  	max_instance_count: 	 <p>The maximum number of instances that the endpoint can provision when it scales up to accommodate an increase in traffic.</p>
     """
-    status: Optional[str] = Unassigned()
+    status: Optional[ManagedInstanceScalingStatus] = Unassigned()
     min_instance_count: Optional[int] = Unassigned()
     max_instance_count: Optional[int] = Unassigned()
+
+
+class RoutingStrategy(StrEnum):
+    """Enum class for RoutingStrategy."""
+    
+    LEAST_OUTSTANDING_REQUESTS = 'LEAST_OUTSTANDING_REQUESTS'
+    RANDOM = 'RANDOM'
 
 
 class ProductionVariantRoutingConfig(Base):
@@ -3628,7 +5047,7 @@ class ProductionVariantRoutingConfig(Base):
 	----------------------
  	routing_strategy: 	 <p>Sets how the endpoint routes incoming traffic:</p> <ul> <li> <p> <code>LEAST_OUTSTANDING_REQUESTS</code>: The endpoint routes requests to the specific instances that have more capacity to process them.</p> </li> <li> <p> <code>RANDOM</code>: The endpoint routes each request to a randomly chosen instance.</p> </li> </ul>
     """
-    routing_strategy: str
+    routing_strategy: RoutingStrategy
 
 
 class ProductionVariant(Base):
@@ -3656,9 +5075,9 @@ class ProductionVariant(Base):
     variant_name: str
     model_name: Optional[str] = Unassigned()
     initial_instance_count: Optional[int] = Unassigned()
-    instance_type: Optional[str] = Unassigned()
+    instance_type: Optional[ProductionVariantInstanceType] = Unassigned()
     initial_variant_weight: Optional[float] = Unassigned()
-    accelerator_type: Optional[str] = Unassigned()
+    accelerator_type: Optional[ProductionVariantAcceleratorType] = Unassigned()
     core_dump_config: Optional[ProductionVariantCoreDumpConfig] = Unassigned()
     serverless_config: Optional[ProductionVariantServerlessConfig] = Unassigned()
     volume_size_in_g_b: Optional[int] = Unassigned()
@@ -3737,6 +5156,14 @@ class DeploymentConfig(Base):
     auto_rollback_configuration: Optional[AutoRollbackConfig] = Unassigned()
 
 
+class FeatureType(StrEnum):
+    """Enum class for FeatureType."""
+    
+    INTEGRAL = 'Integral'
+    FRACTIONAL = 'Fractional'
+    STRING = 'String'
+
+
 class FeatureDefinition(Base):
     """
      FeatureDefinition
@@ -3750,8 +5177,8 @@ class FeatureDefinition(Base):
  	collection_config: 	 <p>Configuration for your collection.</p>
     """
     feature_name: str
-    feature_type: str
-    collection_type: Optional[str] = Unassigned()
+    feature_type: FeatureType
+    collection_type: Optional[CollectionType] = Unassigned()
     collection_config: Optional[CollectionConfig] = Unassigned()
 
 
@@ -3767,6 +5194,16 @@ class OnlineStoreSecurityConfig(Base):
     kms_key_id: Optional[str] = Unassigned()
 
 
+class TtlDurationUnit(StrEnum):
+    """Enum class for TtlDurationUnit."""
+    
+    SECONDS = 'Seconds'
+    MINUTES = 'Minutes'
+    HOURS = 'Hours'
+    DAYS = 'Days'
+    WEEKS = 'Weeks'
+
+
 class TtlDuration(Base):
     """
      TtlDuration
@@ -3777,8 +5214,15 @@ class TtlDuration(Base):
  	unit: 	 <p> <code>TtlDuration</code> time unit.</p>
  	value: 	 <p> <code>TtlDuration</code> time value.</p>
     """
-    unit: Optional[str] = Unassigned()
+    unit: Optional[TtlDurationUnit] = Unassigned()
     value: Optional[int] = Unassigned()
+
+
+class StorageType(StrEnum):
+    """Enum class for StorageType."""
+    
+    STANDARD = 'Standard'
+    IN_MEMORY = 'InMemory'
 
 
 class OnlineStoreConfig(Base):
@@ -3796,7 +5240,7 @@ class OnlineStoreConfig(Base):
     security_config: Optional[OnlineStoreSecurityConfig] = Unassigned()
     enable_online_store: Optional[bool] = Unassigned()
     ttl_duration: Optional[TtlDuration] = Unassigned()
-    storage_type: Optional[str] = Unassigned()
+    storage_type: Optional[StorageType] = Unassigned()
 
 
 class S3StorageConfig(Base):
@@ -3831,6 +5275,14 @@ class DataCatalogConfig(Base):
     database: str
 
 
+class TableFormat(StrEnum):
+    """Enum class for TableFormat."""
+    
+    DEFAULT = 'Default'
+    GLUE = 'Glue'
+    ICEBERG = 'Iceberg'
+
+
 class OfflineStoreConfig(Base):
     """
      OfflineStoreConfig
@@ -3846,7 +5298,14 @@ class OfflineStoreConfig(Base):
     s3_storage_config: S3StorageConfig
     disable_glue_table_creation: Optional[bool] = Unassigned()
     data_catalog_config: Optional[DataCatalogConfig] = Unassigned()
-    table_format: Optional[str] = Unassigned()
+    table_format: Optional[TableFormat] = Unassigned()
+
+
+class ThroughputMode(StrEnum):
+    """Enum class for ThroughputMode."""
+    
+    ON_DEMAND = 'OnDemand'
+    PROVISIONED = 'Provisioned'
 
 
 class ThroughputConfig(Base):
@@ -3860,7 +5319,7 @@ class ThroughputConfig(Base):
  	provisioned_read_capacity_units: 	 <p> For provisioned feature groups with online store enabled, this indicates the read throughput you are billed for and can consume without throttling. </p> <p>This field is not applicable for on-demand feature groups. </p>
  	provisioned_write_capacity_units: 	 <p> For provisioned feature groups, this indicates the write throughput you are billed for and can consume without throttling. </p> <p>This field is not applicable for on-demand feature groups. </p>
     """
-    throughput_mode: str
+    throughput_mode: ThroughputMode
     provisioned_read_capacity_units: Optional[int] = Unassigned()
     provisioned_write_capacity_units: Optional[int] = Unassigned()
 
@@ -3874,7 +5333,7 @@ class HumanLoopRequestSource(Base):
 	----------------------
  	aws_managed_human_loop_request_source: 	 <p>Specifies whether Amazon Rekognition or Amazon Textract are used as the integration source. The default field settings and JSON parsing rules are different based on the integration source. Valid values:</p>
     """
-    aws_managed_human_loop_request_source: str
+    aws_managed_human_loop_request_source: AwsManagedHumanLoopRequestSource
 
 
 class HumanLoopActivationConditionsConfig(Base):
@@ -3995,6 +5454,15 @@ class UiTemplate(Base):
     content: str
 
 
+class HyperParameterTuningJobStrategyType(StrEnum):
+    """<p>The strategy hyperparameter tuning uses to find the best combination of hyperparameters for your model. </p>"""
+    
+    BAYESIAN = 'Bayesian'
+    RANDOM = 'Random'
+    HYPERBAND = 'Hyperband'
+    GRID = 'Grid'
+
+
 class HyperbandStrategyConfig(Base):
     """
      HyperbandStrategyConfig
@@ -4052,7 +5520,7 @@ class IntegerParameterRange(Base):
     name: str
     min_value: str
     max_value: str
-    scaling_type: Optional[str] = Unassigned()
+    scaling_type: Optional[HyperParameterScalingType] = Unassigned()
 
 
 class ParameterRanges(Base):
@@ -4071,6 +5539,13 @@ class ParameterRanges(Base):
     continuous_parameter_ranges: Optional[List[ContinuousParameterRange]] = Unassigned()
     categorical_parameter_ranges: Optional[List[CategoricalParameterRange]] = Unassigned()
     auto_parameters: Optional[List[AutoParameter]] = Unassigned()
+
+
+class TrainingJobEarlyStoppingType(StrEnum):
+    """Enum class for TrainingJobEarlyStoppingType."""
+    
+    OFF = 'Off'
+    AUTO = 'Auto'
 
 
 class TuningJobCompletionCriteria(Base):
@@ -4105,12 +5580,12 @@ class HyperParameterTuningJobConfig(Base):
  	tuning_job_completion_criteria: 	 <p>The tuning job's completion criteria.</p>
  	random_seed: 	 <p>A value used to initialize a pseudo-random number generator. Setting a random seed and using the same seed later for the same tuning job will allow hyperparameter optimization to find more a consistent hyperparameter configuration between the two runs.</p>
     """
-    strategy: str
+    strategy: HyperParameterTuningJobStrategyType
     resource_limits: ResourceLimits
     strategy_config: Optional[HyperParameterTuningJobStrategyConfig] = Unassigned()
     hyper_parameter_tuning_job_objective: Optional[HyperParameterTuningJobObjective] = Unassigned()
     parameter_ranges: Optional[ParameterRanges] = Unassigned()
-    training_job_early_stopping_type: Optional[str] = Unassigned()
+    training_job_early_stopping_type: Optional[TrainingJobEarlyStoppingType] = Unassigned()
     tuning_job_completion_criteria: Optional[TuningJobCompletionCriteria] = Unassigned()
     random_seed: Optional[int] = Unassigned()
 
@@ -4127,10 +5602,16 @@ class HyperParameterAlgorithmSpecification(Base):
  	algorithm_name: 	 <p>The name of the resource algorithm to use for the hyperparameter tuning job. If you specify a value for this parameter, do not specify a value for <code>TrainingImage</code>.</p>
  	metric_definitions: 	 <p>An array of <a href="https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_MetricDefinition.html">MetricDefinition</a> objects that specify the metrics that the algorithm emits.</p>
     """
-    training_input_mode: str
+    training_input_mode: TrainingInputMode
     training_image: Optional[str] = Unassigned()
     algorithm_name: Optional[str] = Unassigned()
     metric_definitions: Optional[List[MetricDefinition]] = Unassigned()
+
+
+class HyperParameterTuningAllocationStrategy(StrEnum):
+    """Enum class for HyperParameterTuningAllocationStrategy."""
+    
+    PRIORITIZED = 'Prioritized'
 
 
 class HyperParameterTuningInstanceConfig(Base):
@@ -4144,7 +5625,7 @@ class HyperParameterTuningInstanceConfig(Base):
  	instance_count: 	 <p>The number of instances of the type specified by <code>InstanceType</code>. Choose an instance count larger than 1 for distributed training algorithms. See <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/data-parallel-use-api.html">Step 2: Launch a SageMaker Distributed Training Job Using the SageMaker Python SDK</a> for more information.</p>
  	volume_size_in_g_b: 	 <p>The volume size in GB of the data to be processed for hyperparameter optimization (optional).</p>
     """
-    instance_type: str
+    instance_type: TrainingInstanceType
     instance_count: int
     volume_size_in_g_b: int
 
@@ -4163,11 +5644,11 @@ class HyperParameterTuningResourceConfig(Base):
  	allocation_strategy: 	 <p>The strategy that determines the order of preference for resources specified in <code>InstanceConfigs</code> used in hyperparameter optimization.</p>
  	instance_configs: 	 <p>A list containing the configuration(s) for one or more resources for processing hyperparameter jobs. These resources include compute instances and storage volumes to use in model training jobs launched by hyperparameter tuning jobs. The <code>AllocationStrategy</code> controls the order in which multiple configurations provided in <code>InstanceConfigs</code> are used.</p> <note> <p>If you only want to use a single instance configuration inside the <code>HyperParameterTuningResourceConfig</code> API, do not provide a value for <code>InstanceConfigs</code>. Instead, use <code>InstanceType</code>, <code>VolumeSizeInGB</code> and <code>InstanceCount</code>. If you use <code>InstanceConfigs</code>, do not provide values for <code>InstanceType</code>, <code>VolumeSizeInGB</code> or <code>InstanceCount</code>.</p> </note>
     """
-    instance_type: Optional[str] = Unassigned()
+    instance_type: Optional[TrainingInstanceType] = Unassigned()
     instance_count: Optional[int] = Unassigned()
     volume_size_in_g_b: Optional[int] = Unassigned()
     volume_kms_key_id: Optional[str] = Unassigned()
-    allocation_strategy: Optional[str] = Unassigned()
+    allocation_strategy: Optional[HyperParameterTuningAllocationStrategy] = Unassigned()
     instance_configs: Optional[List[HyperParameterTuningInstanceConfig]] = Unassigned()
 
 
@@ -4241,6 +5722,13 @@ class ParentHyperParameterTuningJob(Base):
     hyper_parameter_tuning_job_name: Optional[str] = Unassigned()
 
 
+class HyperParameterTuningJobWarmStartType(StrEnum):
+    """Enum class for HyperParameterTuningJobWarmStartType."""
+    
+    IDENTICAL_DATA_AND_ALGORITHM = 'IdenticalDataAndAlgorithm'
+    TRANSFER_LEARNING = 'TransferLearning'
+
+
 class HyperParameterTuningJobWarmStartConfig(Base):
     """
      HyperParameterTuningJobWarmStartConfig
@@ -4252,7 +5740,31 @@ class HyperParameterTuningJobWarmStartConfig(Base):
  	warm_start_type: 	 <p>Specifies one of the following:</p> <dl> <dt>IDENTICAL_DATA_AND_ALGORITHM</dt> <dd> <p>The new hyperparameter tuning job uses the same input data and training image as the parent tuning jobs. You can change the hyperparameter ranges to search and the maximum number of training jobs that the hyperparameter tuning job launches. You cannot use a new version of the training algorithm, unless the changes in the new version do not affect the algorithm itself. For example, changes that improve logging or adding support for a different data format are allowed. You can also change hyperparameters from tunable to static, and from static to tunable, but the total number of static plus tunable hyperparameters must remain the same as it is in all parent jobs. The objective metric for the new tuning job must be the same as for all parent jobs.</p> </dd> <dt>TRANSFER_LEARNING</dt> <dd> <p>The new hyperparameter tuning job can include input data, hyperparameter ranges, maximum number of concurrent training jobs, and maximum number of training jobs that are different than those of its parent hyperparameter tuning jobs. The training image can also be a different version from the version used in the parent hyperparameter tuning job. You can also change hyperparameters from tunable to static, and from static to tunable, but the total number of static plus tunable hyperparameters must remain the same as it is in all parent jobs. The objective metric for the new tuning job must be the same as for all parent jobs.</p> </dd> </dl>
     """
     parent_hyper_parameter_tuning_jobs: List[ParentHyperParameterTuningJob]
-    warm_start_type: str
+    warm_start_type: HyperParameterTuningJobWarmStartType
+
+
+class VendorGuidance(StrEnum):
+    """Enum class for VendorGuidance."""
+    
+    NOT_PROVIDED = 'NOT_PROVIDED'
+    STABLE = 'STABLE'
+    TO_BE_ARCHIVED = 'TO_BE_ARCHIVED'
+    ARCHIVED = 'ARCHIVED'
+
+
+class JobType(StrEnum):
+    """Enum class for JobType."""
+    
+    TRAINING = 'TRAINING'
+    INFERENCE = 'INFERENCE'
+    NOTEBOOK_KERNEL = 'NOTEBOOK_KERNEL'
+
+
+class Processor(StrEnum):
+    """Enum class for Processor."""
+    
+    CPU = 'CPU'
+    GPU = 'GPU'
 
 
 class InferenceComponentContainerSpecification(Base):
@@ -4333,6 +5845,12 @@ class InferenceComponentRuntimeConfig(Base):
     copy_count: int
 
 
+class InferenceExperimentType(StrEnum):
+    """Enum class for InferenceExperimentType."""
+    
+    SHADOW_MODE = 'ShadowMode'
+
+
 class InferenceExperimentSchedule(Base):
     """
      InferenceExperimentSchedule
@@ -4347,6 +5865,174 @@ class InferenceExperimentSchedule(Base):
     end_time: Optional[datetime.datetime] = Unassigned()
 
 
+class ModelInfrastructureType(StrEnum):
+    """Enum class for ModelInfrastructureType."""
+    
+    REAL_TIME_INFERENCE = 'RealTimeInference'
+
+
+class InstanceType(StrEnum):
+    """Enum class for InstanceType."""
+    
+    ML_T2_MEDIUM = 'ml.t2.medium'
+    ML_T2_LARGE = 'ml.t2.large'
+    ML_T2_XLARGE = 'ml.t2.xlarge'
+    ML_T2_2XLARGE = 'ml.t2.2xlarge'
+    ML_T3_MEDIUM = 'ml.t3.medium'
+    ML_T3_LARGE = 'ml.t3.large'
+    ML_T3_XLARGE = 'ml.t3.xlarge'
+    ML_T3_2XLARGE = 'ml.t3.2xlarge'
+    ML_M4_XLARGE = 'ml.m4.xlarge'
+    ML_M4_2XLARGE = 'ml.m4.2xlarge'
+    ML_M4_4XLARGE = 'ml.m4.4xlarge'
+    ML_M4_10XLARGE = 'ml.m4.10xlarge'
+    ML_M4_16XLARGE = 'ml.m4.16xlarge'
+    ML_M5_XLARGE = 'ml.m5.xlarge'
+    ML_M5_2XLARGE = 'ml.m5.2xlarge'
+    ML_M5_4XLARGE = 'ml.m5.4xlarge'
+    ML_M5_12XLARGE = 'ml.m5.12xlarge'
+    ML_M5_24XLARGE = 'ml.m5.24xlarge'
+    ML_M5D_LARGE = 'ml.m5d.large'
+    ML_M5D_XLARGE = 'ml.m5d.xlarge'
+    ML_M5D_2XLARGE = 'ml.m5d.2xlarge'
+    ML_M5D_4XLARGE = 'ml.m5d.4xlarge'
+    ML_M5D_8XLARGE = 'ml.m5d.8xlarge'
+    ML_M5D_12XLARGE = 'ml.m5d.12xlarge'
+    ML_M5D_16XLARGE = 'ml.m5d.16xlarge'
+    ML_M5D_24XLARGE = 'ml.m5d.24xlarge'
+    ML_C4_XLARGE = 'ml.c4.xlarge'
+    ML_C4_2XLARGE = 'ml.c4.2xlarge'
+    ML_C4_4XLARGE = 'ml.c4.4xlarge'
+    ML_C4_8XLARGE = 'ml.c4.8xlarge'
+    ML_C5_XLARGE = 'ml.c5.xlarge'
+    ML_C5_2XLARGE = 'ml.c5.2xlarge'
+    ML_C5_4XLARGE = 'ml.c5.4xlarge'
+    ML_C5_9XLARGE = 'ml.c5.9xlarge'
+    ML_C5_18XLARGE = 'ml.c5.18xlarge'
+    ML_C5D_XLARGE = 'ml.c5d.xlarge'
+    ML_C5D_2XLARGE = 'ml.c5d.2xlarge'
+    ML_C5D_4XLARGE = 'ml.c5d.4xlarge'
+    ML_C5D_9XLARGE = 'ml.c5d.9xlarge'
+    ML_C5D_18XLARGE = 'ml.c5d.18xlarge'
+    ML_P2_XLARGE = 'ml.p2.xlarge'
+    ML_P2_8XLARGE = 'ml.p2.8xlarge'
+    ML_P2_16XLARGE = 'ml.p2.16xlarge'
+    ML_P3_2XLARGE = 'ml.p3.2xlarge'
+    ML_P3_8XLARGE = 'ml.p3.8xlarge'
+    ML_P3_16XLARGE = 'ml.p3.16xlarge'
+    ML_P3DN_24XLARGE = 'ml.p3dn.24xlarge'
+    ML_G4DN_XLARGE = 'ml.g4dn.xlarge'
+    ML_G4DN_2XLARGE = 'ml.g4dn.2xlarge'
+    ML_G4DN_4XLARGE = 'ml.g4dn.4xlarge'
+    ML_G4DN_8XLARGE = 'ml.g4dn.8xlarge'
+    ML_G4DN_12XLARGE = 'ml.g4dn.12xlarge'
+    ML_G4DN_16XLARGE = 'ml.g4dn.16xlarge'
+    ML_R5_LARGE = 'ml.r5.large'
+    ML_R5_XLARGE = 'ml.r5.xlarge'
+    ML_R5_2XLARGE = 'ml.r5.2xlarge'
+    ML_R5_4XLARGE = 'ml.r5.4xlarge'
+    ML_R5_8XLARGE = 'ml.r5.8xlarge'
+    ML_R5_12XLARGE = 'ml.r5.12xlarge'
+    ML_R5_16XLARGE = 'ml.r5.16xlarge'
+    ML_R5_24XLARGE = 'ml.r5.24xlarge'
+    ML_G5_XLARGE = 'ml.g5.xlarge'
+    ML_G5_2XLARGE = 'ml.g5.2xlarge'
+    ML_G5_4XLARGE = 'ml.g5.4xlarge'
+    ML_G5_8XLARGE = 'ml.g5.8xlarge'
+    ML_G5_16XLARGE = 'ml.g5.16xlarge'
+    ML_G5_12XLARGE = 'ml.g5.12xlarge'
+    ML_G5_24XLARGE = 'ml.g5.24xlarge'
+    ML_G5_48XLARGE = 'ml.g5.48xlarge'
+    ML_INF1_XLARGE = 'ml.inf1.xlarge'
+    ML_INF1_2XLARGE = 'ml.inf1.2xlarge'
+    ML_INF1_6XLARGE = 'ml.inf1.6xlarge'
+    ML_INF1_24XLARGE = 'ml.inf1.24xlarge'
+    ML_P4D_24XLARGE = 'ml.p4d.24xlarge'
+    ML_P4DE_24XLARGE = 'ml.p4de.24xlarge'
+    ML_P5_48XLARGE = 'ml.p5.48xlarge'
+    ML_M6I_LARGE = 'ml.m6i.large'
+    ML_M6I_XLARGE = 'ml.m6i.xlarge'
+    ML_M6I_2XLARGE = 'ml.m6i.2xlarge'
+    ML_M6I_4XLARGE = 'ml.m6i.4xlarge'
+    ML_M6I_8XLARGE = 'ml.m6i.8xlarge'
+    ML_M6I_12XLARGE = 'ml.m6i.12xlarge'
+    ML_M6I_16XLARGE = 'ml.m6i.16xlarge'
+    ML_M6I_24XLARGE = 'ml.m6i.24xlarge'
+    ML_M6I_32XLARGE = 'ml.m6i.32xlarge'
+    ML_M7I_LARGE = 'ml.m7i.large'
+    ML_M7I_XLARGE = 'ml.m7i.xlarge'
+    ML_M7I_2XLARGE = 'ml.m7i.2xlarge'
+    ML_M7I_4XLARGE = 'ml.m7i.4xlarge'
+    ML_M7I_8XLARGE = 'ml.m7i.8xlarge'
+    ML_M7I_12XLARGE = 'ml.m7i.12xlarge'
+    ML_M7I_16XLARGE = 'ml.m7i.16xlarge'
+    ML_M7I_24XLARGE = 'ml.m7i.24xlarge'
+    ML_M7I_48XLARGE = 'ml.m7i.48xlarge'
+    ML_C6I_LARGE = 'ml.c6i.large'
+    ML_C6I_XLARGE = 'ml.c6i.xlarge'
+    ML_C6I_2XLARGE = 'ml.c6i.2xlarge'
+    ML_C6I_4XLARGE = 'ml.c6i.4xlarge'
+    ML_C6I_8XLARGE = 'ml.c6i.8xlarge'
+    ML_C6I_12XLARGE = 'ml.c6i.12xlarge'
+    ML_C6I_16XLARGE = 'ml.c6i.16xlarge'
+    ML_C6I_24XLARGE = 'ml.c6i.24xlarge'
+    ML_C6I_32XLARGE = 'ml.c6i.32xlarge'
+    ML_C7I_LARGE = 'ml.c7i.large'
+    ML_C7I_XLARGE = 'ml.c7i.xlarge'
+    ML_C7I_2XLARGE = 'ml.c7i.2xlarge'
+    ML_C7I_4XLARGE = 'ml.c7i.4xlarge'
+    ML_C7I_8XLARGE = 'ml.c7i.8xlarge'
+    ML_C7I_12XLARGE = 'ml.c7i.12xlarge'
+    ML_C7I_16XLARGE = 'ml.c7i.16xlarge'
+    ML_C7I_24XLARGE = 'ml.c7i.24xlarge'
+    ML_C7I_48XLARGE = 'ml.c7i.48xlarge'
+    ML_R6I_LARGE = 'ml.r6i.large'
+    ML_R6I_XLARGE = 'ml.r6i.xlarge'
+    ML_R6I_2XLARGE = 'ml.r6i.2xlarge'
+    ML_R6I_4XLARGE = 'ml.r6i.4xlarge'
+    ML_R6I_8XLARGE = 'ml.r6i.8xlarge'
+    ML_R6I_12XLARGE = 'ml.r6i.12xlarge'
+    ML_R6I_16XLARGE = 'ml.r6i.16xlarge'
+    ML_R6I_24XLARGE = 'ml.r6i.24xlarge'
+    ML_R6I_32XLARGE = 'ml.r6i.32xlarge'
+    ML_R7I_LARGE = 'ml.r7i.large'
+    ML_R7I_XLARGE = 'ml.r7i.xlarge'
+    ML_R7I_2XLARGE = 'ml.r7i.2xlarge'
+    ML_R7I_4XLARGE = 'ml.r7i.4xlarge'
+    ML_R7I_8XLARGE = 'ml.r7i.8xlarge'
+    ML_R7I_12XLARGE = 'ml.r7i.12xlarge'
+    ML_R7I_16XLARGE = 'ml.r7i.16xlarge'
+    ML_R7I_24XLARGE = 'ml.r7i.24xlarge'
+    ML_R7I_48XLARGE = 'ml.r7i.48xlarge'
+    ML_M6ID_LARGE = 'ml.m6id.large'
+    ML_M6ID_XLARGE = 'ml.m6id.xlarge'
+    ML_M6ID_2XLARGE = 'ml.m6id.2xlarge'
+    ML_M6ID_4XLARGE = 'ml.m6id.4xlarge'
+    ML_M6ID_8XLARGE = 'ml.m6id.8xlarge'
+    ML_M6ID_12XLARGE = 'ml.m6id.12xlarge'
+    ML_M6ID_16XLARGE = 'ml.m6id.16xlarge'
+    ML_M6ID_24XLARGE = 'ml.m6id.24xlarge'
+    ML_M6ID_32XLARGE = 'ml.m6id.32xlarge'
+    ML_C6ID_LARGE = 'ml.c6id.large'
+    ML_C6ID_XLARGE = 'ml.c6id.xlarge'
+    ML_C6ID_2XLARGE = 'ml.c6id.2xlarge'
+    ML_C6ID_4XLARGE = 'ml.c6id.4xlarge'
+    ML_C6ID_8XLARGE = 'ml.c6id.8xlarge'
+    ML_C6ID_12XLARGE = 'ml.c6id.12xlarge'
+    ML_C6ID_16XLARGE = 'ml.c6id.16xlarge'
+    ML_C6ID_24XLARGE = 'ml.c6id.24xlarge'
+    ML_C6ID_32XLARGE = 'ml.c6id.32xlarge'
+    ML_R6ID_LARGE = 'ml.r6id.large'
+    ML_R6ID_XLARGE = 'ml.r6id.xlarge'
+    ML_R6ID_2XLARGE = 'ml.r6id.2xlarge'
+    ML_R6ID_4XLARGE = 'ml.r6id.4xlarge'
+    ML_R6ID_8XLARGE = 'ml.r6id.8xlarge'
+    ML_R6ID_12XLARGE = 'ml.r6id.12xlarge'
+    ML_R6ID_16XLARGE = 'ml.r6id.16xlarge'
+    ML_R6ID_24XLARGE = 'ml.r6id.24xlarge'
+    ML_R6ID_32XLARGE = 'ml.r6id.32xlarge'
+
+
 class RealTimeInferenceConfig(Base):
     """
      RealTimeInferenceConfig
@@ -4357,7 +6043,7 @@ class RealTimeInferenceConfig(Base):
  	instance_type: 	 <p>The instance type the model is deployed to.</p>
  	instance_count: 	 <p>The number of instances of the type specified by <code>InstanceType</code>.</p>
     """
-    instance_type: str
+    instance_type: InstanceType
     instance_count: int
 
 
@@ -4371,7 +6057,7 @@ class ModelInfrastructureConfig(Base):
  	infrastructure_type: 	 <p>The inference option to which to deploy your model. Possible values are the following:</p> <ul> <li> <p> <code>RealTime</code>: Deploy to real-time inference.</p> </li> </ul>
  	real_time_inference_config: 	 <p>The infrastructure configuration for deploying the model to real-time inference.</p>
     """
-    infrastructure_type: str
+    infrastructure_type: ModelInfrastructureType
     real_time_inference_config: RealTimeInferenceConfig
 
 
@@ -4435,6 +6121,20 @@ class ShadowModeConfig(Base):
     shadow_model_variants: List[ShadowModelVariantConfig]
 
 
+class RecommendationJobType(StrEnum):
+    """Enum class for RecommendationJobType."""
+    
+    DEFAULT = 'Default'
+    ADVANCED = 'Advanced'
+
+
+class TrafficType(StrEnum):
+    """Enum class for TrafficType."""
+    
+    PHASES = 'PHASES'
+    STAIRS = 'STAIRS'
+
+
 class Phase(Base):
     """
      Phase
@@ -4478,7 +6178,7 @@ class TrafficPattern(Base):
  	phases: 	 <p>Defines the phases traffic specification.</p>
  	stairs: 	 <p>Defines the stairs traffic pattern.</p>
     """
-    traffic_type: Optional[str] = Unassigned()
+    traffic_type: Optional[TrafficType] = Unassigned()
     phases: Optional[List[Phase]] = Unassigned()
     stairs: Optional[Stairs] = Unassigned()
 
@@ -4521,7 +6221,7 @@ class EndpointInputConfiguration(Base):
  	inference_specification_name: 	 <p>The inference specification name in the model package version.</p>
  	environment_parameter_ranges: 	 <p> The parameter you want to benchmark against.</p>
     """
-    instance_type: Optional[str] = Unassigned()
+    instance_type: Optional[ProductionVariantInstanceType] = Unassigned()
     serverless_config: Optional[ProductionVariantServerlessConfig] = Unassigned()
     inference_specification_name: Optional[str] = Unassigned()
     environment_parameter_ranges: Optional[EnvironmentParameterRanges] = Unassigned()
@@ -4539,6 +6239,13 @@ class RecommendationJobPayloadConfig(Base):
     """
     sample_payload_url: Optional[str] = Unassigned()
     supported_content_types: Optional[List[str]] = Unassigned()
+
+
+class RecommendationJobSupportedEndpointType(StrEnum):
+    """Enum class for RecommendationJobSupportedEndpointType."""
+    
+    REAL_TIME = 'RealTime'
+    SERVERLESS = 'Serverless'
 
 
 class RecommendationJobContainerConfig(Base):
@@ -4566,7 +6273,7 @@ class RecommendationJobContainerConfig(Base):
     payload_config: Optional[RecommendationJobPayloadConfig] = Unassigned()
     nearest_model_name: Optional[str] = Unassigned()
     supported_instance_types: Optional[List[str]] = Unassigned()
-    supported_endpoint_type: Optional[str] = Unassigned()
+    supported_endpoint_type: Optional[RecommendationJobSupportedEndpointType] = Unassigned()
     data_input_config: Optional[str] = Unassigned()
     supported_response_m_i_m_e_types: Optional[List[str]] = Unassigned()
 
@@ -4641,6 +6348,13 @@ class ModelLatencyThreshold(Base):
     value_in_milliseconds: Optional[int] = Unassigned()
 
 
+class FlatInvocations(StrEnum):
+    """Enum class for FlatInvocations."""
+    
+    CONTINUE = 'Continue'
+    STOP = 'Stop'
+
+
 class RecommendationJobStoppingConditions(Base):
     """
      RecommendationJobStoppingConditions
@@ -4654,7 +6368,7 @@ class RecommendationJobStoppingConditions(Base):
     """
     max_invocations: Optional[int] = Unassigned()
     model_latency_thresholds: Optional[List[ModelLatencyThreshold]] = Unassigned()
-    flat_invocations: Optional[str] = Unassigned()
+    flat_invocations: Optional[FlatInvocations] = Unassigned()
 
 
 class RecommendationJobCompiledOutputConfig(Base):
@@ -4937,6 +6651,15 @@ class ModelCardSecurityConfig(Base):
     kms_key_id: Optional[str] = Unassigned()
 
 
+class ModelCardStatus(StrEnum):
+    """Enum class for ModelCardStatus."""
+    
+    DRAFT = 'Draft'
+    PENDING_REVIEW = 'PendingReview'
+    APPROVED = 'Approved'
+    ARCHIVED = 'Archived'
+
+
 class ModelExplainabilityBaselineConfig(Base):
     """
      ModelExplainabilityBaselineConfig
@@ -4981,6 +6704,13 @@ class ModelExplainabilityJobInput(Base):
     batch_transform_input: Optional[BatchTransformInput] = Unassigned()
 
 
+class InferenceExecutionMode(StrEnum):
+    """Enum class for InferenceExecutionMode."""
+    
+    SERIAL = 'Serial'
+    DIRECT = 'Direct'
+
+
 class InferenceExecutionConfig(Base):
     """
      InferenceExecutionConfig
@@ -4990,7 +6720,7 @@ class InferenceExecutionConfig(Base):
 	----------------------
  	mode: 	 <p>How containers in a multi-container are run. The following values are valid.</p> <ul> <li> <p> <code>SERIAL</code> - Containers run as a serial pipeline.</p> </li> <li> <p> <code>DIRECT</code> - Only the individual container that you specify is run.</p> </li> </ul>
     """
-    mode: str
+    mode: InferenceExecutionMode
 
 
 class ModelPackageValidationProfile(Base):
@@ -5199,6 +6929,13 @@ class DriftCheckBaselines(Base):
     model_data_quality: Optional[DriftCheckModelDataQuality] = Unassigned()
 
 
+class SkipModelValidation(StrEnum):
+    """Enum class for SkipModelValidation."""
+    
+    ALL = 'All'
+    NONE = 'None'
+
+
 class ModelQualityBaselineConfig(Base):
     """
      ModelQualityBaselineConfig
@@ -5211,6 +6948,14 @@ class ModelQualityBaselineConfig(Base):
     """
     baselining_job_name: Optional[str] = Unassigned()
     constraints_resource: Optional[MonitoringConstraintsResource] = Unassigned()
+
+
+class MonitoringProblemType(StrEnum):
+    """Enum class for MonitoringProblemType."""
+    
+    BINARY_CLASSIFICATION = 'BinaryClassification'
+    MULTICLASS_CLASSIFICATION = 'MulticlassClassification'
+    REGRESSION = 'Regression'
 
 
 class ModelQualityAppSpecification(Base):
@@ -5233,7 +6978,7 @@ class ModelQualityAppSpecification(Base):
     container_arguments: Optional[List[str]] = Unassigned()
     record_preprocessor_source_uri: Optional[str] = Unassigned()
     post_analytics_processor_source_uri: Optional[str] = Unassigned()
-    problem_type: Optional[str] = Unassigned()
+    problem_type: Optional[MonitoringProblemType] = Unassigned()
     environment: Optional[Dict[str, str]] = Unassigned()
 
 
@@ -5363,6 +7108,15 @@ class MonitoringJobDefinition(Base):
     network_config: Optional[NetworkConfig] = Unassigned()
 
 
+class MonitoringType(StrEnum):
+    """Enum class for MonitoringType."""
+    
+    DATA_QUALITY = 'DataQuality'
+    MODEL_QUALITY = 'ModelQuality'
+    MODEL_BIAS = 'ModelBias'
+    MODEL_EXPLAINABILITY = 'ModelExplainability'
+
+
 class MonitoringScheduleConfig(Base):
     """
      MonitoringScheduleConfig
@@ -5378,7 +7132,32 @@ class MonitoringScheduleConfig(Base):
     schedule_config: Optional[ScheduleConfig] = Unassigned()
     monitoring_job_definition: Optional[MonitoringJobDefinition] = Unassigned()
     monitoring_job_definition_name: Optional[str] = Unassigned()
-    monitoring_type: Optional[str] = Unassigned()
+    monitoring_type: Optional[MonitoringType] = Unassigned()
+
+
+class DirectInternetAccess(StrEnum):
+    """Enum class for DirectInternetAccess."""
+    
+    ENABLED = 'Enabled'
+    DISABLED = 'Disabled'
+
+
+class NotebookInstanceAcceleratorType(StrEnum):
+    """Enum class for NotebookInstanceAcceleratorType."""
+    
+    ML_EIA1_MEDIUM = 'ml.eia1.medium'
+    ML_EIA1_LARGE = 'ml.eia1.large'
+    ML_EIA1_XLARGE = 'ml.eia1.xlarge'
+    ML_EIA2_MEDIUM = 'ml.eia2.medium'
+    ML_EIA2_LARGE = 'ml.eia2.large'
+    ML_EIA2_XLARGE = 'ml.eia2.xlarge'
+
+
+class RootAccess(StrEnum):
+    """Enum class for RootAccess."""
+    
+    ENABLED = 'Enabled'
+    DISABLED = 'Disabled'
 
 
 class InstanceMetadataServiceConfiguration(Base):
@@ -5433,6 +7212,20 @@ class ParallelismConfiguration(Base):
     max_parallel_execution_steps: int
 
 
+class ProcessingS3DataType(StrEnum):
+    """Enum class for ProcessingS3DataType."""
+    
+    MANIFEST_FILE = 'ManifestFile'
+    S3_PREFIX = 'S3Prefix'
+
+
+class ProcessingS3CompressionType(StrEnum):
+    """Enum class for ProcessingS3CompressionType."""
+    
+    NONE = 'None'
+    GZIP = 'Gzip'
+
+
 class ProcessingS3Input(Base):
     """
      ProcessingS3Input
@@ -5448,11 +7241,28 @@ class ProcessingS3Input(Base):
  	s3_compression_type: 	 <p>Whether to GZIP-decompress the data in Amazon S3 as it is streamed into the processing container. <code>Gzip</code> can only be used when <code>Pipe</code> mode is specified as the <code>S3InputMode</code>. In <code>Pipe</code> mode, Amazon SageMaker streams input data from the source directly to your container without using the EBS volume.</p>
     """
     s3_uri: str
-    s3_data_type: str
+    s3_data_type: ProcessingS3DataType
     local_path: Optional[str] = Unassigned()
-    s3_input_mode: Optional[str] = Unassigned()
-    s3_data_distribution_type: Optional[str] = Unassigned()
-    s3_compression_type: Optional[str] = Unassigned()
+    s3_input_mode: Optional[ProcessingS3InputMode] = Unassigned()
+    s3_data_distribution_type: Optional[ProcessingS3DataDistributionType] = Unassigned()
+    s3_compression_type: Optional[ProcessingS3CompressionType] = Unassigned()
+
+
+class RedshiftResultFormat(StrEnum):
+    """<p>The data storage format for Redshift query results.</p>"""
+    
+    PARQUET = 'PARQUET'
+    CSV = 'CSV'
+
+
+class RedshiftResultCompressionType(StrEnum):
+    """<p>The compression used for Redshift query results.</p>"""
+    
+    NONE = 'None'
+    GZIP = 'GZIP'
+    BZIP2 = 'BZIP2'
+    ZSTD = 'ZSTD'
+    SNAPPY = 'SNAPPY'
 
 
 class RedshiftDatasetDefinition(Base):
@@ -5478,9 +7288,23 @@ class RedshiftDatasetDefinition(Base):
     query_string: str
     cluster_role_arn: str
     output_s3_uri: str
-    output_format: str
+    output_format: RedshiftResultFormat
     kms_key_id: Optional[str] = Unassigned()
-    output_compression: Optional[str] = Unassigned()
+    output_compression: Optional[RedshiftResultCompressionType] = Unassigned()
+
+
+class DataDistributionType(StrEnum):
+    """Enum class for DataDistributionType."""
+    
+    FULLY_REPLICATED = 'FullyReplicated'
+    SHARDED_BY_S3_KEY = 'ShardedByS3Key'
+
+
+class InputMode(StrEnum):
+    """Enum class for InputMode."""
+    
+    PIPE = 'Pipe'
+    FILE = 'File'
 
 
 class DatasetDefinition(Base):
@@ -5499,8 +7323,8 @@ class DatasetDefinition(Base):
     athena_dataset_definition: Optional[AthenaDatasetDefinition] = Unassigned()
     redshift_dataset_definition: Optional[RedshiftDatasetDefinition] = Unassigned()
     local_path: Optional[str] = Unassigned()
-    data_distribution_type: Optional[str] = Unassigned()
-    input_mode: Optional[str] = Unassigned()
+    data_distribution_type: Optional[DataDistributionType] = Unassigned()
+    input_mode: Optional[InputMode] = Unassigned()
 
 
 class ProcessingInput(Base):
@@ -5534,7 +7358,7 @@ class ProcessingS3Output(Base):
     """
     s3_uri: str
     local_path: str
-    s3_upload_mode: str
+    s3_upload_mode: ProcessingS3UploadMode
 
 
 class ProcessingFeatureStoreOutput(Base):
@@ -5594,7 +7418,7 @@ class ProcessingClusterConfig(Base):
  	volume_kms_key_id: 	 <p>The Amazon Web Services Key Management Service (Amazon Web Services KMS) key that Amazon SageMaker uses to encrypt data on the storage volume attached to the ML compute instance(s) that run the processing job. </p> <note> <p>Certain Nitro-based instances include local storage, dependent on the instance type. Local storage volumes are encrypted using a hardware module on the instance. You can't request a <code>VolumeKmsKeyId</code> when using an instance type with local storage.</p> <p>For a list of instance types that support local instance storage, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html#instance-store-volumes">Instance Store Volumes</a>.</p> <p>For more information about local instance storage encryption, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ssd-instance-store.html">SSD Instance Store Volumes</a>.</p> </note>
     """
     instance_count: int
-    instance_type: str
+    instance_type: ProcessingInstanceType
     volume_size_in_g_b: int
     volume_kms_key_id: Optional[str] = Unassigned()
 
@@ -5766,7 +7590,7 @@ class SpaceSettings(Base):
     kernel_gateway_app_settings: Optional[KernelGatewayAppSettings] = Unassigned()
     code_editor_app_settings: Optional[SpaceCodeEditorAppSettings] = Unassigned()
     jupyter_lab_app_settings: Optional[SpaceJupyterLabAppSettings] = Unassigned()
-    app_type: Optional[str] = Unassigned()
+    app_type: Optional[AppType] = Unassigned()
     space_storage_settings: Optional[SpaceStorageSettings] = Unassigned()
     custom_file_systems: Optional[List[CustomFileSystem]] = Unassigned()
 
@@ -5783,6 +7607,13 @@ class OwnershipSettings(Base):
     owner_user_profile_name: str
 
 
+class SharingType(StrEnum):
+    """Enum class for SharingType."""
+    
+    PRIVATE = 'Private'
+    SHARED = 'Shared'
+
+
 class SpaceSharingSettings(Base):
     """
      SpaceSharingSettings
@@ -5792,7 +7623,16 @@ class SpaceSharingSettings(Base):
 	----------------------
  	sharing_type: 	 <p>Specifies the sharing type of the space.</p>
     """
-    sharing_type: str
+    sharing_type: SharingType
+
+
+class StudioLifecycleConfigAppType(StrEnum):
+    """Enum class for StudioLifecycleConfigAppType."""
+    
+    JUPYTER_SERVER = 'JupyterServer'
+    KERNEL_GATEWAY = 'KernelGateway'
+    CODE_EDITOR = 'CodeEditor'
+    JUPYTER_LAB = 'JupyterLab'
 
 
 class DebugHookConfig(Base):
@@ -5832,7 +7672,7 @@ class DebugRuleConfiguration(Base):
     rule_evaluator_image: str
     local_path: Optional[str] = Unassigned()
     s3_output_path: Optional[str] = Unassigned()
-    instance_type: Optional[str] = Unassigned()
+    instance_type: Optional[ProcessingInstanceType] = Unassigned()
     volume_size_in_g_b: Optional[int] = Unassigned()
     rule_parameters: Optional[Dict[str, str]] = Unassigned()
 
@@ -5888,7 +7728,7 @@ class ProfilerRuleConfiguration(Base):
     rule_evaluator_image: str
     local_path: Optional[str] = Unassigned()
     s3_output_path: Optional[str] = Unassigned()
-    instance_type: Optional[str] = Unassigned()
+    instance_type: Optional[ProcessingInstanceType] = Unassigned()
     volume_size_in_g_b: Optional[int] = Unassigned()
     rule_parameters: Optional[Dict[str, str]] = Unassigned()
 
@@ -5931,6 +7771,13 @@ class ModelClientConfig(Base):
     invocations_max_retries: Optional[int] = Unassigned()
 
 
+class JoinSource(StrEnum):
+    """Enum class for JoinSource."""
+    
+    INPUT = 'Input'
+    NONE = 'None'
+
+
 class DataProcessing(Base):
     """
      DataProcessing
@@ -5944,7 +7791,17 @@ class DataProcessing(Base):
     """
     input_filter: Optional[str] = Unassigned()
     output_filter: Optional[str] = Unassigned()
-    join_source: Optional[str] = Unassigned()
+    join_source: Optional[JoinSource] = Unassigned()
+
+
+class TrialComponentPrimaryStatus(StrEnum):
+    """Enum class for TrialComponentPrimaryStatus."""
+    
+    IN_PROGRESS = 'InProgress'
+    COMPLETED = 'Completed'
+    FAILED = 'Failed'
+    STOPPING = 'Stopping'
+    STOPPED = 'Stopped'
 
 
 class TrialComponentStatus(Base):
@@ -5957,7 +7814,7 @@ class TrialComponentStatus(Base):
  	primary_status: 	 <p>The status of the trial component.</p>
  	message: 	 <p>If the component failed, a message describing why.</p>
     """
-    primary_status: Optional[str] = Unassigned()
+    primary_status: Optional[TrialComponentPrimaryStatus] = Unassigned()
     message: Optional[str] = Unassigned()
 
 
@@ -6081,6 +7938,23 @@ class NotificationConfiguration(Base):
     notification_topic_arn: Optional[str] = Unassigned()
 
 
+class CrossAccountFilterOption(StrEnum):
+    """Enum class for CrossAccountFilterOption."""
+    
+    SAME_ACCOUNT = 'SameAccount'
+    CROSS_ACCOUNT = 'CrossAccount'
+
+
+class Statistic(StrEnum):
+    """Enum class for Statistic."""
+    
+    AVERAGE = 'Average'
+    MINIMUM = 'Minimum'
+    MAXIMUM = 'Maximum'
+    SAMPLE_COUNT = 'SampleCount'
+    SUM = 'Sum'
+
+
 class CustomizedMetricSpecification(Base):
     """
      CustomizedMetricSpecification
@@ -6094,7 +7968,7 @@ class CustomizedMetricSpecification(Base):
     """
     metric_name: Optional[str] = Unassigned()
     namespace: Optional[str] = Unassigned()
-    statistic: Optional[str] = Unassigned()
+    statistic: Optional[Statistic] = Unassigned()
 
 
 class DataCaptureConfigSummary(Base):
@@ -6111,10 +7985,21 @@ class DataCaptureConfigSummary(Base):
  	kms_key_id: 	 <p>The KMS key being used to encrypt the data in Amazon S3.</p>
     """
     enable_capture: bool
-    capture_status: str
+    capture_status: CaptureStatus
     current_sampling_percentage: int
     destination_s3_uri: str
     kms_key_id: str
+
+
+class RuleEvaluationStatus(StrEnum):
+    """Enum class for RuleEvaluationStatus."""
+    
+    IN_PROGRESS = 'InProgress'
+    NO_ISSUES_FOUND = 'NoIssuesFound'
+    ISSUES_FOUND = 'IssuesFound'
+    ERROR = 'Error'
+    STOPPING = 'Stopping'
+    STOPPED = 'Stopped'
 
 
 class DebugRuleEvaluationStatus(Base):
@@ -6132,9 +8017,16 @@ class DebugRuleEvaluationStatus(Base):
     """
     rule_configuration_name: Optional[str] = Unassigned()
     rule_evaluation_job_arn: Optional[str] = Unassigned()
-    rule_evaluation_status: Optional[str] = Unassigned()
+    rule_evaluation_status: Optional[RuleEvaluationStatus] = Unassigned()
     status_details: Optional[str] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
+
+
+class RetentionType(StrEnum):
+    """Enum class for RetentionType."""
+    
+    RETAIN = 'Retain'
+    DELETE = 'Delete'
 
 
 class RetentionPolicy(Base):
@@ -6146,7 +8038,14 @@ class RetentionPolicy(Base):
 	----------------------
  	home_efs_file_system: 	 <p>The default is <code>Retain</code>, which specifies to keep the data stored on the Amazon EFS volume.</p> <p>Specify <code>Delete</code> to delete the data stored on the Amazon EFS volume.</p>
     """
-    home_efs_file_system: Optional[str] = Unassigned()
+    home_efs_file_system: Optional[RetentionType] = Unassigned()
+
+
+class HubContentType(StrEnum):
+    """Enum class for HubContentType."""
+    
+    MODEL = 'Model'
+    NOTEBOOK = 'Notebook'
 
 
 class DeployedImage(Base):
@@ -6165,6 +8064,15 @@ class DeployedImage(Base):
     resolution_time: Optional[datetime.datetime] = Unassigned()
 
 
+class RecommendationStatus(StrEnum):
+    """Enum class for RecommendationStatus."""
+    
+    IN_PROGRESS = 'IN_PROGRESS'
+    COMPLETED = 'COMPLETED'
+    FAILED = 'FAILED'
+    NOT_APPLICABLE = 'NOT_APPLICABLE'
+
+
 class RealTimeInferenceRecommendation(Base):
     """
      RealTimeInferenceRecommendation
@@ -6177,7 +8085,7 @@ class RealTimeInferenceRecommendation(Base):
  	environment: 	 <p>The recommended environment variables to set in the model container for Real-Time Inference.</p>
     """
     recommendation_id: str
-    instance_type: str
+    instance_type: ProductionVariantInstanceType
     environment: Optional[Dict[str, str]] = Unassigned()
 
 
@@ -6191,8 +8099,21 @@ class DeploymentRecommendation(Base):
  	recommendation_status: 	 <p>Status of the deployment recommendation. The status <code>NOT_APPLICABLE</code> means that SageMaker is unable to provide a default recommendation for the model using the information provided. If the deployment status is <code>IN_PROGRESS</code>, retry your API call after a few seconds to get a <code>COMPLETED</code> deployment recommendation.</p>
  	real_time_inference_recommendations: 	 <p>A list of <a href="https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_RealTimeInferenceRecommendation.html">RealTimeInferenceRecommendation</a> items.</p>
     """
-    recommendation_status: str
+    recommendation_status: RecommendationStatus
     real_time_inference_recommendations: Optional[List[RealTimeInferenceRecommendation]] = Unassigned()
+
+
+class StageStatus(StrEnum):
+    """Enum class for StageStatus."""
+    
+    CREATING = 'CREATING'
+    READYTODEPLOY = 'READYTODEPLOY'
+    STARTING = 'STARTING'
+    INPROGRESS = 'INPROGRESS'
+    DEPLOYED = 'DEPLOYED'
+    FAILED = 'FAILED'
+    STOPPING = 'STOPPING'
+    STOPPED = 'STOPPED'
 
 
 class EdgeDeploymentStatus(Base):
@@ -6209,7 +8130,7 @@ class EdgeDeploymentStatus(Base):
  	edge_deployment_status_message: 	 <p>A detailed message about deployment status in current stage.</p>
  	edge_deployment_stage_start_time: 	 <p>The time when the deployment API started.</p>
     """
-    stage_status: str
+    stage_status: StageStatus
     edge_deployment_success_in_stage: int
     edge_deployment_pending_in_stage: int
     edge_deployment_failed_in_stage: int
@@ -6259,7 +8180,7 @@ class ResolvedAttributes(Base):
  	completion_criteria
     """
     auto_m_l_job_objective: Optional[AutoMLJobObjective] = Unassigned()
-    problem_type: Optional[str] = Unassigned()
+    problem_type: Optional[ProblemType] = Unassigned()
     completion_criteria: Optional[AutoMLJobCompletionCriteria] = Unassigned()
 
 
@@ -6317,6 +8238,36 @@ class EdgeModel(Base):
     latest_inference: Optional[datetime.datetime] = Unassigned()
 
 
+class DomainStatus(StrEnum):
+    """Enum class for DomainStatus."""
+    
+    DELETING = 'Deleting'
+    FAILED = 'Failed'
+    IN_SERVICE = 'InService'
+    PENDING = 'Pending'
+    UPDATING = 'Updating'
+    UPDATE_FAILED = 'Update_Failed'
+    DELETE_FAILED = 'Delete_Failed'
+
+
+class EdgePackagingJobStatus(StrEnum):
+    """Enum class for EdgePackagingJobStatus."""
+    
+    STARTING = 'STARTING'
+    INPROGRESS = 'INPROGRESS'
+    COMPLETED = 'COMPLETED'
+    FAILED = 'FAILED'
+    STOPPING = 'STOPPING'
+    STOPPED = 'STOPPED'
+
+
+class EdgePresetDeploymentStatus(StrEnum):
+    """Enum class for EdgePresetDeploymentStatus."""
+    
+    COMPLETED = 'COMPLETED'
+    FAILED = 'FAILED'
+
+
 class EdgePresetDeploymentOutput(Base):
     """
      EdgePresetDeploymentOutput
@@ -6329,10 +8280,20 @@ class EdgePresetDeploymentOutput(Base):
  	status: 	 <p>The status of the deployable resource.</p>
  	status_message: 	 <p>Returns a message describing the status of the deployed resource.</p>
     """
-    type: str
+    type: EdgePresetDeploymentType
     artifact: Optional[str] = Unassigned()
-    status: Optional[str] = Unassigned()
+    status: Optional[EdgePresetDeploymentStatus] = Unassigned()
     status_message: Optional[str] = Unassigned()
+
+
+class VariantStatus(StrEnum):
+    """Enum class for VariantStatus."""
+    
+    CREATING = 'Creating'
+    UPDATING = 'Updating'
+    DELETING = 'Deleting'
+    ACTIVATING_TRAFFIC = 'ActivatingTraffic'
+    BAKING = 'Baking'
 
 
 class ProductionVariantStatus(Base):
@@ -6346,7 +8307,7 @@ class ProductionVariantStatus(Base):
  	status_message: 	 <p>A message that describes the status of the production variant.</p>
  	start_time: 	 <p>The start time of the current status change.</p>
     """
-    status: str
+    status: VariantStatus
     status_message: Optional[str] = Unassigned()
     start_time: Optional[datetime.datetime] = Unassigned()
 
@@ -6383,6 +8344,20 @@ class ProductionVariantSummary(Base):
     routing_config: Optional[ProductionVariantRoutingConfig] = Unassigned()
 
 
+class EndpointStatus(StrEnum):
+    """Enum class for EndpointStatus."""
+    
+    OUT_OF_SERVICE = 'OutOfService'
+    CREATING = 'Creating'
+    UPDATING = 'Updating'
+    SYSTEM_UPDATING = 'SystemUpdating'
+    ROLLING_BACK = 'RollingBack'
+    IN_SERVICE = 'InService'
+    DELETING = 'Deleting'
+    FAILED = 'Failed'
+    UPDATE_ROLLBACK_FAILED = 'UpdateRollbackFailed'
+
+
 class PendingProductionVariantSummary(Base):
     """
      PendingProductionVariantSummary
@@ -6410,8 +8385,8 @@ class PendingProductionVariantSummary(Base):
     desired_weight: Optional[float] = Unassigned()
     current_instance_count: Optional[int] = Unassigned()
     desired_instance_count: Optional[int] = Unassigned()
-    instance_type: Optional[str] = Unassigned()
-    accelerator_type: Optional[str] = Unassigned()
+    instance_type: Optional[ProductionVariantInstanceType] = Unassigned()
+    accelerator_type: Optional[ProductionVariantAcceleratorType] = Unassigned()
     variant_status: Optional[List[ProductionVariantStatus]] = Unassigned()
     current_serverless_config: Optional[ProductionVariantServerlessConfig] = Unassigned()
     desired_serverless_config: Optional[ProductionVariantServerlessConfig] = Unassigned()
@@ -6462,9 +8437,27 @@ class ThroughputConfigDescription(Base):
  	provisioned_read_capacity_units: 	 <p> For provisioned feature groups with online store enabled, this indicates the read throughput you are billed for and can consume without throttling. </p> <p>This field is not applicable for on-demand feature groups. </p>
  	provisioned_write_capacity_units: 	 <p> For provisioned feature groups, this indicates the write throughput you are billed for and can consume without throttling. </p> <p>This field is not applicable for on-demand feature groups. </p>
     """
-    throughput_mode: str
+    throughput_mode: ThroughputMode
     provisioned_read_capacity_units: Optional[int] = Unassigned()
     provisioned_write_capacity_units: Optional[int] = Unassigned()
+
+
+class FeatureGroupStatus(StrEnum):
+    """Enum class for FeatureGroupStatus."""
+    
+    CREATING = 'Creating'
+    CREATED = 'Created'
+    CREATE_FAILED = 'CreateFailed'
+    DELETING = 'Deleting'
+    DELETE_FAILED = 'DeleteFailed'
+
+
+class OfflineStoreStatusValue(StrEnum):
+    """Enum class for OfflineStoreStatusValue."""
+    
+    ACTIVE = 'Active'
+    BLOCKED = 'Blocked'
+    DISABLED = 'Disabled'
 
 
 class OfflineStoreStatus(Base):
@@ -6477,8 +8470,16 @@ class OfflineStoreStatus(Base):
  	status: 	 <p>An <code>OfflineStore</code> status.</p>
  	blocked_reason: 	 <p>The justification for why the OfflineStoreStatus is Blocked (if applicable).</p>
     """
-    status: str
+    status: OfflineStoreStatusValue
     blocked_reason: Optional[str] = Unassigned()
+
+
+class LastUpdateStatusValue(StrEnum):
+    """Enum class for LastUpdateStatusValue."""
+    
+    SUCCESSFUL = 'Successful'
+    FAILED = 'Failed'
+    IN_PROGRESS = 'InProgress'
 
 
 class LastUpdateStatus(Base):
@@ -6491,7 +8492,7 @@ class LastUpdateStatus(Base):
  	status: 	 <p>A value that indicates whether the update was made successful.</p>
  	failure_reason: 	 <p>If the update wasn't successful, indicates the reason why it failed.</p>
     """
-    status: str
+    status: LastUpdateStatusValue
     failure_reason: Optional[str] = Unassigned()
 
 
@@ -6509,6 +8510,15 @@ class FeatureParameter(Base):
     value: Optional[str] = Unassigned()
 
 
+class FlowDefinitionStatus(StrEnum):
+    """Enum class for FlowDefinitionStatus."""
+    
+    INITIALIZING = 'Initializing'
+    ACTIVE = 'Active'
+    FAILED = 'Failed'
+    DELETING = 'Deleting'
+
+
 class HubContentDependency(Base):
     """
      HubContentDependency
@@ -6523,6 +8533,35 @@ class HubContentDependency(Base):
     dependency_copy_path: Optional[str] = Unassigned()
 
 
+class HubContentStatus(StrEnum):
+    """Enum class for HubContentStatus."""
+    
+    AVAILABLE = 'Available'
+    IMPORTING = 'Importing'
+    DELETING = 'Deleting'
+    IMPORT_FAILED = 'ImportFailed'
+    DELETE_FAILED = 'DeleteFailed'
+
+
+class HubStatus(StrEnum):
+    """Enum class for HubStatus."""
+    
+    IN_SERVICE = 'InService'
+    CREATING = 'Creating'
+    UPDATING = 'Updating'
+    DELETING = 'Deleting'
+    CREATE_FAILED = 'CreateFailed'
+    UPDATE_FAILED = 'UpdateFailed'
+    DELETE_FAILED = 'DeleteFailed'
+
+
+class HumanTaskUiStatus(StrEnum):
+    """Enum class for HumanTaskUiStatus."""
+    
+    ACTIVE = 'Active'
+    DELETING = 'Deleting'
+
+
 class UiTemplateInfo(Base):
     """
      UiTemplateInfo
@@ -6535,6 +8574,18 @@ class UiTemplateInfo(Base):
     """
     url: Optional[str] = Unassigned()
     content_sha256: Optional[str] = Unassigned()
+
+
+class HyperParameterTuningJobStatus(StrEnum):
+    """Enum class for HyperParameterTuningJobStatus."""
+    
+    COMPLETED = 'Completed'
+    IN_PROGRESS = 'InProgress'
+    FAILED = 'Failed'
+    STOPPED = 'Stopped'
+    STOPPING = 'Stopping'
+    DELETING = 'Deleting'
+    DELETE_FAILED = 'DeleteFailed'
 
 
 class TrainingJobStatusCounters(Base):
@@ -6573,6 +8624,16 @@ class ObjectiveStatusCounters(Base):
     failed: Optional[int] = Unassigned()
 
 
+class TrainingJobStatus(StrEnum):
+    """Enum class for TrainingJobStatus."""
+    
+    IN_PROGRESS = 'InProgress'
+    COMPLETED = 'Completed'
+    FAILED = 'Failed'
+    STOPPING = 'Stopping'
+    STOPPED = 'Stopped'
+
+
 class FinalHyperParameterTuningJobObjectiveMetric(Base):
     """
      FinalHyperParameterTuningJobObjectiveMetric
@@ -6586,7 +8647,7 @@ class FinalHyperParameterTuningJobObjectiveMetric(Base):
     """
     metric_name: str
     value: float
-    type: Optional[str] = Unassigned()
+    type: Optional[HyperParameterTuningJobObjectiveType] = Unassigned()
 
 
 class HyperParameterTrainingJobSummary(Base):
@@ -6612,7 +8673,7 @@ class HyperParameterTrainingJobSummary(Base):
     training_job_name: str
     training_job_arn: str
     creation_time: datetime.datetime
-    training_job_status: str
+    training_job_status: TrainingJobStatus
     tuned_hyper_parameters: Dict[str, str]
     training_job_definition_name: Optional[str] = Unassigned()
     tuning_job_name: Optional[str] = Unassigned()
@@ -6620,7 +8681,7 @@ class HyperParameterTrainingJobSummary(Base):
     training_end_time: Optional[datetime.datetime] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     final_hyper_parameter_tuning_job_objective_metric: Optional[FinalHyperParameterTuningJobObjectiveMetric] = Unassigned()
-    objective_status: Optional[str] = Unassigned()
+    objective_status: Optional[ObjectiveStatus] = Unassigned()
 
 
 class HyperParameterTuningJobCompletionDetails(Base):
@@ -6647,6 +8708,28 @@ class HyperParameterTuningJobConsumedResources(Base):
  	runtime_in_seconds: 	 <p>The wall clock runtime in seconds used by your hyperparameter tuning job.</p>
     """
     runtime_in_seconds: Optional[int] = Unassigned()
+
+
+class ImageStatus(StrEnum):
+    """Enum class for ImageStatus."""
+    
+    CREATING = 'CREATING'
+    CREATED = 'CREATED'
+    CREATE_FAILED = 'CREATE_FAILED'
+    UPDATING = 'UPDATING'
+    UPDATE_FAILED = 'UPDATE_FAILED'
+    DELETING = 'DELETING'
+    DELETE_FAILED = 'DELETE_FAILED'
+
+
+class ImageVersionStatus(StrEnum):
+    """Enum class for ImageVersionStatus."""
+    
+    CREATING = 'CREATING'
+    CREATED = 'CREATED'
+    CREATE_FAILED = 'CREATE_FAILED'
+    DELETING = 'DELETING'
+    DELETE_FAILED = 'DELETE_FAILED'
 
 
 class InferenceComponentContainerSpecificationSummary(Base):
@@ -6697,6 +8780,29 @@ class InferenceComponentRuntimeConfigSummary(Base):
     current_copy_count: Optional[int] = Unassigned()
 
 
+class InferenceComponentStatus(StrEnum):
+    """Enum class for InferenceComponentStatus."""
+    
+    IN_SERVICE = 'InService'
+    CREATING = 'Creating'
+    UPDATING = 'Updating'
+    FAILED = 'Failed'
+    DELETING = 'Deleting'
+
+
+class InferenceExperimentStatus(StrEnum):
+    """Enum class for InferenceExperimentStatus."""
+    
+    CREATING = 'Creating'
+    CREATED = 'Created'
+    UPDATING = 'Updating'
+    RUNNING = 'Running'
+    STARTING = 'Starting'
+    STOPPING = 'Stopping'
+    COMPLETED = 'Completed'
+    CANCELLED = 'Cancelled'
+
+
 class EndpointMetadata(Base):
     """
      EndpointMetadata
@@ -6711,8 +8817,18 @@ class EndpointMetadata(Base):
     """
     endpoint_name: str
     endpoint_config_name: Optional[str] = Unassigned()
-    endpoint_status: Optional[str] = Unassigned()
+    endpoint_status: Optional[EndpointStatus] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
+
+
+class ModelVariantStatus(StrEnum):
+    """Enum class for ModelVariantStatus."""
+    
+    CREATING = 'Creating'
+    UPDATING = 'Updating'
+    IN_SERVICE = 'InService'
+    DELETING = 'Deleting'
+    DELETED = 'Deleted'
 
 
 class ModelVariantConfigSummary(Base):
@@ -6730,7 +8846,20 @@ class ModelVariantConfigSummary(Base):
     model_name: str
     variant_name: str
     infrastructure_config: ModelInfrastructureConfig
-    status: str
+    status: ModelVariantStatus
+
+
+class RecommendationJobStatus(StrEnum):
+    """Enum class for RecommendationJobStatus."""
+    
+    PENDING = 'PENDING'
+    IN_PROGRESS = 'IN_PROGRESS'
+    COMPLETED = 'COMPLETED'
+    FAILED = 'FAILED'
+    STOPPING = 'STOPPING'
+    STOPPED = 'STOPPED'
+    DELETING = 'DELETING'
+    DELETED = 'DELETED'
 
 
 class RecommendationMetrics(Base):
@@ -6772,7 +8901,7 @@ class EndpointOutputConfiguration(Base):
     """
     endpoint_name: str
     variant_name: str
-    instance_type: Optional[str] = Unassigned()
+    instance_type: Optional[ProductionVariantInstanceType] = Unassigned()
     initial_instance_count: Optional[int] = Unassigned()
     serverless_config: Optional[ProductionVariantServerlessConfig] = Unassigned()
 
@@ -6859,6 +8988,17 @@ class EndpointPerformance(Base):
     endpoint_info: EndpointInfo
 
 
+class LabelingJobStatus(StrEnum):
+    """Enum class for LabelingJobStatus."""
+    
+    INITIALIZING = 'Initializing'
+    IN_PROGRESS = 'InProgress'
+    COMPLETED = 'Completed'
+    FAILED = 'Failed'
+    STOPPING = 'Stopping'
+    STOPPED = 'Stopped'
+
+
 class LabelCounters(Base):
     """
      LabelCounters
@@ -6893,6 +9033,14 @@ class LabelingJobOutput(Base):
     final_active_learning_model_arn: Optional[str] = Unassigned()
 
 
+class ModelCardExportJobStatus(StrEnum):
+    """Enum class for ModelCardExportJobStatus."""
+    
+    IN_PROGRESS = 'InProgress'
+    COMPLETED = 'Completed'
+    FAILED = 'Failed'
+
+
 class ModelCardExportArtifacts(Base):
     """
      ModelCardExportArtifacts
@@ -6903,6 +9051,37 @@ class ModelCardExportArtifacts(Base):
  	s3_export_artifacts: 	 <p>The Amazon S3 URI of the exported model artifacts.</p>
     """
     s3_export_artifacts: str
+
+
+class ModelCardProcessingStatus(StrEnum):
+    """Enum class for ModelCardProcessingStatus."""
+    
+    DELETE_IN_PROGRESS = 'DeleteInProgress'
+    DELETE_PENDING = 'DeletePending'
+    CONTENT_DELETED = 'ContentDeleted'
+    EXPORT_JOBS_DELETED = 'ExportJobsDeleted'
+    DELETE_COMPLETED = 'DeleteCompleted'
+    DELETE_FAILED = 'DeleteFailed'
+
+
+class ModelPackageGroupStatus(StrEnum):
+    """Enum class for ModelPackageGroupStatus."""
+    
+    PENDING = 'Pending'
+    IN_PROGRESS = 'InProgress'
+    COMPLETED = 'Completed'
+    FAILED = 'Failed'
+    DELETING = 'Deleting'
+    DELETE_FAILED = 'DeleteFailed'
+
+
+class DetailedModelPackageStatus(StrEnum):
+    """Enum class for DetailedModelPackageStatus."""
+    
+    NOT_STARTED = 'NotStarted'
+    IN_PROGRESS = 'InProgress'
+    COMPLETED = 'Completed'
+    FAILED = 'Failed'
 
 
 class ModelPackageStatusItem(Base):
@@ -6917,7 +9096,7 @@ class ModelPackageStatusItem(Base):
  	failure_reason: 	 <p>if the overall status is <code>Failed</code>, the reason for the failure.</p>
     """
     name: str
-    status: str
+    status: DetailedModelPackageStatus
     failure_reason: Optional[str] = Unassigned()
 
 
@@ -6933,6 +9112,27 @@ class ModelPackageStatusDetails(Base):
     """
     validation_statuses: List[ModelPackageStatusItem]
     image_scan_statuses: Optional[List[ModelPackageStatusItem]] = Unassigned()
+
+
+class ScheduleStatus(StrEnum):
+    """Enum class for ScheduleStatus."""
+    
+    PENDING = 'Pending'
+    FAILED = 'Failed'
+    SCHEDULED = 'Scheduled'
+    STOPPED = 'Stopped'
+
+
+class ExecutionStatus(StrEnum):
+    """Enum class for ExecutionStatus."""
+    
+    PENDING = 'Pending'
+    COMPLETED = 'Completed'
+    COMPLETED_WITH_VIOLATIONS = 'CompletedWithViolations'
+    IN_PROGRESS = 'InProgress'
+    FAILED = 'Failed'
+    STOPPING = 'Stopping'
+    STOPPED = 'Stopped'
 
 
 class MonitoringExecutionSummary(Base):
@@ -6957,12 +9157,34 @@ class MonitoringExecutionSummary(Base):
     scheduled_time: datetime.datetime
     creation_time: datetime.datetime
     last_modified_time: datetime.datetime
-    monitoring_execution_status: str
+    monitoring_execution_status: ExecutionStatus
     processing_job_arn: Optional[str] = Unassigned()
     endpoint_name: Optional[str] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     monitoring_job_definition_name: Optional[str] = Unassigned()
-    monitoring_type: Optional[str] = Unassigned()
+    monitoring_type: Optional[MonitoringType] = Unassigned()
+
+
+class NotebookInstanceStatus(StrEnum):
+    """Enum class for NotebookInstanceStatus."""
+    
+    PENDING = 'Pending'
+    IN_SERVICE = 'InService'
+    STOPPING = 'Stopping'
+    STOPPED = 'Stopped'
+    FAILED = 'Failed'
+    DELETING = 'Deleting'
+    UPDATING = 'Updating'
+
+
+class PipelineExecutionStatus(StrEnum):
+    """Enum class for PipelineExecutionStatus."""
+    
+    EXECUTING = 'Executing'
+    STOPPING = 'Stopping'
+    STOPPED = 'Stopped'
+    FAILED = 'Failed'
+    SUCCEEDED = 'Succeeded'
 
 
 class PipelineExperimentConfig(Base):
@@ -7005,6 +9227,23 @@ class SelectiveExecutionConfig(Base):
     source_pipeline_execution_arn: Optional[str] = Unassigned()
 
 
+class PipelineStatus(StrEnum):
+    """Enum class for PipelineStatus."""
+    
+    ACTIVE = 'Active'
+    DELETING = 'Deleting'
+
+
+class ProcessingJobStatus(StrEnum):
+    """Enum class for ProcessingJobStatus."""
+    
+    IN_PROGRESS = 'InProgress'
+    COMPLETED = 'Completed'
+    FAILED = 'Failed'
+    STOPPING = 'Stopping'
+    STOPPED = 'Stopped'
+
+
 class ServiceCatalogProvisionedProductDetails(Base):
     """
      ServiceCatalogProvisionedProductDetails
@@ -7017,6 +9256,33 @@ class ServiceCatalogProvisionedProductDetails(Base):
     """
     provisioned_product_id: Optional[str] = Unassigned()
     provisioned_product_status_message: Optional[str] = Unassigned()
+
+
+class ProjectStatus(StrEnum):
+    """Enum class for ProjectStatus."""
+    
+    PENDING = 'Pending'
+    CREATE_IN_PROGRESS = 'CreateInProgress'
+    CREATE_COMPLETED = 'CreateCompleted'
+    CREATE_FAILED = 'CreateFailed'
+    DELETE_IN_PROGRESS = 'DeleteInProgress'
+    DELETE_FAILED = 'DeleteFailed'
+    DELETE_COMPLETED = 'DeleteCompleted'
+    UPDATE_IN_PROGRESS = 'UpdateInProgress'
+    UPDATE_COMPLETED = 'UpdateCompleted'
+    UPDATE_FAILED = 'UpdateFailed'
+
+
+class SpaceStatus(StrEnum):
+    """Enum class for SpaceStatus."""
+    
+    DELETING = 'Deleting'
+    FAILED = 'Failed'
+    IN_SERVICE = 'InService'
+    PENDING = 'Pending'
+    UPDATING = 'Updating'
+    UPDATE_FAILED = 'Update_Failed'
+    DELETE_FAILED = 'Delete_Failed'
 
 
 class SubscribedWorkteam(Base):
@@ -7039,6 +9305,37 @@ class SubscribedWorkteam(Base):
     listing_id: Optional[str] = Unassigned()
 
 
+class SecondaryStatus(StrEnum):
+    """Enum class for SecondaryStatus."""
+    
+    STARTING = 'Starting'
+    LAUNCHING_M_L_INSTANCES = 'LaunchingMLInstances'
+    PREPARING_TRAINING_STACK = 'PreparingTrainingStack'
+    DOWNLOADING = 'Downloading'
+    DOWNLOADING_TRAINING_IMAGE = 'DownloadingTrainingImage'
+    TRAINING = 'Training'
+    UPLOADING = 'Uploading'
+    STOPPING = 'Stopping'
+    STOPPED = 'Stopped'
+    MAX_RUNTIME_EXCEEDED = 'MaxRuntimeExceeded'
+    COMPLETED = 'Completed'
+    FAILED = 'Failed'
+    INTERRUPTED = 'Interrupted'
+    MAX_WAIT_TIME_EXCEEDED = 'MaxWaitTimeExceeded'
+    UPDATING = 'Updating'
+    RESTARTING = 'Restarting'
+    PENDING = 'Pending'
+
+
+class WarmPoolResourceStatus(StrEnum):
+    """Enum class for WarmPoolResourceStatus."""
+    
+    AVAILABLE = 'Available'
+    TERMINATED = 'Terminated'
+    REUSED = 'Reused'
+    IN_USE = 'InUse'
+
+
 class WarmPoolStatus(Base):
     """
      WarmPoolStatus
@@ -7050,7 +9347,7 @@ class WarmPoolStatus(Base):
  	resource_retained_billable_time_in_seconds: 	 <p>The billable time in seconds used by the warm pool. Billable time refers to the absolute wall-clock time.</p> <p>Multiply <code>ResourceRetainedBillableTimeInSeconds</code> by the number of instances (<code>InstanceCount</code>) in your training cluster to get the total compute time SageMaker bills you if you run warm pool training. The formula is as follows: <code>ResourceRetainedBillableTimeInSeconds * InstanceCount</code>.</p>
  	reused_by_job: 	 <p>The name of the matching training job that reused the warm pool.</p>
     """
-    status: str
+    status: WarmPoolResourceStatus
     resource_retained_billable_time_in_seconds: Optional[int] = Unassigned()
     reused_by_job: Optional[str] = Unassigned()
 
@@ -7067,7 +9364,7 @@ class SecondaryStatusTransition(Base):
  	end_time: 	 <p>A timestamp that shows when the training job transitioned out of this secondary status state into another secondary status state or when the training job has ended.</p>
  	status_message: 	 <p>A detailed description of the progress within a secondary status. </p> <p>SageMaker provides secondary statuses and status messages that apply to each of them:</p> <dl> <dt>Starting</dt> <dd> <ul> <li> <p>Starting the training job.</p> </li> <li> <p>Launching requested ML instances.</p> </li> <li> <p>Insufficient capacity error from EC2 while launching instances, retrying!</p> </li> <li> <p>Launched instance was unhealthy, replacing it!</p> </li> <li> <p>Preparing the instances for training.</p> </li> </ul> </dd> <dt>Training</dt> <dd> <ul> <li> <p>Training image download completed. Training in progress.</p> </li> </ul> </dd> </dl> <important> <p>Status messages are subject to change. Therefore, we recommend not including them in code that programmatically initiates actions. For examples, don't use status messages in if statements.</p> </important> <p>To have an overview of your training job's progress, view <code>TrainingJobStatus</code> and <code>SecondaryStatus</code> in <a href="https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeTrainingJob.html">DescribeTrainingJob</a>, and <code>StatusMessage</code> together. For example, at the start of a training job, you might see the following:</p> <ul> <li> <p> <code>TrainingJobStatus</code> - InProgress</p> </li> <li> <p> <code>SecondaryStatus</code> - Training</p> </li> <li> <p> <code>StatusMessage</code> - Downloading the training image</p> </li> </ul>
     """
-    status: str
+    status: SecondaryStatus
     start_time: datetime.datetime
     end_time: Optional[datetime.datetime] = Unassigned()
     status_message: Optional[str] = Unassigned()
@@ -7104,9 +9401,26 @@ class ProfilerRuleEvaluationStatus(Base):
     """
     rule_configuration_name: Optional[str] = Unassigned()
     rule_evaluation_job_arn: Optional[str] = Unassigned()
-    rule_evaluation_status: Optional[str] = Unassigned()
+    rule_evaluation_status: Optional[RuleEvaluationStatus] = Unassigned()
     status_details: Optional[str] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
+
+
+class ProfilingStatus(StrEnum):
+    """Enum class for ProfilingStatus."""
+    
+    ENABLED = 'Enabled'
+    DISABLED = 'Disabled'
+
+
+class TransformJobStatus(StrEnum):
+    """Enum class for TransformJobStatus."""
+    
+    IN_PROGRESS = 'InProgress'
+    COMPLETED = 'Completed'
+    FAILED = 'Failed'
+    STOPPING = 'Stopping'
+    STOPPED = 'Stopped'
 
 
 class TrialComponentSource(Base):
@@ -7165,6 +9479,18 @@ class TrialSource(Base):
     source_type: Optional[str] = Unassigned()
 
 
+class UserProfileStatus(StrEnum):
+    """Enum class for UserProfileStatus."""
+    
+    DELETING = 'Deleting'
+    FAILED = 'Failed'
+    IN_SERVICE = 'InService'
+    PENDING = 'Pending'
+    UPDATING = 'Updating'
+    UPDATE_FAILED = 'Update_Failed'
+    DELETE_FAILED = 'Delete_Failed'
+
+
 class OidcConfigForResponse(Base):
     """
      OidcConfigForResponse
@@ -7207,6 +9533,16 @@ class WorkforceVpcConfigResponse(Base):
     vpc_endpoint_id: Optional[str] = Unassigned()
 
 
+class WorkforceStatus(StrEnum):
+    """Enum class for WorkforceStatus."""
+    
+    INITIALIZING = 'Initializing'
+    UPDATING = 'Updating'
+    DELETING = 'Deleting'
+    FAILED = 'Failed'
+    ACTIVE = 'Active'
+
+
 class Workforce(Base):
     """
      Workforce
@@ -7235,7 +9571,7 @@ class Workforce(Base):
     oidc_config: Optional[OidcConfigForResponse] = Unassigned()
     create_date: Optional[datetime.datetime] = Unassigned()
     workforce_vpc_config: Optional[WorkforceVpcConfigResponse] = Unassigned()
-    status: Optional[str] = Unassigned()
+    status: Optional[WorkforceStatus] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
 
 
@@ -7317,6 +9653,17 @@ class Device(Base):
     iot_thing_name: Optional[str] = Unassigned()
 
 
+class DeviceDeploymentStatus(StrEnum):
+    """Enum class for DeviceDeploymentStatus."""
+    
+    READYTODEPLOY = 'READYTODEPLOY'
+    INPROGRESS = 'INPROGRESS'
+    DEPLOYED = 'DEPLOYED'
+    FAILED = 'FAILED'
+    STOPPING = 'STOPPING'
+    STOPPED = 'STOPPED'
+
+
 class DeviceDeploymentSummary(Base):
     """
      DeviceDeploymentSummary
@@ -7343,7 +9690,7 @@ class DeviceDeploymentSummary(Base):
     device_arn: str
     deployed_stage_name: Optional[str] = Unassigned()
     device_fleet_name: Optional[str] = Unassigned()
-    device_deployment_status: Optional[str] = Unassigned()
+    device_deployment_status: Optional[DeviceDeploymentStatus] = Unassigned()
     device_deployment_status_message: Optional[str] = Unassigned()
     description: Optional[str] = Unassigned()
     deployment_start_time: Optional[datetime.datetime] = Unassigned()
@@ -7423,6 +9770,14 @@ class DeviceSummary(Base):
     agent_version: Optional[str] = Unassigned()
 
 
+class Direction(StrEnum):
+    """Enum class for Direction."""
+    
+    BOTH = 'Both'
+    ASCENDANTS = 'Ascendants'
+    DESCENDANTS = 'Descendants'
+
+
 class DomainDetails(Base):
     """
      DomainDetails
@@ -7441,7 +9796,7 @@ class DomainDetails(Base):
     domain_arn: Optional[str] = Unassigned()
     domain_id: Optional[str] = Unassigned()
     domain_name: Optional[str] = Unassigned()
-    status: Optional[str] = Unassigned()
+    status: Optional[DomainStatus] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     url: Optional[str] = Unassigned()
@@ -7478,7 +9833,7 @@ class DomainSettingsForUpdate(Base):
  	docker_settings: 	 <p>A collection of settings that configure the domain's Docker interaction.</p>
     """
     r_studio_server_pro_domain_settings_for_update: Optional[RStudioServerProDomainSettingsForUpdate] = Unassigned()
-    execution_role_identity_config: Optional[str] = Unassigned()
+    execution_role_identity_config: Optional[ExecutionRoleIdentityConfig] = Unassigned()
     security_group_ids: Optional[List[str]] = Unassigned()
     docker_settings: Optional[DockerSettings] = Unassigned()
 
@@ -7586,7 +9941,7 @@ class Edge(Base):
     """
     source_arn: Optional[str] = Unassigned()
     destination_arn: Optional[str] = Unassigned()
-    association_type: Optional[str] = Unassigned()
+    association_type: Optional[AssociationEdgeType] = Unassigned()
 
 
 class EdgeDeploymentPlanSummary(Base):
@@ -7655,7 +10010,7 @@ class EdgePackagingJobSummary(Base):
     """
     edge_packaging_job_arn: str
     edge_packaging_job_name: str
-    edge_packaging_job_status: str
+    edge_packaging_job_status: EdgePackagingJobStatus
     compilation_job_name: Optional[str] = Unassigned()
     model_name: Optional[str] = Unassigned()
     model_version: Optional[str] = Unassigned()
@@ -7684,8 +10039,8 @@ class MonitoringSchedule(Base):
     """
     monitoring_schedule_arn: Optional[str] = Unassigned()
     monitoring_schedule_name: Optional[str] = Unassigned()
-    monitoring_schedule_status: Optional[str] = Unassigned()
-    monitoring_type: Optional[str] = Unassigned()
+    monitoring_schedule_status: Optional[ScheduleStatus] = Unassigned()
+    monitoring_type: Optional[MonitoringType] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
@@ -7718,7 +10073,7 @@ class Endpoint(Base):
     endpoint_name: str
     endpoint_arn: str
     endpoint_config_name: str
-    endpoint_status: str
+    endpoint_status: EndpointStatus
     creation_time: datetime.datetime
     last_modified_time: datetime.datetime
     production_variants: Optional[List[ProductionVariantSummary]] = Unassigned()
@@ -7727,6 +10082,13 @@ class Endpoint(Base):
     monitoring_schedules: Optional[List[MonitoringSchedule]] = Unassigned()
     tags: Optional[List[Tag]] = Unassigned()
     shadow_production_variants: Optional[List[ProductionVariantSummary]] = Unassigned()
+
+
+class EndpointConfigSortKey(StrEnum):
+    """Enum class for EndpointConfigSortKey."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
 
 
 class EndpointConfigSummary(Base):
@@ -7743,6 +10105,14 @@ class EndpointConfigSummary(Base):
     endpoint_config_name: str
     endpoint_config_arn: str
     creation_time: datetime.datetime
+
+
+class EndpointSortKey(StrEnum):
+    """Enum class for EndpointSortKey."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+    STATUS = 'Status'
 
 
 class EndpointSummary(Base):
@@ -7762,7 +10132,7 @@ class EndpointSummary(Base):
     endpoint_arn: str
     creation_time: datetime.datetime
     last_modified_time: datetime.datetime
-    endpoint_status: str
+    endpoint_status: EndpointStatus
 
 
 class Experiment(Base):
@@ -7863,12 +10233,28 @@ class FeatureGroup(Base):
     online_store_config: Optional[OnlineStoreConfig] = Unassigned()
     offline_store_config: Optional[OfflineStoreConfig] = Unassigned()
     role_arn: Optional[str] = Unassigned()
-    feature_group_status: Optional[str] = Unassigned()
+    feature_group_status: Optional[FeatureGroupStatus] = Unassigned()
     offline_store_status: Optional[OfflineStoreStatus] = Unassigned()
     last_update_status: Optional[LastUpdateStatus] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     description: Optional[str] = Unassigned()
     tags: Optional[List[Tag]] = Unassigned()
+
+
+class FeatureGroupSortBy(StrEnum):
+    """Enum class for FeatureGroupSortBy."""
+    
+    NAME = 'Name'
+    FEATURE_GROUP_STATUS = 'FeatureGroupStatus'
+    OFFLINE_STORE_STATUS = 'OfflineStoreStatus'
+    CREATION_TIME = 'CreationTime'
+
+
+class FeatureGroupSortOrder(StrEnum):
+    """Enum class for FeatureGroupSortOrder."""
+    
+    ASCENDING = 'Ascending'
+    DESCENDING = 'Descending'
 
 
 class FeatureGroupSummary(Base):
@@ -7887,7 +10273,7 @@ class FeatureGroupSummary(Base):
     feature_group_name: str
     feature_group_arn: str
     creation_time: datetime.datetime
-    feature_group_status: Optional[str] = Unassigned()
+    feature_group_status: Optional[FeatureGroupStatus] = Unassigned()
     offline_store_status: Optional[OfflineStoreStatus] = Unassigned()
 
 
@@ -7910,11 +10296,39 @@ class FeatureMetadata(Base):
     feature_group_arn: Optional[str] = Unassigned()
     feature_group_name: Optional[str] = Unassigned()
     feature_name: Optional[str] = Unassigned()
-    feature_type: Optional[str] = Unassigned()
+    feature_type: Optional[FeatureType] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     description: Optional[str] = Unassigned()
     parameters: Optional[List[FeatureParameter]] = Unassigned()
+
+
+class FillingType(StrEnum):
+    """Enum class for FillingType."""
+    
+    FRONTFILL = 'frontfill'
+    MIDDLEFILL = 'middlefill'
+    BACKFILL = 'backfill'
+    FUTUREFILL = 'futurefill'
+    FRONTFILL_VALUE = 'frontfill_value'
+    MIDDLEFILL_VALUE = 'middlefill_value'
+    BACKFILL_VALUE = 'backfill_value'
+    FUTUREFILL_VALUE = 'futurefill_value'
+
+
+class Operator(StrEnum):
+    """Enum class for Operator."""
+    
+    EQUALS = 'Equals'
+    NOT_EQUALS = 'NotEquals'
+    GREATER_THAN = 'GreaterThan'
+    GREATER_THAN_OR_EQUAL_TO = 'GreaterThanOrEqualTo'
+    LESS_THAN = 'LessThan'
+    LESS_THAN_OR_EQUAL_TO = 'LessThanOrEqualTo'
+    CONTAINS = 'Contains'
+    EXISTS = 'Exists'
+    NOT_EXISTS = 'NotExists'
+    IN = 'In'
 
 
 class Filter(Base):
@@ -7929,7 +10343,7 @@ class Filter(Base):
  	value: 	 <p>A value used with <code>Name</code> and <code>Operator</code> to determine which resources satisfy the filter's condition. For numerical properties, <code>Value</code> must be an integer or floating-point decimal. For timestamp properties, <code>Value</code> must be an ISO 8601 date-time string of the following format: <code>YYYY-mm-dd'T'HH:MM:SS</code>.</p>
     """
     name: str
-    operator: Optional[str] = Unassigned()
+    operator: Optional[Operator] = Unassigned()
     value: Optional[str] = Unassigned()
 
 
@@ -7948,9 +10362,16 @@ class FlowDefinitionSummary(Base):
     """
     flow_definition_name: str
     flow_definition_arn: str
-    flow_definition_status: str
+    flow_definition_status: FlowDefinitionStatus
     creation_time: datetime.datetime
     failure_reason: Optional[str] = Unassigned()
+
+
+class SagemakerServicecatalogStatus(StrEnum):
+    """Enum class for SagemakerServicecatalogStatus."""
+    
+    ENABLED = 'Enabled'
+    DISABLED = 'Disabled'
 
 
 class ScalingPolicyObjective(Base):
@@ -7979,6 +10400,28 @@ class ScalingPolicyMetric(Base):
     """
     invocations_per_instance: Optional[int] = Unassigned()
     model_latency: Optional[int] = Unassigned()
+
+
+class ResourceType(StrEnum):
+    """Enum class for ResourceType."""
+    
+    TRAINING_JOB = 'TrainingJob'
+    EXPERIMENT = 'Experiment'
+    EXPERIMENT_TRIAL = 'ExperimentTrial'
+    EXPERIMENT_TRIAL_COMPONENT = 'ExperimentTrialComponent'
+    ENDPOINT = 'Endpoint'
+    MODEL = 'Model'
+    MODEL_PACKAGE = 'ModelPackage'
+    MODEL_PACKAGE_GROUP = 'ModelPackageGroup'
+    PIPELINE = 'Pipeline'
+    PIPELINE_EXECUTION = 'PipelineExecution'
+    FEATURE_GROUP = 'FeatureGroup'
+    FEATURE_METADATA = 'FeatureMetadata'
+    IMAGE = 'Image'
+    IMAGE_VERSION = 'ImageVersion'
+    PROJECT = 'Project'
+    HYPER_PARAMETER_TUNING_JOB = 'HyperParameterTuningJob'
+    MODEL_CARD = 'ModelCard'
 
 
 class PropertyNameQuery(Base):
@@ -8050,13 +10493,21 @@ class HubContentInfo(Base):
     hub_content_name: str
     hub_content_arn: str
     hub_content_version: str
-    hub_content_type: str
+    hub_content_type: HubContentType
     document_schema_version: str
-    hub_content_status: str
+    hub_content_status: HubContentStatus
     creation_time: datetime.datetime
     hub_content_display_name: Optional[str] = Unassigned()
     hub_content_description: Optional[str] = Unassigned()
     hub_content_search_keywords: Optional[List[str]] = Unassigned()
+
+
+class HubContentSortBy(StrEnum):
+    """Enum class for HubContentSortBy."""
+    
+    HUB_CONTENT_NAME = 'HubContentName'
+    CREATION_TIME = 'CreationTime'
+    HUB_CONTENT_STATUS = 'HubContentStatus'
 
 
 class HubInfo(Base):
@@ -8077,12 +10528,21 @@ class HubInfo(Base):
     """
     hub_name: str
     hub_arn: str
-    hub_status: str
+    hub_status: HubStatus
     creation_time: datetime.datetime
     last_modified_time: datetime.datetime
     hub_display_name: Optional[str] = Unassigned()
     hub_description: Optional[str] = Unassigned()
     hub_search_keywords: Optional[List[str]] = Unassigned()
+
+
+class HubSortBy(StrEnum):
+    """Enum class for HubSortBy."""
+    
+    HUB_NAME = 'HubName'
+    CREATION_TIME = 'CreationTime'
+    HUB_STATUS = 'HubStatus'
+    ACCOUNT_ID_OWNER = 'AccountIdOwner'
 
 
 class HumanTaskUiSummary(Base):
@@ -8132,7 +10592,7 @@ class HyperParameterTuningJobSearchEntity(Base):
     hyper_parameter_tuning_job_config: Optional[HyperParameterTuningJobConfig] = Unassigned()
     training_job_definition: Optional[HyperParameterTrainingJobDefinition] = Unassigned()
     training_job_definitions: Optional[List[HyperParameterTrainingJobDefinition]] = Unassigned()
-    hyper_parameter_tuning_job_status: Optional[str] = Unassigned()
+    hyper_parameter_tuning_job_status: Optional[HyperParameterTuningJobStatus] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     hyper_parameter_tuning_end_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
@@ -8145,6 +10605,14 @@ class HyperParameterTuningJobSearchEntity(Base):
     tuning_job_completion_details: Optional[HyperParameterTuningJobCompletionDetails] = Unassigned()
     consumed_resources: Optional[HyperParameterTuningJobConsumedResources] = Unassigned()
     tags: Optional[List[Tag]] = Unassigned()
+
+
+class HyperParameterTuningJobSortByOptions(StrEnum):
+    """Enum class for HyperParameterTuningJobSortByOptions."""
+    
+    NAME = 'Name'
+    STATUS = 'Status'
+    CREATION_TIME = 'CreationTime'
 
 
 class HyperParameterTuningJobSummary(Base):
@@ -8167,8 +10635,8 @@ class HyperParameterTuningJobSummary(Base):
     """
     hyper_parameter_tuning_job_name: str
     hyper_parameter_tuning_job_arn: str
-    hyper_parameter_tuning_job_status: str
-    strategy: str
+    hyper_parameter_tuning_job_status: HyperParameterTuningJobStatus
+    strategy: HyperParameterTuningJobStrategyType
     creation_time: datetime.datetime
     training_job_status_counters: TrainingJobStatusCounters
     objective_status_counters: ObjectiveStatusCounters
@@ -8196,11 +10664,26 @@ class Image(Base):
     creation_time: datetime.datetime
     image_arn: str
     image_name: str
-    image_status: str
+    image_status: ImageStatus
     last_modified_time: datetime.datetime
     description: Optional[str] = Unassigned()
     display_name: Optional[str] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
+
+
+class ImageSortBy(StrEnum):
+    """Enum class for ImageSortBy."""
+    
+    CREATION_TIME = 'CREATION_TIME'
+    LAST_MODIFIED_TIME = 'LAST_MODIFIED_TIME'
+    IMAGE_NAME = 'IMAGE_NAME'
+
+
+class ImageSortOrder(StrEnum):
+    """Enum class for ImageSortOrder."""
+    
+    ASCENDING = 'ASCENDING'
+    DESCENDING = 'DESCENDING'
 
 
 class ImageVersion(Base):
@@ -8221,10 +10704,33 @@ class ImageVersion(Base):
     creation_time: datetime.datetime
     image_arn: str
     image_version_arn: str
-    image_version_status: str
+    image_version_status: ImageVersionStatus
     last_modified_time: datetime.datetime
     version: int
     failure_reason: Optional[str] = Unassigned()
+
+
+class ImageVersionSortBy(StrEnum):
+    """Enum class for ImageVersionSortBy."""
+    
+    CREATION_TIME = 'CREATION_TIME'
+    LAST_MODIFIED_TIME = 'LAST_MODIFIED_TIME'
+    VERSION = 'VERSION'
+
+
+class ImageVersionSortOrder(StrEnum):
+    """Enum class for ImageVersionSortOrder."""
+    
+    ASCENDING = 'ASCENDING'
+    DESCENDING = 'DESCENDING'
+
+
+class InferenceComponentSortKey(StrEnum):
+    """Enum class for InferenceComponentSortKey."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+    STATUS = 'Status'
 
 
 class InferenceComponentSummary(Base):
@@ -8250,7 +10756,14 @@ class InferenceComponentSummary(Base):
     endpoint_name: str
     variant_name: str
     last_modified_time: datetime.datetime
-    inference_component_status: Optional[str] = Unassigned()
+    inference_component_status: Optional[InferenceComponentStatus] = Unassigned()
+
+
+class InferenceExperimentStopDesiredState(StrEnum):
+    """Enum class for InferenceExperimentStopDesiredState."""
+    
+    COMPLETED = 'Completed'
+    CANCELLED = 'Cancelled'
 
 
 class InferenceExperimentSummary(Base):
@@ -8272,8 +10785,8 @@ class InferenceExperimentSummary(Base):
  	role_arn: 	 <p> The ARN of the IAM role that Amazon SageMaker can assume to access model artifacts and container images, and manage Amazon SageMaker Inference endpoints for model deployment. </p>
     """
     name: str
-    type: str
-    status: str
+    type: InferenceExperimentType
+    status: InferenceExperimentStatus
     creation_time: datetime.datetime
     last_modified_time: datetime.datetime
     schedule: Optional[InferenceExperimentSchedule] = Unassigned()
@@ -8306,9 +10819,9 @@ class InferenceRecommendationsJob(Base):
     """
     job_name: str
     job_description: str
-    job_type: str
+    job_type: RecommendationJobType
     job_arn: str
-    status: str
+    status: RecommendationJobStatus
     creation_time: datetime.datetime
     role_arn: str
     last_modified_time: datetime.datetime
@@ -8317,6 +10830,12 @@ class InferenceRecommendationsJob(Base):
     model_name: Optional[str] = Unassigned()
     sample_payload_url: Optional[str] = Unassigned()
     model_package_version_arn: Optional[str] = Unassigned()
+
+
+class RecommendationStepType(StrEnum):
+    """Enum class for RecommendationStepType."""
+    
+    BENCHMARK = 'BENCHMARK'
 
 
 class RecommendationJobInferenceBenchmark(Base):
@@ -8355,9 +10874,9 @@ class InferenceRecommendationsJobStep(Base):
  	status: 	 <p>The current status of the benchmark.</p>
  	inference_benchmark: 	 <p>The details for a specific benchmark.</p>
     """
-    step_type: str
+    step_type: RecommendationStepType
     job_name: str
-    status: str
+    status: RecommendationJobStatus
     inference_benchmark: Optional[RecommendationJobInferenceBenchmark] = Unassigned()
 
 
@@ -8423,7 +10942,7 @@ class LabelingJobSummary(Base):
     labeling_job_arn: str
     creation_time: datetime.datetime
     last_modified_time: datetime.datetime
-    labeling_job_status: str
+    labeling_job_status: LabelingJobStatus
     label_counters: LabelCounters
     workteam_arn: str
     pre_human_task_lambda_arn: str
@@ -8467,6 +10986,67 @@ class LineageGroupSummary(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
 
 
+class LineageType(StrEnum):
+    """Enum class for LineageType."""
+    
+    TRIAL_COMPONENT = 'TrialComponent'
+    ARTIFACT = 'Artifact'
+    CONTEXT = 'Context'
+    ACTION = 'Action'
+
+
+class SortActionsBy(StrEnum):
+    """Enum class for SortActionsBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+
+
+class SortOrder(StrEnum):
+    """Enum class for SortOrder."""
+    
+    ASCENDING = 'Ascending'
+    DESCENDING = 'Descending'
+
+
+class SortArtifactsBy(StrEnum):
+    """Enum class for SortArtifactsBy."""
+    
+    CREATION_TIME = 'CreationTime'
+
+
+class SortAssociationsBy(StrEnum):
+    """Enum class for SortAssociationsBy."""
+    
+    SOURCE_ARN = 'SourceArn'
+    DESTINATION_ARN = 'DestinationArn'
+    SOURCE_TYPE = 'SourceType'
+    DESTINATION_TYPE = 'DestinationType'
+    CREATION_TIME = 'CreationTime'
+
+
+class ListCompilationJobsSortBy(StrEnum):
+    """Enum class for ListCompilationJobsSortBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+    STATUS = 'Status'
+
+
+class SortContextsBy(StrEnum):
+    """Enum class for SortContextsBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+
+
+class MonitoringJobDefinitionSortKey(StrEnum):
+    """Enum class for MonitoringJobDefinitionSortKey."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+
+
 class MonitoringJobDefinitionSummary(Base):
     """
      MonitoringJobDefinitionSummary
@@ -8483,6 +11063,99 @@ class MonitoringJobDefinitionSummary(Base):
     monitoring_job_definition_arn: str
     creation_time: datetime.datetime
     endpoint_name: str
+
+
+class ListDeviceFleetsSortBy(StrEnum):
+    """Enum class for ListDeviceFleetsSortBy."""
+    
+    NAME = 'NAME'
+    CREATION_TIME = 'CREATION_TIME'
+    LAST_MODIFIED_TIME = 'LAST_MODIFIED_TIME'
+
+
+class ListEdgeDeploymentPlansSortBy(StrEnum):
+    """Enum class for ListEdgeDeploymentPlansSortBy."""
+    
+    NAME = 'NAME'
+    DEVICE_FLEET_NAME = 'DEVICE_FLEET_NAME'
+    CREATION_TIME = 'CREATION_TIME'
+    LAST_MODIFIED_TIME = 'LAST_MODIFIED_TIME'
+
+
+class ListEdgePackagingJobsSortBy(StrEnum):
+    """Enum class for ListEdgePackagingJobsSortBy."""
+    
+    NAME = 'NAME'
+    MODEL_NAME = 'MODEL_NAME'
+    CREATION_TIME = 'CREATION_TIME'
+    LAST_MODIFIED_TIME = 'LAST_MODIFIED_TIME'
+    STATUS = 'STATUS'
+
+
+class OrderKey(StrEnum):
+    """Enum class for OrderKey."""
+    
+    ASCENDING = 'Ascending'
+    DESCENDING = 'Descending'
+
+
+class SortExperimentsBy(StrEnum):
+    """Enum class for SortExperimentsBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+
+
+class SortInferenceExperimentsBy(StrEnum):
+    """Enum class for SortInferenceExperimentsBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+    STATUS = 'Status'
+
+
+class ListInferenceRecommendationsJobsSortBy(StrEnum):
+    """Enum class for ListInferenceRecommendationsJobsSortBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+    STATUS = 'Status'
+
+
+class ListLabelingJobsForWorkteamSortByOptions(StrEnum):
+    """Enum class for ListLabelingJobsForWorkteamSortByOptions."""
+    
+    CREATION_TIME = 'CreationTime'
+
+
+class SortBy(StrEnum):
+    """Enum class for SortBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+    STATUS = 'Status'
+
+
+class SortLineageGroupsBy(StrEnum):
+    """Enum class for SortLineageGroupsBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+
+
+class ModelCardExportJobSortBy(StrEnum):
+    """Attribute by which to sort returned export jobs."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+    STATUS = 'Status'
+
+
+class ModelCardExportJobSortOrder(StrEnum):
+    """Enum class for ModelCardExportJobSortOrder."""
+    
+    ASCENDING = 'Ascending'
+    DESCENDING = 'Descending'
 
 
 class ModelCardExportJobSummary(Base):
@@ -8502,11 +11175,24 @@ class ModelCardExportJobSummary(Base):
     """
     model_card_export_job_name: str
     model_card_export_job_arn: str
-    status: str
+    status: ModelCardExportJobStatus
     model_card_name: str
     model_card_version: int
     created_at: datetime.datetime
     last_modified_at: datetime.datetime
+
+
+class ModelCardVersionSortBy(StrEnum):
+    """Enum class for ModelCardVersionSortBy."""
+    
+    VERSION = 'Version'
+
+
+class ModelCardSortOrder(StrEnum):
+    """Enum class for ModelCardSortOrder."""
+    
+    ASCENDING = 'Ascending'
+    DESCENDING = 'Descending'
 
 
 class ModelCardVersionSummary(Base):
@@ -8525,10 +11211,17 @@ class ModelCardVersionSummary(Base):
     """
     model_card_name: str
     model_card_arn: str
-    model_card_status: str
+    model_card_status: ModelCardStatus
     model_card_version: int
     creation_time: datetime.datetime
     last_modified_time: Optional[datetime.datetime] = Unassigned()
+
+
+class ModelCardSortBy(StrEnum):
+    """Enum class for ModelCardSortBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
 
 
 class ModelCardSummary(Base):
@@ -8546,9 +11239,18 @@ class ModelCardSummary(Base):
     """
     model_card_name: str
     model_card_arn: str
-    model_card_status: str
+    model_card_status: ModelCardStatus
     creation_time: datetime.datetime
     last_modified_time: Optional[datetime.datetime] = Unassigned()
+
+
+class ModelMetadataFilterType(StrEnum):
+    """Enum class for ModelMetadataFilterType."""
+    
+    DOMAIN = 'Domain'
+    FRAMEWORK = 'Framework'
+    TASK = 'Task'
+    FRAMEWORK_VERSION = 'FrameworkVersion'
 
 
 class ModelMetadataFilter(Base):
@@ -8561,7 +11263,7 @@ class ModelMetadataFilter(Base):
  	name: 	 <p>The name of the of the model to filter by.</p>
  	value: 	 <p>The value to filter the model metadata.</p>
     """
-    name: str
+    name: ModelMetadataFilterType
     value: str
 
 
@@ -8597,6 +11299,13 @@ class ModelMetadataSummary(Base):
     framework_version: str
 
 
+class ModelPackageGroupSortBy(StrEnum):
+    """Enum class for ModelPackageGroupSortBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+
+
 class ModelPackageGroupSummary(Base):
     """
      ModelPackageGroupSummary
@@ -8613,8 +11322,23 @@ class ModelPackageGroupSummary(Base):
     model_package_group_name: str
     model_package_group_arn: str
     creation_time: datetime.datetime
-    model_package_group_status: str
+    model_package_group_status: ModelPackageGroupStatus
     model_package_group_description: Optional[str] = Unassigned()
+
+
+class ModelPackageType(StrEnum):
+    """Enum class for ModelPackageType."""
+    
+    VERSIONED = 'Versioned'
+    UNVERSIONED = 'Unversioned'
+    BOTH = 'Both'
+
+
+class ModelPackageSortBy(StrEnum):
+    """Enum class for ModelPackageSortBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
 
 
 class ModelPackageSummary(Base):
@@ -8635,12 +11359,19 @@ class ModelPackageSummary(Base):
     """
     model_package_arn: str
     creation_time: datetime.datetime
-    model_package_status: str
+    model_package_status: ModelPackageStatus
     model_package_name: Optional[str] = Unassigned()
     model_package_group_name: Optional[str] = Unassigned()
     model_package_version: Optional[int] = Unassigned()
     model_package_description: Optional[str] = Unassigned()
-    model_approval_status: Optional[str] = Unassigned()
+    model_approval_status: Optional[ModelApprovalStatus] = Unassigned()
+
+
+class ModelSortKey(StrEnum):
+    """Enum class for ModelSortKey."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
 
 
 class ModelSummary(Base):
@@ -8659,6 +11390,20 @@ class ModelSummary(Base):
     creation_time: datetime.datetime
 
 
+class MonitoringAlertHistorySortKey(StrEnum):
+    """Enum class for MonitoringAlertHistorySortKey."""
+    
+    CREATION_TIME = 'CreationTime'
+    STATUS = 'Status'
+
+
+class MonitoringAlertStatus(StrEnum):
+    """Enum class for MonitoringAlertStatus."""
+    
+    IN_ALERT = 'InAlert'
+    OK = 'OK'
+
+
 class MonitoringAlertHistorySummary(Base):
     """
      MonitoringAlertHistorySummary
@@ -8674,7 +11419,7 @@ class MonitoringAlertHistorySummary(Base):
     monitoring_schedule_name: str
     monitoring_alert_name: str
     creation_time: datetime.datetime
-    alert_status: str
+    alert_status: MonitoringAlertStatus
 
 
 class ModelDashboardIndicatorAction(Base):
@@ -8719,10 +11464,26 @@ class MonitoringAlertSummary(Base):
     monitoring_alert_name: str
     creation_time: datetime.datetime
     last_modified_time: datetime.datetime
-    alert_status: str
+    alert_status: MonitoringAlertStatus
     datapoints_to_alert: int
     evaluation_period: int
     actions: MonitoringAlertActions
+
+
+class MonitoringExecutionSortKey(StrEnum):
+    """Enum class for MonitoringExecutionSortKey."""
+    
+    CREATION_TIME = 'CreationTime'
+    SCHEDULED_TIME = 'ScheduledTime'
+    STATUS = 'Status'
+
+
+class MonitoringScheduleSortKey(StrEnum):
+    """Enum class for MonitoringScheduleSortKey."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+    STATUS = 'Status'
 
 
 class MonitoringScheduleSummary(Base):
@@ -8745,10 +11506,25 @@ class MonitoringScheduleSummary(Base):
     monitoring_schedule_arn: str
     creation_time: datetime.datetime
     last_modified_time: datetime.datetime
-    monitoring_schedule_status: str
+    monitoring_schedule_status: ScheduleStatus
     endpoint_name: Optional[str] = Unassigned()
     monitoring_job_definition_name: Optional[str] = Unassigned()
-    monitoring_type: Optional[str] = Unassigned()
+    monitoring_type: Optional[MonitoringType] = Unassigned()
+
+
+class NotebookInstanceLifecycleConfigSortKey(StrEnum):
+    """Enum class for NotebookInstanceLifecycleConfigSortKey."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+    LAST_MODIFIED_TIME = 'LastModifiedTime'
+
+
+class NotebookInstanceLifecycleConfigSortOrder(StrEnum):
+    """Enum class for NotebookInstanceLifecycleConfigSortOrder."""
+    
+    ASCENDING = 'Ascending'
+    DESCENDING = 'Descending'
 
 
 class NotebookInstanceLifecycleConfigSummary(Base):
@@ -8767,6 +11543,21 @@ class NotebookInstanceLifecycleConfigSummary(Base):
     notebook_instance_lifecycle_config_arn: str
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
+
+
+class NotebookInstanceSortKey(StrEnum):
+    """Enum class for NotebookInstanceSortKey."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+    STATUS = 'Status'
+
+
+class NotebookInstanceSortOrder(StrEnum):
+    """Enum class for NotebookInstanceSortOrder."""
+    
+    ASCENDING = 'Ascending'
+    DESCENDING = 'Descending'
 
 
 class NotebookInstanceSummary(Base):
@@ -8789,14 +11580,25 @@ class NotebookInstanceSummary(Base):
     """
     notebook_instance_name: str
     notebook_instance_arn: str
-    notebook_instance_status: Optional[str] = Unassigned()
+    notebook_instance_status: Optional[NotebookInstanceStatus] = Unassigned()
     url: Optional[str] = Unassigned()
-    instance_type: Optional[str] = Unassigned()
+    instance_type: Optional[InstanceType] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     notebook_instance_lifecycle_config_name: Optional[str] = Unassigned()
     default_code_repository: Optional[str] = Unassigned()
     additional_code_repositories: Optional[List[str]] = Unassigned()
+
+
+class StepStatus(StrEnum):
+    """Enum class for StepStatus."""
+    
+    STARTING = 'Starting'
+    EXECUTING = 'Executing'
+    STOPPING = 'Stopping'
+    STOPPED = 'Stopped'
+    FAILED = 'Failed'
+    SUCCEEDED = 'Succeeded'
 
 
 class TrainingJobStepMetadata(Base):
@@ -8917,7 +11719,7 @@ class PipelineExecutionStepMetadata(Base):
  	condition: 	 <p>The outcome of the condition evaluation that was run by this step execution.</p>
  	callback: 	 <p>The URL of the Amazon SQS queue used by this step execution, the pipeline generated token, and a list of output parameters.</p>
  	lambda: 	 <p>The Amazon Resource Name (ARN) of the Lambda function that was run by this step execution and a list of output parameters.</p>
- 	e_m_r: 	 <p>The configurations and outcomes of an Amazon EMR step execution.</p>
+ 	emr: 	 <p>The configurations and outcomes of an Amazon EMR step execution.</p>
  	quality_check: 	 <p>The configurations and outcomes of the check step execution. This includes: </p> <ul> <li> <p>The type of the check conducted.</p> </li> <li> <p>The Amazon S3 URIs of baseline constraints and statistics files to be used for the drift check.</p> </li> <li> <p>The Amazon S3 URIs of newly calculated baseline constraints and statistics.</p> </li> <li> <p>The model package group name provided.</p> </li> <li> <p>The Amazon S3 URI of the violation report if violations detected.</p> </li> <li> <p>The Amazon Resource Name (ARN) of check processing job initiated by the step execution.</p> </li> <li> <p>The Boolean flags indicating if the drift check is skipped.</p> </li> <li> <p>If step property <code>BaselineUsedForDriftCheck</code> is set the same as <code>CalculatedBaseline</code>.</p> </li> </ul>
  	clarify_check: 	 <p>Container for the metadata for a Clarify check step. The configurations and outcomes of the check step execution. This includes: </p> <ul> <li> <p>The type of the check conducted,</p> </li> <li> <p>The Amazon S3 URIs of baseline constraints and statistics files to be used for the drift check.</p> </li> <li> <p>The Amazon S3 URIs of newly calculated baseline constraints and statistics.</p> </li> <li> <p>The model package group name provided.</p> </li> <li> <p>The Amazon S3 URI of the violation report if violations detected.</p> </li> <li> <p>The Amazon Resource Name (ARN) of check processing job initiated by the step execution.</p> </li> <li> <p>The boolean flags indicating if the drift check is skipped.</p> </li> <li> <p>If step property <code>BaselineUsedForDriftCheck</code> is set the same as <code>CalculatedBaseline</code>.</p> </li> </ul>
  	fail: 	 <p>The configurations and outcomes of a Fail step execution.</p>
@@ -8932,7 +11734,7 @@ class PipelineExecutionStepMetadata(Base):
     condition: Optional[ConditionStepMetadata] = Unassigned()
     callback: Optional[CallbackStepMetadata] = Unassigned()
     # lambda: Optional[LambdaStepMetadata] = Unassigned()
-    e_m_r: Optional[EMRStepMetadata] = Unassigned()
+    emr: Optional[EMRStepMetadata] = Unassigned()
     quality_check: Optional[QualityCheckStepMetadata] = Unassigned()
     clarify_check: Optional[ClarifyCheckStepMetadata] = Unassigned()
     fail: Optional[FailStepMetadata] = Unassigned()
@@ -8975,12 +11777,19 @@ class PipelineExecutionStep(Base):
     step_description: Optional[str] = Unassigned()
     start_time: Optional[datetime.datetime] = Unassigned()
     end_time: Optional[datetime.datetime] = Unassigned()
-    step_status: Optional[str] = Unassigned()
+    step_status: Optional[StepStatus] = Unassigned()
     cache_hit_result: Optional[CacheHitResult] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     metadata: Optional[PipelineExecutionStepMetadata] = Unassigned()
     attempt_count: Optional[int] = Unassigned()
     selective_execution_result: Optional[SelectiveExecutionResult] = Unassigned()
+
+
+class SortPipelineExecutionsBy(StrEnum):
+    """Enum class for SortPipelineExecutionsBy."""
+    
+    CREATION_TIME = 'CreationTime'
+    PIPELINE_EXECUTION_ARN = 'PipelineExecutionArn'
 
 
 class PipelineExecutionSummary(Base):
@@ -8999,7 +11808,7 @@ class PipelineExecutionSummary(Base):
     """
     pipeline_execution_arn: Optional[str] = Unassigned()
     start_time: Optional[datetime.datetime] = Unassigned()
-    pipeline_execution_status: Optional[str] = Unassigned()
+    pipeline_execution_status: Optional[PipelineExecutionStatus] = Unassigned()
     pipeline_execution_description: Optional[str] = Unassigned()
     pipeline_execution_display_name: Optional[str] = Unassigned()
     pipeline_execution_failure_reason: Optional[str] = Unassigned()
@@ -9017,6 +11826,13 @@ class Parameter(Base):
     """
     name: str
     value: str
+
+
+class SortPipelinesBy(StrEnum):
+    """Enum class for SortPipelinesBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
 
 
 class PipelineSummary(Base):
@@ -9064,11 +11880,25 @@ class ProcessingJobSummary(Base):
     processing_job_name: str
     processing_job_arn: str
     creation_time: datetime.datetime
-    processing_job_status: str
+    processing_job_status: ProcessingJobStatus
     processing_end_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     exit_message: Optional[str] = Unassigned()
+
+
+class ProjectSortBy(StrEnum):
+    """Enum class for ProjectSortBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+
+
+class ProjectSortOrder(StrEnum):
+    """Enum class for ProjectSortOrder."""
+    
+    ASCENDING = 'Ascending'
+    DESCENDING = 'Descending'
 
 
 class ProjectSummary(Base):
@@ -9089,8 +11919,21 @@ class ProjectSummary(Base):
     project_arn: str
     project_id: str
     creation_time: datetime.datetime
-    project_status: str
+    project_status: ProjectStatus
     project_description: Optional[str] = Unassigned()
+
+
+class ResourceCatalogSortOrder(StrEnum):
+    """Enum class for ResourceCatalogSortOrder."""
+    
+    ASCENDING = 'Ascending'
+    DESCENDING = 'Descending'
+
+
+class ResourceCatalogSortBy(StrEnum):
+    """Enum class for ResourceCatalogSortBy."""
+    
+    CREATION_TIME = 'CreationTime'
 
 
 class ResourceCatalog(Base):
@@ -9111,6 +11954,13 @@ class ResourceCatalog(Base):
     creation_time: datetime.datetime
 
 
+class SpaceSortKey(StrEnum):
+    """Enum class for SpaceSortKey."""
+    
+    CREATION_TIME = 'CreationTime'
+    LAST_MODIFIED_TIME = 'LastModifiedTime'
+
+
 class SpaceSettingsSummary(Base):
     """
      SpaceSettingsSummary
@@ -9121,7 +11971,7 @@ class SpaceSettingsSummary(Base):
  	app_type: 	 <p>The type of app created within the space.</p>
  	space_storage_settings: 	 <p>The storage settings for a private space.</p>
     """
-    app_type: Optional[str] = Unassigned()
+    app_type: Optional[AppType] = Unassigned()
     space_storage_settings: Optional[SpaceStorageSettings] = Unassigned()
 
 
@@ -9134,7 +11984,7 @@ class SpaceSharingSettingsSummary(Base):
 	----------------------
  	sharing_type: 	 <p>Specifies the sharing type of the space.</p>
     """
-    sharing_type: Optional[str] = Unassigned()
+    sharing_type: Optional[SharingType] = Unassigned()
 
 
 class OwnershipSettingsSummary(Base):
@@ -9168,13 +12018,21 @@ class SpaceDetails(Base):
     """
     domain_id: Optional[str] = Unassigned()
     space_name: Optional[str] = Unassigned()
-    status: Optional[str] = Unassigned()
+    status: Optional[SpaceStatus] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     space_settings_summary: Optional[SpaceSettingsSummary] = Unassigned()
     space_sharing_settings_summary: Optional[SpaceSharingSettingsSummary] = Unassigned()
     ownership_settings_summary: Optional[OwnershipSettingsSummary] = Unassigned()
     space_display_name: Optional[str] = Unassigned()
+
+
+class StudioLifecycleConfigSortKey(StrEnum):
+    """Enum class for StudioLifecycleConfigSortKey."""
+    
+    CREATION_TIME = 'CreationTime'
+    LAST_MODIFIED_TIME = 'LastModifiedTime'
+    NAME = 'Name'
 
 
 class StudioLifecycleConfigDetails(Base):
@@ -9194,7 +12052,16 @@ class StudioLifecycleConfigDetails(Base):
     studio_lifecycle_config_name: Optional[str] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
-    studio_lifecycle_config_app_type: Optional[str] = Unassigned()
+    studio_lifecycle_config_app_type: Optional[StudioLifecycleConfigAppType] = Unassigned()
+
+
+class TrainingJobSortByOptions(StrEnum):
+    """Enum class for TrainingJobSortByOptions."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+    STATUS = 'Status'
+    FINAL_OBJECTIVE_METRIC_VALUE = 'FinalObjectiveMetricValue'
 
 
 class TrainingJobSummary(Base):
@@ -9215,7 +12082,7 @@ class TrainingJobSummary(Base):
     training_job_name: str
     training_job_arn: str
     creation_time: datetime.datetime
-    training_job_status: str
+    training_job_status: TrainingJobStatus
     training_end_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     warm_pool_status: Optional[WarmPoolStatus] = Unassigned()
@@ -9239,10 +12106,17 @@ class TransformJobSummary(Base):
     transform_job_name: str
     transform_job_arn: str
     creation_time: datetime.datetime
-    transform_job_status: str
+    transform_job_status: TransformJobStatus
     transform_end_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
+
+
+class SortTrialComponentsBy(StrEnum):
+    """Enum class for SortTrialComponentsBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
 
 
 class TrialComponentSummary(Base):
@@ -9277,6 +12151,13 @@ class TrialComponentSummary(Base):
     last_modified_by: Optional[UserContext] = Unassigned()
 
 
+class SortTrialsBy(StrEnum):
+    """Enum class for SortTrialsBy."""
+    
+    NAME = 'Name'
+    CREATION_TIME = 'CreationTime'
+
+
 class TrialSummary(Base):
     """
      TrialSummary
@@ -9299,6 +12180,13 @@ class TrialSummary(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
 
 
+class UserProfileSortKey(StrEnum):
+    """Enum class for UserProfileSortKey."""
+    
+    CREATION_TIME = 'CreationTime'
+    LAST_MODIFIED_TIME = 'LastModifiedTime'
+
+
 class UserProfileDetails(Base):
     """
      UserProfileDetails
@@ -9314,9 +12202,23 @@ class UserProfileDetails(Base):
     """
     domain_id: Optional[str] = Unassigned()
     user_profile_name: Optional[str] = Unassigned()
-    status: Optional[str] = Unassigned()
+    status: Optional[UserProfileStatus] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
+
+
+class ListWorkforcesSortByOptions(StrEnum):
+    """Enum class for ListWorkforcesSortByOptions."""
+    
+    NAME = 'Name'
+    CREATE_DATE = 'CreateDate'
+
+
+class ListWorkteamsSortByOptions(StrEnum):
+    """Enum class for ListWorkteamsSortByOptions."""
+    
+    NAME = 'Name'
+    CREATE_DATE = 'CreateDate'
 
 
 class Model(Base):
@@ -9377,7 +12279,7 @@ class ModelCard(Base):
     model_card_name: Optional[str] = Unassigned()
     model_card_version: Optional[int] = Unassigned()
     content: Optional[str] = Unassigned()
-    model_card_status: Optional[str] = Unassigned()
+    model_card_status: Optional[ModelCardStatus] = Unassigned()
     security_config: Optional[ModelCardSecurityConfig] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     created_by: Optional[UserContext] = Unassigned()
@@ -9406,7 +12308,7 @@ class ModelDashboardEndpoint(Base):
     endpoint_arn: str
     creation_time: datetime.datetime
     last_modified_time: datetime.datetime
-    endpoint_status: str
+    endpoint_status: EndpointStatus
 
 
 class TransformJob(Base):
@@ -9441,13 +12343,13 @@ class TransformJob(Base):
     """
     transform_job_name: Optional[str] = Unassigned()
     transform_job_arn: Optional[str] = Unassigned()
-    transform_job_status: Optional[str] = Unassigned()
+    transform_job_status: Optional[TransformJobStatus] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     model_name: Optional[str] = Unassigned()
     max_concurrent_transforms: Optional[int] = Unassigned()
     model_client_config: Optional[ModelClientConfig] = Unassigned()
     max_payload_in_m_b: Optional[int] = Unassigned()
-    batch_strategy: Optional[str] = Unassigned()
+    batch_strategy: Optional[BatchStrategy] = Unassigned()
     environment: Optional[Dict[str, str]] = Unassigned()
     transform_input: Optional[TransformInput] = Unassigned()
     transform_output: Optional[TransformOutput] = Unassigned()
@@ -9485,8 +12387,8 @@ class ModelDashboardMonitoringSchedule(Base):
     """
     monitoring_schedule_arn: Optional[str] = Unassigned()
     monitoring_schedule_name: Optional[str] = Unassigned()
-    monitoring_schedule_status: Optional[str] = Unassigned()
-    monitoring_type: Optional[str] = Unassigned()
+    monitoring_schedule_status: Optional[ScheduleStatus] = Unassigned()
+    monitoring_type: Optional[MonitoringType] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
@@ -9520,7 +12422,7 @@ class ModelDashboardModelCard(Base):
     model_card_arn: Optional[str] = Unassigned()
     model_card_name: Optional[str] = Unassigned()
     model_card_version: Optional[int] = Unassigned()
-    model_card_status: Optional[str] = Unassigned()
+    model_card_status: Optional[ModelCardStatus] = Unassigned()
     security_config: Optional[ModelCardSecurityConfig] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     created_by: Optional[UserContext] = Unassigned()
@@ -9596,10 +12498,10 @@ class ModelPackage(Base):
     inference_specification: Optional[InferenceSpecification] = Unassigned()
     source_algorithm_specification: Optional[SourceAlgorithmSpecification] = Unassigned()
     validation_specification: Optional[ModelPackageValidationSpecification] = Unassigned()
-    model_package_status: Optional[str] = Unassigned()
+    model_package_status: Optional[ModelPackageStatus] = Unassigned()
     model_package_status_details: Optional[ModelPackageStatusDetails] = Unassigned()
     certify_for_marketplace: Optional[bool] = Unassigned()
-    model_approval_status: Optional[str] = Unassigned()
+    model_approval_status: Optional[ModelApprovalStatus] = Unassigned()
     created_by: Optional[UserContext] = Unassigned()
     metadata_properties: Optional[MetadataProperties] = Unassigned()
     model_metrics: Optional[ModelMetrics] = Unassigned()
@@ -9614,7 +12516,7 @@ class ModelPackage(Base):
     tags: Optional[List[Tag]] = Unassigned()
     customer_metadata_properties: Optional[Dict[str, str]] = Unassigned()
     drift_check_baselines: Optional[DriftCheckBaselines] = Unassigned()
-    skip_model_validation: Optional[str] = Unassigned()
+    skip_model_validation: Optional[SkipModelValidation] = Unassigned()
 
 
 class ModelPackageGroup(Base):
@@ -9637,8 +12539,16 @@ class ModelPackageGroup(Base):
     model_package_group_description: Optional[str] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     created_by: Optional[UserContext] = Unassigned()
-    model_package_group_status: Optional[str] = Unassigned()
+    model_package_group_status: Optional[ModelPackageGroupStatus] = Unassigned()
     tags: Optional[List[Tag]] = Unassigned()
+
+
+class ModelVariantAction(StrEnum):
+    """Enum class for ModelVariantAction."""
+    
+    RETAIN = 'Retain'
+    REMOVE = 'Remove'
+    PROMOTE = 'Promote'
 
 
 class NestedFilters(Base):
@@ -9707,7 +12617,7 @@ class Pipeline(Base):
     pipeline_display_name: Optional[str] = Unassigned()
     pipeline_description: Optional[str] = Unassigned()
     role_arn: Optional[str] = Unassigned()
-    pipeline_status: Optional[str] = Unassigned()
+    pipeline_status: Optional[PipelineStatus] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     last_run_time: Optional[datetime.datetime] = Unassigned()
@@ -9742,7 +12652,7 @@ class PipelineExecution(Base):
     pipeline_arn: Optional[str] = Unassigned()
     pipeline_execution_arn: Optional[str] = Unassigned()
     pipeline_execution_display_name: Optional[str] = Unassigned()
-    pipeline_execution_status: Optional[str] = Unassigned()
+    pipeline_execution_status: Optional[PipelineExecutionStatus] = Unassigned()
     pipeline_execution_description: Optional[str] = Unassigned()
     pipeline_experiment_config: Optional[PipelineExperimentConfig] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
@@ -9796,7 +12706,7 @@ class ProcessingJob(Base):
     role_arn: Optional[str] = Unassigned()
     experiment_config: Optional[ExperimentConfig] = Unassigned()
     processing_job_arn: Optional[str] = Unassigned()
-    processing_job_status: Optional[str] = Unassigned()
+    processing_job_status: Optional[ProcessingJobStatus] = Unassigned()
     exit_message: Optional[str] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     processing_end_time: Optional[datetime.datetime] = Unassigned()
@@ -9853,7 +12763,7 @@ class Project(Base):
     project_description: Optional[str] = Unassigned()
     service_catalog_provisioning_details: Optional[ServiceCatalogProvisioningDetails] = Unassigned()
     service_catalog_provisioned_product_details: Optional[ServiceCatalogProvisionedProductDetails] = Unassigned()
-    project_status: Optional[str] = Unassigned()
+    project_status: Optional[ProjectStatus] = Unassigned()
     created_by: Optional[UserContext] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     tags: Optional[List[Tag]] = Unassigned()
@@ -9898,7 +12808,7 @@ class Vertex(Base):
     """
     arn: Optional[str] = Unassigned()
     type: Optional[str] = Unassigned()
-    lineage_type: Optional[str] = Unassigned()
+    lineage_type: Optional[LineageType] = Unassigned()
 
 
 class RemoteDebugConfigForUpdate(Base):
@@ -10002,7 +12912,7 @@ class SearchExpression(Base):
     filters: Optional[List[Filter]] = Unassigned()
     nested_filters: Optional[List[NestedFilters]] = Unassigned()
     sub_expressions: Optional[List['SearchExpression']] = Unassigned()
-    operator: Optional[str] = Unassigned()
+    operator: Optional[BooleanOperator] = Unassigned()
 
 
 class TrainingJob(Base):
@@ -10057,8 +12967,8 @@ class TrainingJob(Base):
     labeling_job_arn: Optional[str] = Unassigned()
     auto_m_l_job_arn: Optional[str] = Unassigned()
     model_artifacts: Optional[ModelArtifacts] = Unassigned()
-    training_job_status: Optional[str] = Unassigned()
-    secondary_status: Optional[str] = Unassigned()
+    training_job_status: Optional[TrainingJobStatus] = Unassigned()
+    secondary_status: Optional[SecondaryStatus] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     hyper_parameters: Optional[Dict[str, str]] = Unassigned()
     algorithm_specification: Optional[AlgorithmSpecification] = Unassigned()
@@ -10255,6 +13165,13 @@ class SearchRecord(Base):
     model: Optional[ModelDashboardModel] = Unassigned()
 
 
+class SearchSortOrder(StrEnum):
+    """Enum class for SearchSortOrder."""
+    
+    ASCENDING = 'Ascending'
+    DESCENDING = 'Descending'
+
+
 class VisibilityConditions(Base):
     """
      VisibilityConditions
@@ -10294,9 +13211,17 @@ class ThroughputConfigUpdate(Base):
  	provisioned_read_capacity_units: 	 <p>For provisioned feature groups with online store enabled, this indicates the read throughput you are billed for and can consume without throttling. </p>
  	provisioned_write_capacity_units: 	 <p>For provisioned feature groups, this indicates the write throughput you are billed for and can consume without throttling. </p>
     """
-    throughput_mode: Optional[str] = Unassigned()
+    throughput_mode: Optional[ThroughputMode] = Unassigned()
     provisioned_read_capacity_units: Optional[int] = Unassigned()
     provisioned_write_capacity_units: Optional[int] = Unassigned()
+
+
+class VariantPropertyType(StrEnum):
+    """Enum class for VariantPropertyType."""
+    
+    DESIRED_INSTANCE_COUNT = 'DesiredInstanceCount'
+    DESIRED_WEIGHT = 'DesiredWeight'
+    DATA_CAPTURE_CONFIG = 'DataCaptureConfig'
 
 
 class VariantProperty(Base):
@@ -10308,5 +13233,5 @@ class VariantProperty(Base):
 	----------------------
  	variant_property_type: 	 <p>The type of variant property. The supported values are:</p> <ul> <li> <p> <code>DesiredInstanceCount</code>: Overrides the existing variant instance counts using the <code>InitialInstanceCount</code> values in the <code>ProductionVariants</code> of <a href="https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpointConfig.html">CreateEndpointConfig</a>.</p> </li> <li> <p> <code>DesiredWeight</code>: Overrides the existing variant weights using the <code>InitialVariantWeight</code> values in the <code>ProductionVariants</code> of <a href="https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpointConfig.html">CreateEndpointConfig</a>.</p> </li> <li> <p> <code>DataCaptureConfig</code>: (Not currently supported.)</p> </li> </ul>
     """
-    variant_property_type: str
+    variant_property_type: VariantPropertyType
 
