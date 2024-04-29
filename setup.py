@@ -13,6 +13,7 @@ setup(
         'boto3>=1.34.0,<2.0.0',
         'pydantic>=2.7.0,<3.0.0',
         'pytest>=8.0.0,<9.0.0',
+        'strenum>=0.4.15'
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

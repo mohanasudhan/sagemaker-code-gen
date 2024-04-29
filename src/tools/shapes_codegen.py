@@ -153,7 +153,7 @@ class ShapesCodeGen():
             enum_members += f"{convert_to_snake_case(enum_string).upper()} = '{enum_string}'\n"
             
         return SHAPE_EMUM_CLASS_TEMPLATE.format(
-            class_name=class_name + "(str, Enum)",
+            class_name=class_name + "(StrEnum)",
             docstring=docstring,
             enum_members=add_indent(enum_members, 4)
         )
@@ -200,7 +200,7 @@ class ShapesCodeGen():
         """
         imports = "import datetime\n"
         imports += "\n"
-        imports += "from enum import Enum\n"
+        imports += "from strenum import StrEnum\n"
         imports += "from pydantic import BaseModel\n"
         imports += "from typing import List, Dict, Optional\n"
         imports += "\n"

@@ -13,7 +13,7 @@
 # language governing permissions and limitations under the License.
 import datetime
 
-from enum import Enum
+from strenum import StrEnum
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 
@@ -49,7 +49,7 @@ class ActionSource(Base):
     source_id: Optional[str] = Unassigned()
 
 
-class ActionStatus(str, Enum):
+class ActionStatus(StrEnum):
     """Enum class for ActionStatus."""
     
     UNKNOWN = 'Unknown'
@@ -84,7 +84,7 @@ class ActionSummary(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
 
 
-class AssociationEdgeType(str, Enum):
+class AssociationEdgeType(StrEnum):
     """Enum class for AssociationEdgeType."""
     
     CONTRIBUTED_TO = 'ContributedTo'
@@ -108,14 +108,14 @@ class Tag(Base):
     value: str
 
 
-class S3ModelDataType(str, Enum):
+class S3ModelDataType(StrEnum):
     """Enum class for S3ModelDataType."""
     
     S3_PREFIX = 'S3Prefix'
     S3_OBJECT = 'S3Object'
 
 
-class ModelCompressionType(str, Enum):
+class ModelCompressionType(StrEnum):
     """Enum class for ModelCompressionType."""
     
     NONE = 'None'
@@ -176,14 +176,14 @@ class ModelInput(Base):
     data_input_config: str
 
 
-class AdditionalS3DataSourceDataType(str, Enum):
+class AdditionalS3DataSourceDataType(StrEnum):
     """Enum class for AdditionalS3DataSourceDataType."""
     
     S3_OBJECT = 'S3Object'
     S3_PREFIX = 'S3Prefix'
 
 
-class CompressionType(str, Enum):
+class CompressionType(StrEnum):
     """Enum class for CompressionType."""
     
     NONE = 'None'
@@ -240,7 +240,7 @@ class ModelPackageContainerDefinition(Base):
     additional_s3_data_source: Optional[AdditionalS3DataSource] = Unassigned()
 
 
-class TransformInstanceType(str, Enum):
+class TransformInstanceType(StrEnum):
     """Enum class for TransformInstanceType."""
     
     ML_M4_XLARGE = 'ml.m4.xlarge'
@@ -277,7 +277,7 @@ class TransformInstanceType(str, Enum):
     ML_G4DN_16XLARGE = 'ml.g4dn.16xlarge'
 
 
-class ProductionVariantInstanceType(str, Enum):
+class ProductionVariantInstanceType(StrEnum):
     """Enum class for ProductionVariantInstanceType."""
     
     ML_T2_MEDIUM = 'ml.t2.medium'
@@ -497,7 +497,7 @@ class AgentVersion(Base):
     agent_count: int
 
 
-class AggregationTransformationValue(str, Enum):
+class AggregationTransformationValue(StrEnum):
     """Enum class for AggregationTransformationValue."""
     
     SUM = 'sum'
@@ -519,14 +519,14 @@ class Alarm(Base):
     alarm_name: Optional[str] = Unassigned()
 
 
-class AlgorithmSortBy(str, Enum):
+class AlgorithmSortBy(StrEnum):
     """Enum class for AlgorithmSortBy."""
     
     NAME = 'Name'
     CREATION_TIME = 'CreationTime'
 
 
-class TrainingInputMode(str, Enum):
+class TrainingInputMode(StrEnum):
     """<p>The training input mode that the algorithm supports. For more information about input modes, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html">Algorithms</a>.</p> <p> <b>Pipe mode</b> </p> <p>If an algorithm supports <code>Pipe</code> mode, Amazon SageMaker streams data directly from Amazon S3 to the container.</p> <p> <b>File mode</b> </p> <p>If an algorithm supports <code>File</code> mode, SageMaker downloads the training data from S3 to the provisioned ML storage volume, and mounts the directory to the Docker volume for the training container.</p> <p>You must provision the ML storage volume with sufficient capacity to accommodate the data downloaded from S3. In addition to the training data, the ML storage volume also stores the output model. The algorithm container uses the ML storage volume to also store intermediate information, if any.</p> <p>For distributed algorithms, training data is distributed uniformly. Your training duration is predictable if the input data objects sizes are approximately the same. SageMaker does not split the files any further for model training. If the object sizes are skewed, training won't be optimal as the data distribution is also skewed when one host in a training cluster is overloaded, thus becoming a bottleneck in training.</p> <p> <b>FastFile mode</b> </p> <p>If an algorithm supports <code>FastFile</code> mode, SageMaker streams data directly from S3 to the container with no code changes, and provides file system access to the data. Users can author their training script to interact with these files as if they were stored on disk.</p> <p> <code>FastFile</code> mode works best when the data is read sequentially. Augmented manifest files aren't supported. The startup time is lower when there are fewer files in the S3 bucket provided.</p>"""
     
     PIPE = 'Pipe'
@@ -548,7 +548,7 @@ class MetricDefinition(Base):
     regex: str
 
 
-class TrainingRepositoryAccessMode(str, Enum):
+class TrainingRepositoryAccessMode(StrEnum):
     """Enum class for TrainingRepositoryAccessMode."""
     
     PLATFORM = 'Platform'
@@ -607,7 +607,7 @@ class AlgorithmSpecification(Base):
     training_image_config: Optional[TrainingImageConfig] = Unassigned()
 
 
-class AlgorithmStatus(str, Enum):
+class AlgorithmStatus(StrEnum):
     """Enum class for AlgorithmStatus."""
     
     PENDING = 'Pending'
@@ -617,7 +617,7 @@ class AlgorithmStatus(str, Enum):
     DELETING = 'Deleting'
 
 
-class DetailedAlgorithmStatus(str, Enum):
+class DetailedAlgorithmStatus(StrEnum):
     """Enum class for DetailedAlgorithmStatus."""
     
     NOT_STARTED = 'NotStarted'
@@ -676,7 +676,7 @@ class AlgorithmSummary(Base):
     algorithm_description: Optional[str] = Unassigned()
 
 
-class S3DataType(str, Enum):
+class S3DataType(StrEnum):
     """Enum class for S3DataType."""
     
     MANIFEST_FILE = 'ManifestFile'
@@ -684,7 +684,7 @@ class S3DataType(str, Enum):
     AUGMENTED_MANIFEST_FILE = 'AugmentedManifestFile'
 
 
-class S3DataDistribution(str, Enum):
+class S3DataDistribution(StrEnum):
     """Enum class for S3DataDistribution."""
     
     FULLY_REPLICATED = 'FullyReplicated'
@@ -711,14 +711,14 @@ class S3DataSource(Base):
     instance_group_names: Optional[List[str]] = Unassigned()
 
 
-class FileSystemAccessMode(str, Enum):
+class FileSystemAccessMode(StrEnum):
     """Enum class for FileSystemAccessMode."""
     
     RW = 'rw'
     RO = 'ro'
 
 
-class FileSystemType(str, Enum):
+class FileSystemType(StrEnum):
     """Enum class for FileSystemType."""
     
     EFS = 'EFS'
@@ -757,7 +757,7 @@ class DataSource(Base):
     file_system_data_source: Optional[FileSystemDataSource] = Unassigned()
 
 
-class RecordWrapper(str, Enum):
+class RecordWrapper(StrEnum):
     """Enum class for RecordWrapper."""
     
     NONE = 'None'
@@ -800,7 +800,7 @@ class Channel(Base):
     shuffle_config: Optional[ShuffleConfig] = Unassigned()
 
 
-class OutputCompressionType(str, Enum):
+class OutputCompressionType(StrEnum):
     """Enum class for OutputCompressionType."""
     
     GZIP = 'GZIP'
@@ -823,7 +823,7 @@ class OutputDataConfig(Base):
     compression_type: Optional[OutputCompressionType] = Unassigned()
 
 
-class TrainingInstanceType(str, Enum):
+class TrainingInstanceType(StrEnum):
     """Enum class for TrainingInstanceType."""
     
     ML_M4_XLARGE = 'ml.m4.xlarge'
@@ -973,7 +973,7 @@ class TrainingJobDefinition(Base):
     hyper_parameters: Optional[Dict[str, str]] = Unassigned()
 
 
-class BatchStrategy(str, Enum):
+class BatchStrategy(StrEnum):
     """Enum class for BatchStrategy."""
     
     MULTI_RECORD = 'MultiRecord'
@@ -1006,7 +1006,7 @@ class TransformDataSource(Base):
     s3_data_source: TransformS3DataSource
 
 
-class SplitType(str, Enum):
+class SplitType(StrEnum):
     """Enum class for SplitType."""
     
     NONE = 'None'
@@ -1033,7 +1033,7 @@ class TransformInput(Base):
     split_type: Optional[SplitType] = Unassigned()
 
 
-class AssemblyType(str, Enum):
+class AssemblyType(StrEnum):
     """Enum class for AssemblyType."""
     
     NONE = 'None'
@@ -1140,7 +1140,7 @@ class AnnotationConsolidationConfig(Base):
     annotation_consolidation_lambda_arn: str
 
 
-class AppType(str, Enum):
+class AppType(StrEnum):
     """Enum class for AppType."""
     
     JUPYTER_SERVER = 'JupyterServer'
@@ -1154,7 +1154,7 @@ class AppType(str, Enum):
     CANVAS = 'Canvas'
 
 
-class AppStatus(str, Enum):
+class AppStatus(StrEnum):
     """Enum class for AppStatus."""
     
     DELETED = 'Deleted'
@@ -1164,7 +1164,7 @@ class AppStatus(str, Enum):
     PENDING = 'Pending'
 
 
-class AppInstanceType(str, Enum):
+class AppInstanceType(StrEnum):
     """Enum class for AppInstanceType."""
     
     SYSTEM = 'system'
@@ -1374,7 +1374,7 @@ class AppImageConfigDetails(Base):
     jupyter_lab_app_image_config: Optional[JupyterLabAppImageConfig] = Unassigned()
 
 
-class AppImageConfigSortKey(str, Enum):
+class AppImageConfigSortKey(StrEnum):
     """Enum class for AppImageConfigSortKey."""
     
     CREATION_TIME = 'CreationTime'
@@ -1382,21 +1382,21 @@ class AppImageConfigSortKey(str, Enum):
     NAME = 'Name'
 
 
-class AppNetworkAccessType(str, Enum):
+class AppNetworkAccessType(StrEnum):
     """Enum class for AppNetworkAccessType."""
     
     PUBLIC_INTERNET_ONLY = 'PublicInternetOnly'
     VPC_ONLY = 'VpcOnly'
 
 
-class AppSecurityGroupManagement(str, Enum):
+class AppSecurityGroupManagement(StrEnum):
     """Enum class for AppSecurityGroupManagement."""
     
     SERVICE = 'Service'
     CUSTOMER = 'Customer'
 
 
-class AppSortKey(str, Enum):
+class AppSortKey(StrEnum):
     """Enum class for AppSortKey."""
     
     CREATION_TIME = 'CreationTime'
@@ -1418,7 +1418,7 @@ class AppSpecification(Base):
     container_arguments: Optional[List[str]] = Unassigned()
 
 
-class ArtifactSourceIdType(str, Enum):
+class ArtifactSourceIdType(StrEnum):
     """Enum class for ArtifactSourceIdType."""
     
     M_D5_HASH = 'MD5Hash'
@@ -1551,7 +1551,7 @@ class AsyncInferenceClientConfig(Base):
     max_concurrent_invocations_per_instance: Optional[int] = Unassigned()
 
 
-class AsyncNotificationTopicTypes(str, Enum):
+class AsyncNotificationTopicTypes(StrEnum):
     """Enum class for AsyncNotificationTopicTypes."""
     
     SUCCESS_NOTIFICATION_TOPIC = 'SUCCESS_NOTIFICATION_TOPIC'
@@ -1606,7 +1606,7 @@ class AsyncInferenceConfig(Base):
     client_config: Optional[AsyncInferenceClientConfig] = Unassigned()
 
 
-class AthenaResultFormat(str, Enum):
+class AthenaResultFormat(StrEnum):
     """<p>The data storage format for Athena query results.</p>"""
     
     PARQUET = 'PARQUET'
@@ -1616,7 +1616,7 @@ class AthenaResultFormat(str, Enum):
     TEXTFILE = 'TEXTFILE'
 
 
-class AthenaResultCompressionType(str, Enum):
+class AthenaResultCompressionType(StrEnum):
     """<p>The compression used for Athena query results.</p>"""
     
     GZIP = 'GZIP'
@@ -1650,14 +1650,14 @@ class AthenaDatasetDefinition(Base):
     output_compression: Optional[AthenaResultCompressionType] = Unassigned()
 
 
-class AuthMode(str, Enum):
+class AuthMode(StrEnum):
     """Enum class for AuthMode."""
     
     SSO = 'SSO'
     IAM = 'IAM'
 
 
-class AutoMLAlgorithm(str, Enum):
+class AutoMLAlgorithm(StrEnum):
     """Enum class for AutoMLAlgorithm."""
     
     XGBOOST = 'xgboost'
@@ -1683,14 +1683,14 @@ class AutoMLAlgorithmConfig(Base):
     auto_m_l_algorithms: List[str]
 
 
-class AutoMLJobObjectiveType(str, Enum):
+class AutoMLJobObjectiveType(StrEnum):
     """Enum class for AutoMLJobObjectiveType."""
     
     MAXIMIZE = 'Maximize'
     MINIMIZE = 'Minimize'
 
 
-class AutoMLMetricEnum(str, Enum):
+class AutoMLMetricEnum(StrEnum):
     """Enum class for AutoMLMetricEnum."""
     
     ACCURACY = 'Accuracy'
@@ -1730,7 +1730,7 @@ class FinalAutoMLJobObjectiveMetric(Base):
     standard_metric_name: Optional[AutoMLMetricEnum] = Unassigned()
 
 
-class ObjectiveStatus(str, Enum):
+class ObjectiveStatus(StrEnum):
     """Enum class for ObjectiveStatus."""
     
     SUCCEEDED = 'Succeeded'
@@ -1738,7 +1738,7 @@ class ObjectiveStatus(str, Enum):
     FAILED = 'Failed'
 
 
-class CandidateStepType(str, Enum):
+class CandidateStepType(StrEnum):
     """Enum class for CandidateStepType."""
     
     A_W_S_SAGE_MAKER_TRAINING_JOB = 'AWS::SageMaker::TrainingJob'
@@ -1762,7 +1762,7 @@ class AutoMLCandidateStep(Base):
     candidate_step_name: str
 
 
-class CandidateStatus(str, Enum):
+class CandidateStatus(StrEnum):
     """Enum class for CandidateStatus."""
     
     COMPLETED = 'Completed'
@@ -1804,7 +1804,7 @@ class CandidateArtifactLocations(Base):
     backtest_results: Optional[str] = Unassigned()
 
 
-class MetricSetSource(str, Enum):
+class MetricSetSource(StrEnum):
     """Enum class for MetricSetSource."""
     
     TRAIN = 'Train'
@@ -1812,7 +1812,7 @@ class MetricSetSource(str, Enum):
     TEST = 'Test'
 
 
-class AutoMLMetricExtendedEnum(str, Enum):
+class AutoMLMetricExtendedEnum(StrEnum):
     """Enum class for AutoMLMetricExtendedEnum."""
     
     ACCURACY = 'Accuracy'
@@ -1875,7 +1875,7 @@ class CandidateProperties(Base):
     candidate_metrics: Optional[List[MetricDatum]] = Unassigned()
 
 
-class AutoMLProcessingUnit(str, Enum):
+class AutoMLProcessingUnit(StrEnum):
     """Enum class for AutoMLProcessingUnit."""
     
     CPU = 'CPU'
@@ -1930,7 +1930,7 @@ class AutoMLCandidateGenerationConfig(Base):
     algorithms_config: Optional[List[AutoMLAlgorithmConfig]] = Unassigned()
 
 
-class AutoMLS3DataType(str, Enum):
+class AutoMLS3DataType(StrEnum):
     """Enum class for AutoMLS3DataType."""
     
     MANIFEST_FILE = 'ManifestFile'
@@ -1964,7 +1964,7 @@ class AutoMLDataSource(Base):
     s3_data_source: AutoMLS3DataSource
 
 
-class AutoMLChannelType(str, Enum):
+class AutoMLChannelType(StrEnum):
     """Enum class for AutoMLChannelType."""
     
     TRAINING = 'training'
@@ -2083,7 +2083,7 @@ class AutoMLSecurityConfig(Base):
     vpc_config: Optional[VpcConfig] = Unassigned()
 
 
-class AutoMLMode(str, Enum):
+class AutoMLMode(StrEnum):
     """Enum class for AutoMLMode."""
     
     AUTO = 'AUTO'
@@ -2123,7 +2123,7 @@ class AutoMLJobObjective(Base):
     metric_name: AutoMLMetricEnum
 
 
-class AutoMLJobSecondaryStatus(str, Enum):
+class AutoMLJobSecondaryStatus(StrEnum):
     """Enum class for AutoMLJobSecondaryStatus."""
     
     STARTING = 'Starting'
@@ -2147,7 +2147,7 @@ class AutoMLJobSecondaryStatus(str, Enum):
     PRE_TRAINING = 'PreTraining'
 
 
-class AutoMLJobStatus(str, Enum):
+class AutoMLJobStatus(StrEnum):
     """Enum class for AutoMLJobStatus."""
     
     COMPLETED = 'Completed'
@@ -2333,7 +2333,7 @@ class CandidateGenerationConfig(Base):
     algorithms_config: Optional[List[AutoMLAlgorithmConfig]] = Unassigned()
 
 
-class ProblemType(str, Enum):
+class ProblemType(StrEnum):
     """Enum class for ProblemType."""
     
     BINARY_CLASSIFICATION = 'BinaryClassification'
@@ -2405,7 +2405,7 @@ class AutoMLProblemTypeConfig(Base):
     text_generation_job_config: Optional[TextGenerationJobConfig] = Unassigned()
 
 
-class AutoMLProblemTypeConfigName(str, Enum):
+class AutoMLProblemTypeConfigName(StrEnum):
     """Enum class for AutoMLProblemTypeConfigName."""
     
     IMAGE_CLASSIFICATION = 'ImageClassification'
@@ -2469,7 +2469,7 @@ class AutoMLResolvedAttributes(Base):
     auto_m_l_problem_type_resolved_attributes: Optional[AutoMLProblemTypeResolvedAttributes] = Unassigned()
 
 
-class AutoMLSortBy(str, Enum):
+class AutoMLSortBy(StrEnum):
     """Enum class for AutoMLSortBy."""
     
     NAME = 'Name'
@@ -2477,7 +2477,7 @@ class AutoMLSortBy(str, Enum):
     STATUS = 'Status'
 
 
-class AutoMLSortOrder(str, Enum):
+class AutoMLSortOrder(StrEnum):
     """Enum class for AutoMLSortOrder."""
     
     ASCENDING = 'Ascending'
@@ -2510,7 +2510,7 @@ class AutoRollbackConfig(Base):
     alarms: Optional[List[Alarm]] = Unassigned()
 
 
-class AutotuneMode(str, Enum):
+class AutotuneMode(StrEnum):
     """Enum class for AutotuneMode."""
     
     ENABLED = 'Enabled'
@@ -2528,7 +2528,7 @@ class Autotune(Base):
     mode: AutotuneMode
 
 
-class AwsManagedHumanLoopRequestSource(str, Enum):
+class AwsManagedHumanLoopRequestSource(StrEnum):
     """Enum class for AwsManagedHumanLoopRequestSource."""
     
     A_W_S_REKOGNITION_DETECT_MODERATION_LABELS_IMAGE_V3 = 'AWS/Rekognition/DetectModerationLabels/Image/V3'
@@ -2588,7 +2588,7 @@ class InferenceSpecification(Base):
     supported_response_m_i_m_e_types: Optional[List[str]] = Unassigned()
 
 
-class ModelPackageStatus(str, Enum):
+class ModelPackageStatus(StrEnum):
     """Enum class for ModelPackageStatus."""
     
     PENDING = 'Pending'
@@ -2598,7 +2598,7 @@ class ModelPackageStatus(str, Enum):
     DELETING = 'Deleting'
 
 
-class ModelApprovalStatus(str, Enum):
+class ModelApprovalStatus(StrEnum):
     """Enum class for ModelApprovalStatus."""
     
     APPROVED = 'Approved'
@@ -2682,14 +2682,14 @@ class MonitoringDatasetFormat(Base):
     parquet: Optional[MonitoringParquetDatasetFormat] = Unassigned()
 
 
-class ProcessingS3InputMode(str, Enum):
+class ProcessingS3InputMode(StrEnum):
     """Enum class for ProcessingS3InputMode."""
     
     PIPE = 'Pipe'
     FILE = 'File'
 
 
-class ProcessingS3DataDistributionType(str, Enum):
+class ProcessingS3DataDistributionType(StrEnum):
     """Enum class for ProcessingS3DataDistributionType."""
     
     FULLY_REPLICATED = 'FullyReplicated'
@@ -2774,7 +2774,7 @@ class Bias(Base):
     post_training_report: Optional[MetricsSource] = Unassigned()
 
 
-class TrafficRoutingConfigType(str, Enum):
+class TrafficRoutingConfigType(StrEnum):
     """Enum class for TrafficRoutingConfigType."""
     
     ALL_AT_ONCE = 'ALL_AT_ONCE'
@@ -2782,7 +2782,7 @@ class TrafficRoutingConfigType(str, Enum):
     LINEAR = 'LINEAR'
 
 
-class CapacitySizeType(str, Enum):
+class CapacitySizeType(StrEnum):
     """Enum class for CapacitySizeType."""
     
     INSTANCE_COUNT = 'INSTANCE_COUNT'
@@ -2837,7 +2837,7 @@ class BlueGreenUpdatePolicy(Base):
     maximum_execution_timeout_in_seconds: Optional[int] = Unassigned()
 
 
-class BooleanOperator(str, Enum):
+class BooleanOperator(StrEnum):
     """Enum class for BooleanOperator."""
     
     AND = 'And'
@@ -2886,7 +2886,7 @@ class CallbackStepMetadata(Base):
     output_parameters: Optional[List[OutputParameter]] = Unassigned()
 
 
-class CandidateSortBy(str, Enum):
+class CandidateSortBy(StrEnum):
     """Enum class for CandidateSortBy."""
     
     CREATION_TIME = 'CreationTime'
@@ -2894,7 +2894,7 @@ class CandidateSortBy(str, Enum):
     FINAL_OBJECTIVE_METRIC_VALUE = 'FinalObjectiveMetricValue'
 
 
-class FeatureStatus(str, Enum):
+class FeatureStatus(StrEnum):
     """Enum class for FeatureStatus."""
     
     ENABLED = 'ENABLED'
@@ -2943,7 +2943,7 @@ class WorkspaceSettings(Base):
     s3_kms_key_id: Optional[str] = Unassigned()
 
 
-class DataSourceName(str, Enum):
+class DataSourceName(StrEnum):
     """Enum class for DataSourceName."""
     
     SALESFORCE_GENIE = 'SalesforceGenie'
@@ -3040,7 +3040,7 @@ class CaptureContentTypeHeader(Base):
     json_content_types: Optional[List[str]] = Unassigned()
 
 
-class CaptureMode(str, Enum):
+class CaptureMode(StrEnum):
     """Enum class for CaptureMode."""
     
     INPUT = 'Input'
@@ -3060,7 +3060,7 @@ class CaptureOption(Base):
     capture_mode: CaptureMode
 
 
-class CaptureStatus(str, Enum):
+class CaptureStatus(StrEnum):
     """Enum class for CaptureStatus."""
     
     STARTED = 'Started'
@@ -3169,7 +3169,7 @@ class ClarifyCheckStepMetadata(Base):
     register_new_baseline: Optional[bool] = Unassigned()
 
 
-class ClarifyFeatureType(str, Enum):
+class ClarifyFeatureType(StrEnum):
     """Enum class for ClarifyFeatureType."""
     
     NUMERICAL = 'numerical'
@@ -3225,7 +3225,7 @@ class ClarifyShapBaselineConfig(Base):
     shap_baseline_uri: Optional[str] = Unassigned()
 
 
-class ClarifyTextLanguage(str, Enum):
+class ClarifyTextLanguage(StrEnum):
     """Enum class for ClarifyTextLanguage."""
     
     AF = 'af'
@@ -3290,7 +3290,7 @@ class ClarifyTextLanguage(str, Enum):
     XX = 'xx'
 
 
-class ClarifyTextGranularity(str, Enum):
+class ClarifyTextGranularity(StrEnum):
     """Enum class for ClarifyTextGranularity."""
     
     TOKEN = 'token'
@@ -3348,7 +3348,7 @@ class ClarifyExplainerConfig(Base):
     inference_config: Optional[ClarifyInferenceConfig] = Unassigned()
 
 
-class ClusterInstanceType(str, Enum):
+class ClusterInstanceType(StrEnum):
     """Enum class for ClusterInstanceType."""
     
     ML_P4D_24XLARGE = 'ml.p4d.24xlarge'
@@ -3451,7 +3451,7 @@ class ClusterInstanceGroupSpecification(Base):
     threads_per_core: Optional[int] = Unassigned()
 
 
-class ClusterInstanceStatus(str, Enum):
+class ClusterInstanceStatus(StrEnum):
     """Enum class for ClusterInstanceStatus."""
     
     RUNNING = 'Running'
@@ -3519,14 +3519,14 @@ class ClusterNodeSummary(Base):
     instance_status: ClusterInstanceStatusDetails
 
 
-class ClusterSortBy(str, Enum):
+class ClusterSortBy(StrEnum):
     """Enum class for ClusterSortBy."""
     
     CREATION_TIME = 'CREATION_TIME'
     NAME = 'NAME'
 
 
-class ClusterStatus(str, Enum):
+class ClusterStatus(StrEnum):
     """Enum class for ClusterStatus."""
     
     CREATING = 'Creating'
@@ -3582,7 +3582,7 @@ class CodeRepository(Base):
     repository_url: str
 
 
-class CodeRepositorySortBy(str, Enum):
+class CodeRepositorySortBy(StrEnum):
     """Enum class for CodeRepositorySortBy."""
     
     NAME = 'Name'
@@ -3590,7 +3590,7 @@ class CodeRepositorySortBy(str, Enum):
     LAST_MODIFIED_TIME = 'LastModifiedTime'
 
 
-class CodeRepositorySortOrder(str, Enum):
+class CodeRepositorySortOrder(StrEnum):
     """Enum class for CodeRepositorySortOrder."""
     
     ASCENDING = 'Ascending'
@@ -3701,7 +3701,7 @@ class CollectionConfiguration(Base):
     collection_parameters: Optional[Dict[str, str]] = Unassigned()
 
 
-class CollectionType(str, Enum):
+class CollectionType(StrEnum):
     """Enum class for CollectionType."""
     
     LIST = 'List'
@@ -3709,7 +3709,7 @@ class CollectionType(str, Enum):
     VECTOR = 'Vector'
 
 
-class CompilationJobStatus(str, Enum):
+class CompilationJobStatus(StrEnum):
     """Enum class for CompilationJobStatus."""
     
     INPROGRESS = 'INPROGRESS'
@@ -3720,7 +3720,7 @@ class CompilationJobStatus(str, Enum):
     STOPPED = 'STOPPED'
 
 
-class TargetDevice(str, Enum):
+class TargetDevice(StrEnum):
     """Enum class for TargetDevice."""
     
     LAMBDA = 'lambda'
@@ -3762,14 +3762,14 @@ class TargetDevice(str, Enum):
     IMX8MPLUS = 'imx8mplus'
 
 
-class TargetPlatformOs(str, Enum):
+class TargetPlatformOs(StrEnum):
     """Enum class for TargetPlatformOs."""
     
     ANDROID = 'ANDROID'
     LINUX = 'LINUX'
 
 
-class TargetPlatformArch(str, Enum):
+class TargetPlatformArch(StrEnum):
     """Enum class for TargetPlatformArch."""
     
     X86_64 = 'X86_64'
@@ -3779,7 +3779,7 @@ class TargetPlatformArch(str, Enum):
     ARM_EABIHF = 'ARM_EABIHF'
 
 
-class TargetPlatformAccelerator(str, Enum):
+class TargetPlatformAccelerator(StrEnum):
     """Enum class for TargetPlatformAccelerator."""
     
     INTEL_GRAPHICS = 'INTEL_GRAPHICS'
@@ -3820,14 +3820,14 @@ class CompilationJobSummary(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
 
 
-class CompleteOnConvergence(str, Enum):
+class CompleteOnConvergence(StrEnum):
     """Enum class for CompleteOnConvergence."""
     
     DISABLED = 'Disabled'
     ENABLED = 'Enabled'
 
 
-class ConditionOutcome(str, Enum):
+class ConditionOutcome(StrEnum):
     """Enum class for ConditionOutcome."""
     
     TRUE = 'True'
@@ -3858,7 +3858,7 @@ class ConflictException(Base):
     message: Optional[str] = Unassigned()
 
 
-class RepositoryAccessMode(str, Enum):
+class RepositoryAccessMode(StrEnum):
     """Enum class for RepositoryAccessMode."""
     
     PLATFORM = 'Platform'
@@ -3891,14 +3891,14 @@ class ImageConfig(Base):
     repository_auth_config: Optional[RepositoryAuthConfig] = Unassigned()
 
 
-class ContainerMode(str, Enum):
+class ContainerMode(StrEnum):
     """Enum class for ContainerMode."""
     
     SINGLE_MODEL = 'SingleModel'
     MULTI_MODEL = 'MultiModel'
 
 
-class ModelCacheSetting(str, Enum):
+class ModelCacheSetting(StrEnum):
     """Enum class for ModelCacheSetting."""
     
     ENABLED = 'Enabled'
@@ -3947,7 +3947,7 @@ class ContainerDefinition(Base):
     multi_model_config: Optional[MultiModelConfig] = Unassigned()
 
 
-class ContentClassifier(str, Enum):
+class ContentClassifier(StrEnum):
     """Enum class for ContentClassifier."""
     
     FREE_OF_PERSONALLY_IDENTIFIABLE_INFORMATION = 'FreeOfPersonallyIdentifiableInformation'
@@ -3992,7 +3992,7 @@ class ContextSummary(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
 
 
-class HyperParameterScalingType(str, Enum):
+class HyperParameterScalingType(StrEnum):
     """Enum class for HyperParameterScalingType."""
     
     AUTO = 'Auto'
@@ -4063,7 +4063,7 @@ class MetadataProperties(Base):
     project_id: Optional[str] = Unassigned()
 
 
-class ParameterType(str, Enum):
+class ParameterType(StrEnum):
     """Enum class for ParameterType."""
     
     INTEGER = 'Integer'
@@ -4126,7 +4126,7 @@ class HyperParameterSpecification(Base):
     default_value: Optional[str] = Unassigned()
 
 
-class HyperParameterTuningJobObjectiveType(str, Enum):
+class HyperParameterTuningJobObjectiveType(StrEnum):
     """Enum class for HyperParameterTuningJobObjectiveType."""
     
     MAXIMIZE = 'Maximize'
@@ -4189,7 +4189,7 @@ class ModelDeployConfig(Base):
     endpoint_name: Optional[str] = Unassigned()
 
 
-class Framework(str, Enum):
+class Framework(StrEnum):
     """Enum class for Framework."""
     
     TENSORFLOW = 'TENSORFLOW'
@@ -4379,7 +4379,7 @@ class DataQualityJobInput(Base):
     batch_transform_input: Optional[BatchTransformInput] = Unassigned()
 
 
-class ProcessingS3UploadMode(str, Enum):
+class ProcessingS3UploadMode(StrEnum):
     """Enum class for ProcessingS3UploadMode."""
     
     CONTINUOUS = 'Continuous'
@@ -4428,7 +4428,7 @@ class MonitoringOutputConfig(Base):
     kms_key_id: Optional[str] = Unassigned()
 
 
-class ProcessingInstanceType(str, Enum):
+class ProcessingInstanceType(StrEnum):
     """Enum class for ProcessingInstanceType."""
     
     ML_T3_MEDIUM = 'ml.t3.medium'
@@ -4535,7 +4535,7 @@ class MonitoringStoppingCondition(Base):
     max_runtime_in_seconds: int
 
 
-class EdgePresetDeploymentType(str, Enum):
+class EdgePresetDeploymentType(StrEnum):
     """Enum class for EdgePresetDeploymentType."""
     
     GREENGRASS_V2_COMPONENT = 'GreengrassV2Component'
@@ -4559,7 +4559,7 @@ class EdgeOutputConfig(Base):
     preset_deployment_config: Optional[str] = Unassigned()
 
 
-class NotebookOutputOption(str, Enum):
+class NotebookOutputOption(StrEnum):
     """Enum class for NotebookOutputOption."""
     
     ALLOWED = 'Allowed'
@@ -4642,14 +4642,14 @@ class TensorBoardAppSettings(Base):
     default_resource_spec: Optional[ResourceSpec] = Unassigned()
 
 
-class RStudioServerProAccessStatus(str, Enum):
+class RStudioServerProAccessStatus(StrEnum):
     """Enum class for RStudioServerProAccessStatus."""
     
     ENABLED = 'ENABLED'
     DISABLED = 'DISABLED'
 
 
-class RStudioServerProUserGroup(str, Enum):
+class RStudioServerProUserGroup(StrEnum):
     """Enum class for RStudioServerProUserGroup."""
     
     R_STUDIO_ADMIN = 'R_STUDIO_ADMIN'
@@ -4728,7 +4728,7 @@ class DefaultSpaceStorageSettings(Base):
     default_ebs_storage_settings: Optional[DefaultEbsStorageSettings] = Unassigned()
 
 
-class StudioWebPortal(str, Enum):
+class StudioWebPortal(StrEnum):
     """Enum class for StudioWebPortal."""
     
     ENABLED = 'ENABLED'
@@ -4835,7 +4835,7 @@ class RStudioServerProDomainSettings(Base):
     default_resource_spec: Optional[ResourceSpec] = Unassigned()
 
 
-class ExecutionRoleIdentityConfig(str, Enum):
+class ExecutionRoleIdentityConfig(StrEnum):
     """Enum class for ExecutionRoleIdentityConfig."""
     
     USER_PROFILE_NAME = 'USER_PROFILE_NAME'
@@ -4906,7 +4906,7 @@ class EdgeDeploymentModelConfig(Base):
     edge_packaging_job_name: str
 
 
-class DeviceSubsetType(str, Enum):
+class DeviceSubsetType(StrEnum):
     """Enum class for DeviceSubsetType."""
     
     PERCENTAGE = 'PERCENTAGE'
@@ -4932,7 +4932,7 @@ class DeviceSelectionConfig(Base):
     device_name_contains: Optional[str] = Unassigned()
 
 
-class FailureHandlingPolicy(str, Enum):
+class FailureHandlingPolicy(StrEnum):
     """Enum class for FailureHandlingPolicy."""
     
     ROLLBACK_ON_FAILURE = 'ROLLBACK_ON_FAILURE'
@@ -4967,7 +4967,7 @@ class DeploymentStage(Base):
     deployment_config: Optional[EdgeDeploymentConfig] = Unassigned()
 
 
-class ProductionVariantAcceleratorType(str, Enum):
+class ProductionVariantAcceleratorType(StrEnum):
     """Enum class for ProductionVariantAcceleratorType."""
     
     ML_EIA1_MEDIUM = 'ml.eia1.medium'
@@ -5008,7 +5008,7 @@ class ProductionVariantServerlessConfig(Base):
     provisioned_concurrency: Optional[int] = Unassigned()
 
 
-class ManagedInstanceScalingStatus(str, Enum):
+class ManagedInstanceScalingStatus(StrEnum):
     """Enum class for ManagedInstanceScalingStatus."""
     
     ENABLED = 'ENABLED'
@@ -5031,7 +5031,7 @@ class ProductionVariantManagedInstanceScaling(Base):
     max_instance_count: Optional[int] = Unassigned()
 
 
-class RoutingStrategy(str, Enum):
+class RoutingStrategy(StrEnum):
     """Enum class for RoutingStrategy."""
     
     LEAST_OUTSTANDING_REQUESTS = 'LEAST_OUTSTANDING_REQUESTS'
@@ -5156,7 +5156,7 @@ class DeploymentConfig(Base):
     auto_rollback_configuration: Optional[AutoRollbackConfig] = Unassigned()
 
 
-class FeatureType(str, Enum):
+class FeatureType(StrEnum):
     """Enum class for FeatureType."""
     
     INTEGRAL = 'Integral'
@@ -5194,7 +5194,7 @@ class OnlineStoreSecurityConfig(Base):
     kms_key_id: Optional[str] = Unassigned()
 
 
-class TtlDurationUnit(str, Enum):
+class TtlDurationUnit(StrEnum):
     """Enum class for TtlDurationUnit."""
     
     SECONDS = 'Seconds'
@@ -5218,7 +5218,7 @@ class TtlDuration(Base):
     value: Optional[int] = Unassigned()
 
 
-class StorageType(str, Enum):
+class StorageType(StrEnum):
     """Enum class for StorageType."""
     
     STANDARD = 'Standard'
@@ -5275,7 +5275,7 @@ class DataCatalogConfig(Base):
     database: str
 
 
-class TableFormat(str, Enum):
+class TableFormat(StrEnum):
     """Enum class for TableFormat."""
     
     DEFAULT = 'Default'
@@ -5301,7 +5301,7 @@ class OfflineStoreConfig(Base):
     table_format: Optional[TableFormat] = Unassigned()
 
 
-class ThroughputMode(str, Enum):
+class ThroughputMode(StrEnum):
     """Enum class for ThroughputMode."""
     
     ON_DEMAND = 'OnDemand'
@@ -5454,7 +5454,7 @@ class UiTemplate(Base):
     content: str
 
 
-class HyperParameterTuningJobStrategyType(str, Enum):
+class HyperParameterTuningJobStrategyType(StrEnum):
     """<p>The strategy hyperparameter tuning uses to find the best combination of hyperparameters for your model. </p>"""
     
     BAYESIAN = 'Bayesian'
@@ -5541,7 +5541,7 @@ class ParameterRanges(Base):
     auto_parameters: Optional[List[AutoParameter]] = Unassigned()
 
 
-class TrainingJobEarlyStoppingType(str, Enum):
+class TrainingJobEarlyStoppingType(StrEnum):
     """Enum class for TrainingJobEarlyStoppingType."""
     
     OFF = 'Off'
@@ -5608,7 +5608,7 @@ class HyperParameterAlgorithmSpecification(Base):
     metric_definitions: Optional[List[MetricDefinition]] = Unassigned()
 
 
-class HyperParameterTuningAllocationStrategy(str, Enum):
+class HyperParameterTuningAllocationStrategy(StrEnum):
     """Enum class for HyperParameterTuningAllocationStrategy."""
     
     PRIORITIZED = 'Prioritized'
@@ -5722,7 +5722,7 @@ class ParentHyperParameterTuningJob(Base):
     hyper_parameter_tuning_job_name: Optional[str] = Unassigned()
 
 
-class HyperParameterTuningJobWarmStartType(str, Enum):
+class HyperParameterTuningJobWarmStartType(StrEnum):
     """Enum class for HyperParameterTuningJobWarmStartType."""
     
     IDENTICAL_DATA_AND_ALGORITHM = 'IdenticalDataAndAlgorithm'
@@ -5743,7 +5743,7 @@ class HyperParameterTuningJobWarmStartConfig(Base):
     warm_start_type: HyperParameterTuningJobWarmStartType
 
 
-class VendorGuidance(str, Enum):
+class VendorGuidance(StrEnum):
     """Enum class for VendorGuidance."""
     
     NOT_PROVIDED = 'NOT_PROVIDED'
@@ -5752,7 +5752,7 @@ class VendorGuidance(str, Enum):
     ARCHIVED = 'ARCHIVED'
 
 
-class JobType(str, Enum):
+class JobType(StrEnum):
     """Enum class for JobType."""
     
     TRAINING = 'TRAINING'
@@ -5760,7 +5760,7 @@ class JobType(str, Enum):
     NOTEBOOK_KERNEL = 'NOTEBOOK_KERNEL'
 
 
-class Processor(str, Enum):
+class Processor(StrEnum):
     """Enum class for Processor."""
     
     CPU = 'CPU'
@@ -5845,7 +5845,7 @@ class InferenceComponentRuntimeConfig(Base):
     copy_count: int
 
 
-class InferenceExperimentType(str, Enum):
+class InferenceExperimentType(StrEnum):
     """Enum class for InferenceExperimentType."""
     
     SHADOW_MODE = 'ShadowMode'
@@ -5865,13 +5865,13 @@ class InferenceExperimentSchedule(Base):
     end_time: Optional[datetime.datetime] = Unassigned()
 
 
-class ModelInfrastructureType(str, Enum):
+class ModelInfrastructureType(StrEnum):
     """Enum class for ModelInfrastructureType."""
     
     REAL_TIME_INFERENCE = 'RealTimeInference'
 
 
-class InstanceType(str, Enum):
+class InstanceType(StrEnum):
     """Enum class for InstanceType."""
     
     ML_T2_MEDIUM = 'ml.t2.medium'
@@ -6121,14 +6121,14 @@ class ShadowModeConfig(Base):
     shadow_model_variants: List[ShadowModelVariantConfig]
 
 
-class RecommendationJobType(str, Enum):
+class RecommendationJobType(StrEnum):
     """Enum class for RecommendationJobType."""
     
     DEFAULT = 'Default'
     ADVANCED = 'Advanced'
 
 
-class TrafficType(str, Enum):
+class TrafficType(StrEnum):
     """Enum class for TrafficType."""
     
     PHASES = 'PHASES'
@@ -6241,7 +6241,7 @@ class RecommendationJobPayloadConfig(Base):
     supported_content_types: Optional[List[str]] = Unassigned()
 
 
-class RecommendationJobSupportedEndpointType(str, Enum):
+class RecommendationJobSupportedEndpointType(StrEnum):
     """Enum class for RecommendationJobSupportedEndpointType."""
     
     REAL_TIME = 'RealTime'
@@ -6348,7 +6348,7 @@ class ModelLatencyThreshold(Base):
     value_in_milliseconds: Optional[int] = Unassigned()
 
 
-class FlatInvocations(str, Enum):
+class FlatInvocations(StrEnum):
     """Enum class for FlatInvocations."""
     
     CONTINUE = 'Continue'
@@ -6651,7 +6651,7 @@ class ModelCardSecurityConfig(Base):
     kms_key_id: Optional[str] = Unassigned()
 
 
-class ModelCardStatus(str, Enum):
+class ModelCardStatus(StrEnum):
     """Enum class for ModelCardStatus."""
     
     DRAFT = 'Draft'
@@ -6704,7 +6704,7 @@ class ModelExplainabilityJobInput(Base):
     batch_transform_input: Optional[BatchTransformInput] = Unassigned()
 
 
-class InferenceExecutionMode(str, Enum):
+class InferenceExecutionMode(StrEnum):
     """Enum class for InferenceExecutionMode."""
     
     SERIAL = 'Serial'
@@ -6929,7 +6929,7 @@ class DriftCheckBaselines(Base):
     model_data_quality: Optional[DriftCheckModelDataQuality] = Unassigned()
 
 
-class SkipModelValidation(str, Enum):
+class SkipModelValidation(StrEnum):
     """Enum class for SkipModelValidation."""
     
     ALL = 'All'
@@ -6950,7 +6950,7 @@ class ModelQualityBaselineConfig(Base):
     constraints_resource: Optional[MonitoringConstraintsResource] = Unassigned()
 
 
-class MonitoringProblemType(str, Enum):
+class MonitoringProblemType(StrEnum):
     """Enum class for MonitoringProblemType."""
     
     BINARY_CLASSIFICATION = 'BinaryClassification'
@@ -7108,7 +7108,7 @@ class MonitoringJobDefinition(Base):
     network_config: Optional[NetworkConfig] = Unassigned()
 
 
-class MonitoringType(str, Enum):
+class MonitoringType(StrEnum):
     """Enum class for MonitoringType."""
     
     DATA_QUALITY = 'DataQuality'
@@ -7135,14 +7135,14 @@ class MonitoringScheduleConfig(Base):
     monitoring_type: Optional[MonitoringType] = Unassigned()
 
 
-class DirectInternetAccess(str, Enum):
+class DirectInternetAccess(StrEnum):
     """Enum class for DirectInternetAccess."""
     
     ENABLED = 'Enabled'
     DISABLED = 'Disabled'
 
 
-class NotebookInstanceAcceleratorType(str, Enum):
+class NotebookInstanceAcceleratorType(StrEnum):
     """Enum class for NotebookInstanceAcceleratorType."""
     
     ML_EIA1_MEDIUM = 'ml.eia1.medium'
@@ -7153,7 +7153,7 @@ class NotebookInstanceAcceleratorType(str, Enum):
     ML_EIA2_XLARGE = 'ml.eia2.xlarge'
 
 
-class RootAccess(str, Enum):
+class RootAccess(StrEnum):
     """Enum class for RootAccess."""
     
     ENABLED = 'Enabled'
@@ -7212,14 +7212,14 @@ class ParallelismConfiguration(Base):
     max_parallel_execution_steps: int
 
 
-class ProcessingS3DataType(str, Enum):
+class ProcessingS3DataType(StrEnum):
     """Enum class for ProcessingS3DataType."""
     
     MANIFEST_FILE = 'ManifestFile'
     S3_PREFIX = 'S3Prefix'
 
 
-class ProcessingS3CompressionType(str, Enum):
+class ProcessingS3CompressionType(StrEnum):
     """Enum class for ProcessingS3CompressionType."""
     
     NONE = 'None'
@@ -7248,14 +7248,14 @@ class ProcessingS3Input(Base):
     s3_compression_type: Optional[ProcessingS3CompressionType] = Unassigned()
 
 
-class RedshiftResultFormat(str, Enum):
+class RedshiftResultFormat(StrEnum):
     """<p>The data storage format for Redshift query results.</p>"""
     
     PARQUET = 'PARQUET'
     CSV = 'CSV'
 
 
-class RedshiftResultCompressionType(str, Enum):
+class RedshiftResultCompressionType(StrEnum):
     """<p>The compression used for Redshift query results.</p>"""
     
     NONE = 'None'
@@ -7293,14 +7293,14 @@ class RedshiftDatasetDefinition(Base):
     output_compression: Optional[RedshiftResultCompressionType] = Unassigned()
 
 
-class DataDistributionType(str, Enum):
+class DataDistributionType(StrEnum):
     """Enum class for DataDistributionType."""
     
     FULLY_REPLICATED = 'FullyReplicated'
     SHARDED_BY_S3_KEY = 'ShardedByS3Key'
 
 
-class InputMode(str, Enum):
+class InputMode(StrEnum):
     """Enum class for InputMode."""
     
     PIPE = 'Pipe'
@@ -7607,7 +7607,7 @@ class OwnershipSettings(Base):
     owner_user_profile_name: str
 
 
-class SharingType(str, Enum):
+class SharingType(StrEnum):
     """Enum class for SharingType."""
     
     PRIVATE = 'Private'
@@ -7626,7 +7626,7 @@ class SpaceSharingSettings(Base):
     sharing_type: SharingType
 
 
-class StudioLifecycleConfigAppType(str, Enum):
+class StudioLifecycleConfigAppType(StrEnum):
     """Enum class for StudioLifecycleConfigAppType."""
     
     JUPYTER_SERVER = 'JupyterServer'
@@ -7771,7 +7771,7 @@ class ModelClientConfig(Base):
     invocations_max_retries: Optional[int] = Unassigned()
 
 
-class JoinSource(str, Enum):
+class JoinSource(StrEnum):
     """Enum class for JoinSource."""
     
     INPUT = 'Input'
@@ -7794,7 +7794,7 @@ class DataProcessing(Base):
     join_source: Optional[JoinSource] = Unassigned()
 
 
-class TrialComponentPrimaryStatus(str, Enum):
+class TrialComponentPrimaryStatus(StrEnum):
     """Enum class for TrialComponentPrimaryStatus."""
     
     IN_PROGRESS = 'InProgress'
@@ -7938,14 +7938,14 @@ class NotificationConfiguration(Base):
     notification_topic_arn: Optional[str] = Unassigned()
 
 
-class CrossAccountFilterOption(str, Enum):
+class CrossAccountFilterOption(StrEnum):
     """Enum class for CrossAccountFilterOption."""
     
     SAME_ACCOUNT = 'SameAccount'
     CROSS_ACCOUNT = 'CrossAccount'
 
 
-class Statistic(str, Enum):
+class Statistic(StrEnum):
     """Enum class for Statistic."""
     
     AVERAGE = 'Average'
@@ -7991,7 +7991,7 @@ class DataCaptureConfigSummary(Base):
     kms_key_id: str
 
 
-class RuleEvaluationStatus(str, Enum):
+class RuleEvaluationStatus(StrEnum):
     """Enum class for RuleEvaluationStatus."""
     
     IN_PROGRESS = 'InProgress'
@@ -8022,7 +8022,7 @@ class DebugRuleEvaluationStatus(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
 
 
-class RetentionType(str, Enum):
+class RetentionType(StrEnum):
     """Enum class for RetentionType."""
     
     RETAIN = 'Retain'
@@ -8041,7 +8041,7 @@ class RetentionPolicy(Base):
     home_efs_file_system: Optional[RetentionType] = Unassigned()
 
 
-class HubContentType(str, Enum):
+class HubContentType(StrEnum):
     """Enum class for HubContentType."""
     
     MODEL = 'Model'
@@ -8064,7 +8064,7 @@ class DeployedImage(Base):
     resolution_time: Optional[datetime.datetime] = Unassigned()
 
 
-class RecommendationStatus(str, Enum):
+class RecommendationStatus(StrEnum):
     """Enum class for RecommendationStatus."""
     
     IN_PROGRESS = 'IN_PROGRESS'
@@ -8103,7 +8103,7 @@ class DeploymentRecommendation(Base):
     real_time_inference_recommendations: Optional[List[RealTimeInferenceRecommendation]] = Unassigned()
 
 
-class StageStatus(str, Enum):
+class StageStatus(StrEnum):
     """Enum class for StageStatus."""
     
     CREATING = 'CREATING'
@@ -8238,7 +8238,7 @@ class EdgeModel(Base):
     latest_inference: Optional[datetime.datetime] = Unassigned()
 
 
-class DomainStatus(str, Enum):
+class DomainStatus(StrEnum):
     """Enum class for DomainStatus."""
     
     DELETING = 'Deleting'
@@ -8250,7 +8250,7 @@ class DomainStatus(str, Enum):
     DELETE_FAILED = 'Delete_Failed'
 
 
-class EdgePackagingJobStatus(str, Enum):
+class EdgePackagingJobStatus(StrEnum):
     """Enum class for EdgePackagingJobStatus."""
     
     STARTING = 'STARTING'
@@ -8261,7 +8261,7 @@ class EdgePackagingJobStatus(str, Enum):
     STOPPED = 'STOPPED'
 
 
-class EdgePresetDeploymentStatus(str, Enum):
+class EdgePresetDeploymentStatus(StrEnum):
     """Enum class for EdgePresetDeploymentStatus."""
     
     COMPLETED = 'COMPLETED'
@@ -8286,7 +8286,7 @@ class EdgePresetDeploymentOutput(Base):
     status_message: Optional[str] = Unassigned()
 
 
-class VariantStatus(str, Enum):
+class VariantStatus(StrEnum):
     """Enum class for VariantStatus."""
     
     CREATING = 'Creating'
@@ -8344,7 +8344,7 @@ class ProductionVariantSummary(Base):
     routing_config: Optional[ProductionVariantRoutingConfig] = Unassigned()
 
 
-class EndpointStatus(str, Enum):
+class EndpointStatus(StrEnum):
     """Enum class for EndpointStatus."""
     
     OUT_OF_SERVICE = 'OutOfService'
@@ -8442,7 +8442,7 @@ class ThroughputConfigDescription(Base):
     provisioned_write_capacity_units: Optional[int] = Unassigned()
 
 
-class FeatureGroupStatus(str, Enum):
+class FeatureGroupStatus(StrEnum):
     """Enum class for FeatureGroupStatus."""
     
     CREATING = 'Creating'
@@ -8452,7 +8452,7 @@ class FeatureGroupStatus(str, Enum):
     DELETE_FAILED = 'DeleteFailed'
 
 
-class OfflineStoreStatusValue(str, Enum):
+class OfflineStoreStatusValue(StrEnum):
     """Enum class for OfflineStoreStatusValue."""
     
     ACTIVE = 'Active'
@@ -8474,7 +8474,7 @@ class OfflineStoreStatus(Base):
     blocked_reason: Optional[str] = Unassigned()
 
 
-class LastUpdateStatusValue(str, Enum):
+class LastUpdateStatusValue(StrEnum):
     """Enum class for LastUpdateStatusValue."""
     
     SUCCESSFUL = 'Successful'
@@ -8510,7 +8510,7 @@ class FeatureParameter(Base):
     value: Optional[str] = Unassigned()
 
 
-class FlowDefinitionStatus(str, Enum):
+class FlowDefinitionStatus(StrEnum):
     """Enum class for FlowDefinitionStatus."""
     
     INITIALIZING = 'Initializing'
@@ -8533,7 +8533,7 @@ class HubContentDependency(Base):
     dependency_copy_path: Optional[str] = Unassigned()
 
 
-class HubContentStatus(str, Enum):
+class HubContentStatus(StrEnum):
     """Enum class for HubContentStatus."""
     
     AVAILABLE = 'Available'
@@ -8543,7 +8543,7 @@ class HubContentStatus(str, Enum):
     DELETE_FAILED = 'DeleteFailed'
 
 
-class HubStatus(str, Enum):
+class HubStatus(StrEnum):
     """Enum class for HubStatus."""
     
     IN_SERVICE = 'InService'
@@ -8555,7 +8555,7 @@ class HubStatus(str, Enum):
     DELETE_FAILED = 'DeleteFailed'
 
 
-class HumanTaskUiStatus(str, Enum):
+class HumanTaskUiStatus(StrEnum):
     """Enum class for HumanTaskUiStatus."""
     
     ACTIVE = 'Active'
@@ -8576,7 +8576,7 @@ class UiTemplateInfo(Base):
     content_sha256: Optional[str] = Unassigned()
 
 
-class HyperParameterTuningJobStatus(str, Enum):
+class HyperParameterTuningJobStatus(StrEnum):
     """Enum class for HyperParameterTuningJobStatus."""
     
     COMPLETED = 'Completed'
@@ -8624,7 +8624,7 @@ class ObjectiveStatusCounters(Base):
     failed: Optional[int] = Unassigned()
 
 
-class TrainingJobStatus(str, Enum):
+class TrainingJobStatus(StrEnum):
     """Enum class for TrainingJobStatus."""
     
     IN_PROGRESS = 'InProgress'
@@ -8710,7 +8710,7 @@ class HyperParameterTuningJobConsumedResources(Base):
     runtime_in_seconds: Optional[int] = Unassigned()
 
 
-class ImageStatus(str, Enum):
+class ImageStatus(StrEnum):
     """Enum class for ImageStatus."""
     
     CREATING = 'CREATING'
@@ -8722,7 +8722,7 @@ class ImageStatus(str, Enum):
     DELETE_FAILED = 'DELETE_FAILED'
 
 
-class ImageVersionStatus(str, Enum):
+class ImageVersionStatus(StrEnum):
     """Enum class for ImageVersionStatus."""
     
     CREATING = 'CREATING'
@@ -8780,7 +8780,7 @@ class InferenceComponentRuntimeConfigSummary(Base):
     current_copy_count: Optional[int] = Unassigned()
 
 
-class InferenceComponentStatus(str, Enum):
+class InferenceComponentStatus(StrEnum):
     """Enum class for InferenceComponentStatus."""
     
     IN_SERVICE = 'InService'
@@ -8790,7 +8790,7 @@ class InferenceComponentStatus(str, Enum):
     DELETING = 'Deleting'
 
 
-class InferenceExperimentStatus(str, Enum):
+class InferenceExperimentStatus(StrEnum):
     """Enum class for InferenceExperimentStatus."""
     
     CREATING = 'Creating'
@@ -8821,7 +8821,7 @@ class EndpointMetadata(Base):
     failure_reason: Optional[str] = Unassigned()
 
 
-class ModelVariantStatus(str, Enum):
+class ModelVariantStatus(StrEnum):
     """Enum class for ModelVariantStatus."""
     
     CREATING = 'Creating'
@@ -8849,7 +8849,7 @@ class ModelVariantConfigSummary(Base):
     status: ModelVariantStatus
 
 
-class RecommendationJobStatus(str, Enum):
+class RecommendationJobStatus(StrEnum):
     """Enum class for RecommendationJobStatus."""
     
     PENDING = 'PENDING'
@@ -8988,7 +8988,7 @@ class EndpointPerformance(Base):
     endpoint_info: EndpointInfo
 
 
-class LabelingJobStatus(str, Enum):
+class LabelingJobStatus(StrEnum):
     """Enum class for LabelingJobStatus."""
     
     INITIALIZING = 'Initializing'
@@ -9033,7 +9033,7 @@ class LabelingJobOutput(Base):
     final_active_learning_model_arn: Optional[str] = Unassigned()
 
 
-class ModelCardExportJobStatus(str, Enum):
+class ModelCardExportJobStatus(StrEnum):
     """Enum class for ModelCardExportJobStatus."""
     
     IN_PROGRESS = 'InProgress'
@@ -9053,7 +9053,7 @@ class ModelCardExportArtifacts(Base):
     s3_export_artifacts: str
 
 
-class ModelCardProcessingStatus(str, Enum):
+class ModelCardProcessingStatus(StrEnum):
     """Enum class for ModelCardProcessingStatus."""
     
     DELETE_IN_PROGRESS = 'DeleteInProgress'
@@ -9064,7 +9064,7 @@ class ModelCardProcessingStatus(str, Enum):
     DELETE_FAILED = 'DeleteFailed'
 
 
-class ModelPackageGroupStatus(str, Enum):
+class ModelPackageGroupStatus(StrEnum):
     """Enum class for ModelPackageGroupStatus."""
     
     PENDING = 'Pending'
@@ -9075,7 +9075,7 @@ class ModelPackageGroupStatus(str, Enum):
     DELETE_FAILED = 'DeleteFailed'
 
 
-class DetailedModelPackageStatus(str, Enum):
+class DetailedModelPackageStatus(StrEnum):
     """Enum class for DetailedModelPackageStatus."""
     
     NOT_STARTED = 'NotStarted'
@@ -9114,7 +9114,7 @@ class ModelPackageStatusDetails(Base):
     image_scan_statuses: Optional[List[ModelPackageStatusItem]] = Unassigned()
 
 
-class ScheduleStatus(str, Enum):
+class ScheduleStatus(StrEnum):
     """Enum class for ScheduleStatus."""
     
     PENDING = 'Pending'
@@ -9123,7 +9123,7 @@ class ScheduleStatus(str, Enum):
     STOPPED = 'Stopped'
 
 
-class ExecutionStatus(str, Enum):
+class ExecutionStatus(StrEnum):
     """Enum class for ExecutionStatus."""
     
     PENDING = 'Pending'
@@ -9165,7 +9165,7 @@ class MonitoringExecutionSummary(Base):
     monitoring_type: Optional[MonitoringType] = Unassigned()
 
 
-class NotebookInstanceStatus(str, Enum):
+class NotebookInstanceStatus(StrEnum):
     """Enum class for NotebookInstanceStatus."""
     
     PENDING = 'Pending'
@@ -9177,7 +9177,7 @@ class NotebookInstanceStatus(str, Enum):
     UPDATING = 'Updating'
 
 
-class PipelineExecutionStatus(str, Enum):
+class PipelineExecutionStatus(StrEnum):
     """Enum class for PipelineExecutionStatus."""
     
     EXECUTING = 'Executing'
@@ -9227,14 +9227,14 @@ class SelectiveExecutionConfig(Base):
     source_pipeline_execution_arn: Optional[str] = Unassigned()
 
 
-class PipelineStatus(str, Enum):
+class PipelineStatus(StrEnum):
     """Enum class for PipelineStatus."""
     
     ACTIVE = 'Active'
     DELETING = 'Deleting'
 
 
-class ProcessingJobStatus(str, Enum):
+class ProcessingJobStatus(StrEnum):
     """Enum class for ProcessingJobStatus."""
     
     IN_PROGRESS = 'InProgress'
@@ -9258,7 +9258,7 @@ class ServiceCatalogProvisionedProductDetails(Base):
     provisioned_product_status_message: Optional[str] = Unassigned()
 
 
-class ProjectStatus(str, Enum):
+class ProjectStatus(StrEnum):
     """Enum class for ProjectStatus."""
     
     PENDING = 'Pending'
@@ -9273,7 +9273,7 @@ class ProjectStatus(str, Enum):
     UPDATE_FAILED = 'UpdateFailed'
 
 
-class SpaceStatus(str, Enum):
+class SpaceStatus(StrEnum):
     """Enum class for SpaceStatus."""
     
     DELETING = 'Deleting'
@@ -9305,7 +9305,7 @@ class SubscribedWorkteam(Base):
     listing_id: Optional[str] = Unassigned()
 
 
-class SecondaryStatus(str, Enum):
+class SecondaryStatus(StrEnum):
     """Enum class for SecondaryStatus."""
     
     STARTING = 'Starting'
@@ -9327,7 +9327,7 @@ class SecondaryStatus(str, Enum):
     PENDING = 'Pending'
 
 
-class WarmPoolResourceStatus(str, Enum):
+class WarmPoolResourceStatus(StrEnum):
     """Enum class for WarmPoolResourceStatus."""
     
     AVAILABLE = 'Available'
@@ -9406,14 +9406,14 @@ class ProfilerRuleEvaluationStatus(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
 
 
-class ProfilingStatus(str, Enum):
+class ProfilingStatus(StrEnum):
     """Enum class for ProfilingStatus."""
     
     ENABLED = 'Enabled'
     DISABLED = 'Disabled'
 
 
-class TransformJobStatus(str, Enum):
+class TransformJobStatus(StrEnum):
     """Enum class for TransformJobStatus."""
     
     IN_PROGRESS = 'InProgress'
@@ -9479,7 +9479,7 @@ class TrialSource(Base):
     source_type: Optional[str] = Unassigned()
 
 
-class UserProfileStatus(str, Enum):
+class UserProfileStatus(StrEnum):
     """Enum class for UserProfileStatus."""
     
     DELETING = 'Deleting'
@@ -9533,7 +9533,7 @@ class WorkforceVpcConfigResponse(Base):
     vpc_endpoint_id: Optional[str] = Unassigned()
 
 
-class WorkforceStatus(str, Enum):
+class WorkforceStatus(StrEnum):
     """Enum class for WorkforceStatus."""
     
     INITIALIZING = 'Initializing'
@@ -9653,7 +9653,7 @@ class Device(Base):
     iot_thing_name: Optional[str] = Unassigned()
 
 
-class DeviceDeploymentStatus(str, Enum):
+class DeviceDeploymentStatus(StrEnum):
     """Enum class for DeviceDeploymentStatus."""
     
     READYTODEPLOY = 'READYTODEPLOY'
@@ -9770,7 +9770,7 @@ class DeviceSummary(Base):
     agent_version: Optional[str] = Unassigned()
 
 
-class Direction(str, Enum):
+class Direction(StrEnum):
     """Enum class for Direction."""
     
     BOTH = 'Both'
@@ -10084,7 +10084,7 @@ class Endpoint(Base):
     shadow_production_variants: Optional[List[ProductionVariantSummary]] = Unassigned()
 
 
-class EndpointConfigSortKey(str, Enum):
+class EndpointConfigSortKey(StrEnum):
     """Enum class for EndpointConfigSortKey."""
     
     NAME = 'Name'
@@ -10107,7 +10107,7 @@ class EndpointConfigSummary(Base):
     creation_time: datetime.datetime
 
 
-class EndpointSortKey(str, Enum):
+class EndpointSortKey(StrEnum):
     """Enum class for EndpointSortKey."""
     
     NAME = 'Name'
@@ -10241,7 +10241,7 @@ class FeatureGroup(Base):
     tags: Optional[List[Tag]] = Unassigned()
 
 
-class FeatureGroupSortBy(str, Enum):
+class FeatureGroupSortBy(StrEnum):
     """Enum class for FeatureGroupSortBy."""
     
     NAME = 'Name'
@@ -10250,7 +10250,7 @@ class FeatureGroupSortBy(str, Enum):
     CREATION_TIME = 'CreationTime'
 
 
-class FeatureGroupSortOrder(str, Enum):
+class FeatureGroupSortOrder(StrEnum):
     """Enum class for FeatureGroupSortOrder."""
     
     ASCENDING = 'Ascending'
@@ -10303,7 +10303,7 @@ class FeatureMetadata(Base):
     parameters: Optional[List[FeatureParameter]] = Unassigned()
 
 
-class FillingType(str, Enum):
+class FillingType(StrEnum):
     """Enum class for FillingType."""
     
     FRONTFILL = 'frontfill'
@@ -10316,7 +10316,7 @@ class FillingType(str, Enum):
     FUTUREFILL_VALUE = 'futurefill_value'
 
 
-class Operator(str, Enum):
+class Operator(StrEnum):
     """Enum class for Operator."""
     
     EQUALS = 'Equals'
@@ -10367,7 +10367,7 @@ class FlowDefinitionSummary(Base):
     failure_reason: Optional[str] = Unassigned()
 
 
-class SagemakerServicecatalogStatus(str, Enum):
+class SagemakerServicecatalogStatus(StrEnum):
     """Enum class for SagemakerServicecatalogStatus."""
     
     ENABLED = 'Enabled'
@@ -10402,7 +10402,7 @@ class ScalingPolicyMetric(Base):
     model_latency: Optional[int] = Unassigned()
 
 
-class ResourceType(str, Enum):
+class ResourceType(StrEnum):
     """Enum class for ResourceType."""
     
     TRAINING_JOB = 'TrainingJob'
@@ -10502,7 +10502,7 @@ class HubContentInfo(Base):
     hub_content_search_keywords: Optional[List[str]] = Unassigned()
 
 
-class HubContentSortBy(str, Enum):
+class HubContentSortBy(StrEnum):
     """Enum class for HubContentSortBy."""
     
     HUB_CONTENT_NAME = 'HubContentName'
@@ -10536,7 +10536,7 @@ class HubInfo(Base):
     hub_search_keywords: Optional[List[str]] = Unassigned()
 
 
-class HubSortBy(str, Enum):
+class HubSortBy(StrEnum):
     """Enum class for HubSortBy."""
     
     HUB_NAME = 'HubName'
@@ -10607,7 +10607,7 @@ class HyperParameterTuningJobSearchEntity(Base):
     tags: Optional[List[Tag]] = Unassigned()
 
 
-class HyperParameterTuningJobSortByOptions(str, Enum):
+class HyperParameterTuningJobSortByOptions(StrEnum):
     """Enum class for HyperParameterTuningJobSortByOptions."""
     
     NAME = 'Name'
@@ -10671,7 +10671,7 @@ class Image(Base):
     failure_reason: Optional[str] = Unassigned()
 
 
-class ImageSortBy(str, Enum):
+class ImageSortBy(StrEnum):
     """Enum class for ImageSortBy."""
     
     CREATION_TIME = 'CREATION_TIME'
@@ -10679,7 +10679,7 @@ class ImageSortBy(str, Enum):
     IMAGE_NAME = 'IMAGE_NAME'
 
 
-class ImageSortOrder(str, Enum):
+class ImageSortOrder(StrEnum):
     """Enum class for ImageSortOrder."""
     
     ASCENDING = 'ASCENDING'
@@ -10710,7 +10710,7 @@ class ImageVersion(Base):
     failure_reason: Optional[str] = Unassigned()
 
 
-class ImageVersionSortBy(str, Enum):
+class ImageVersionSortBy(StrEnum):
     """Enum class for ImageVersionSortBy."""
     
     CREATION_TIME = 'CREATION_TIME'
@@ -10718,14 +10718,14 @@ class ImageVersionSortBy(str, Enum):
     VERSION = 'VERSION'
 
 
-class ImageVersionSortOrder(str, Enum):
+class ImageVersionSortOrder(StrEnum):
     """Enum class for ImageVersionSortOrder."""
     
     ASCENDING = 'ASCENDING'
     DESCENDING = 'DESCENDING'
 
 
-class InferenceComponentSortKey(str, Enum):
+class InferenceComponentSortKey(StrEnum):
     """Enum class for InferenceComponentSortKey."""
     
     NAME = 'Name'
@@ -10759,7 +10759,7 @@ class InferenceComponentSummary(Base):
     inference_component_status: Optional[InferenceComponentStatus] = Unassigned()
 
 
-class InferenceExperimentStopDesiredState(str, Enum):
+class InferenceExperimentStopDesiredState(StrEnum):
     """Enum class for InferenceExperimentStopDesiredState."""
     
     COMPLETED = 'Completed'
@@ -10832,7 +10832,7 @@ class InferenceRecommendationsJob(Base):
     model_package_version_arn: Optional[str] = Unassigned()
 
 
-class RecommendationStepType(str, Enum):
+class RecommendationStepType(StrEnum):
     """Enum class for RecommendationStepType."""
     
     BENCHMARK = 'BENCHMARK'
@@ -10986,7 +10986,7 @@ class LineageGroupSummary(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
 
 
-class LineageType(str, Enum):
+class LineageType(StrEnum):
     """Enum class for LineageType."""
     
     TRIAL_COMPONENT = 'TrialComponent'
@@ -10995,27 +10995,27 @@ class LineageType(str, Enum):
     ACTION = 'Action'
 
 
-class SortActionsBy(str, Enum):
+class SortActionsBy(StrEnum):
     """Enum class for SortActionsBy."""
     
     NAME = 'Name'
     CREATION_TIME = 'CreationTime'
 
 
-class SortOrder(str, Enum):
+class SortOrder(StrEnum):
     """Enum class for SortOrder."""
     
     ASCENDING = 'Ascending'
     DESCENDING = 'Descending'
 
 
-class SortArtifactsBy(str, Enum):
+class SortArtifactsBy(StrEnum):
     """Enum class for SortArtifactsBy."""
     
     CREATION_TIME = 'CreationTime'
 
 
-class SortAssociationsBy(str, Enum):
+class SortAssociationsBy(StrEnum):
     """Enum class for SortAssociationsBy."""
     
     SOURCE_ARN = 'SourceArn'
@@ -11025,7 +11025,7 @@ class SortAssociationsBy(str, Enum):
     CREATION_TIME = 'CreationTime'
 
 
-class ListCompilationJobsSortBy(str, Enum):
+class ListCompilationJobsSortBy(StrEnum):
     """Enum class for ListCompilationJobsSortBy."""
     
     NAME = 'Name'
@@ -11033,14 +11033,14 @@ class ListCompilationJobsSortBy(str, Enum):
     STATUS = 'Status'
 
 
-class SortContextsBy(str, Enum):
+class SortContextsBy(StrEnum):
     """Enum class for SortContextsBy."""
     
     NAME = 'Name'
     CREATION_TIME = 'CreationTime'
 
 
-class MonitoringJobDefinitionSortKey(str, Enum):
+class MonitoringJobDefinitionSortKey(StrEnum):
     """Enum class for MonitoringJobDefinitionSortKey."""
     
     NAME = 'Name'
@@ -11065,7 +11065,7 @@ class MonitoringJobDefinitionSummary(Base):
     endpoint_name: str
 
 
-class ListDeviceFleetsSortBy(str, Enum):
+class ListDeviceFleetsSortBy(StrEnum):
     """Enum class for ListDeviceFleetsSortBy."""
     
     NAME = 'NAME'
@@ -11073,7 +11073,7 @@ class ListDeviceFleetsSortBy(str, Enum):
     LAST_MODIFIED_TIME = 'LAST_MODIFIED_TIME'
 
 
-class ListEdgeDeploymentPlansSortBy(str, Enum):
+class ListEdgeDeploymentPlansSortBy(StrEnum):
     """Enum class for ListEdgeDeploymentPlansSortBy."""
     
     NAME = 'NAME'
@@ -11082,7 +11082,7 @@ class ListEdgeDeploymentPlansSortBy(str, Enum):
     LAST_MODIFIED_TIME = 'LAST_MODIFIED_TIME'
 
 
-class ListEdgePackagingJobsSortBy(str, Enum):
+class ListEdgePackagingJobsSortBy(StrEnum):
     """Enum class for ListEdgePackagingJobsSortBy."""
     
     NAME = 'NAME'
@@ -11092,21 +11092,21 @@ class ListEdgePackagingJobsSortBy(str, Enum):
     STATUS = 'STATUS'
 
 
-class OrderKey(str, Enum):
+class OrderKey(StrEnum):
     """Enum class for OrderKey."""
     
     ASCENDING = 'Ascending'
     DESCENDING = 'Descending'
 
 
-class SortExperimentsBy(str, Enum):
+class SortExperimentsBy(StrEnum):
     """Enum class for SortExperimentsBy."""
     
     NAME = 'Name'
     CREATION_TIME = 'CreationTime'
 
 
-class SortInferenceExperimentsBy(str, Enum):
+class SortInferenceExperimentsBy(StrEnum):
     """Enum class for SortInferenceExperimentsBy."""
     
     NAME = 'Name'
@@ -11114,7 +11114,7 @@ class SortInferenceExperimentsBy(str, Enum):
     STATUS = 'Status'
 
 
-class ListInferenceRecommendationsJobsSortBy(str, Enum):
+class ListInferenceRecommendationsJobsSortBy(StrEnum):
     """Enum class for ListInferenceRecommendationsJobsSortBy."""
     
     NAME = 'Name'
@@ -11122,13 +11122,13 @@ class ListInferenceRecommendationsJobsSortBy(str, Enum):
     STATUS = 'Status'
 
 
-class ListLabelingJobsForWorkteamSortByOptions(str, Enum):
+class ListLabelingJobsForWorkteamSortByOptions(StrEnum):
     """Enum class for ListLabelingJobsForWorkteamSortByOptions."""
     
     CREATION_TIME = 'CreationTime'
 
 
-class SortBy(str, Enum):
+class SortBy(StrEnum):
     """Enum class for SortBy."""
     
     NAME = 'Name'
@@ -11136,14 +11136,14 @@ class SortBy(str, Enum):
     STATUS = 'Status'
 
 
-class SortLineageGroupsBy(str, Enum):
+class SortLineageGroupsBy(StrEnum):
     """Enum class for SortLineageGroupsBy."""
     
     NAME = 'Name'
     CREATION_TIME = 'CreationTime'
 
 
-class ModelCardExportJobSortBy(str, Enum):
+class ModelCardExportJobSortBy(StrEnum):
     """Attribute by which to sort returned export jobs."""
     
     NAME = 'Name'
@@ -11151,7 +11151,7 @@ class ModelCardExportJobSortBy(str, Enum):
     STATUS = 'Status'
 
 
-class ModelCardExportJobSortOrder(str, Enum):
+class ModelCardExportJobSortOrder(StrEnum):
     """Enum class for ModelCardExportJobSortOrder."""
     
     ASCENDING = 'Ascending'
@@ -11182,13 +11182,13 @@ class ModelCardExportJobSummary(Base):
     last_modified_at: datetime.datetime
 
 
-class ModelCardVersionSortBy(str, Enum):
+class ModelCardVersionSortBy(StrEnum):
     """Enum class for ModelCardVersionSortBy."""
     
     VERSION = 'Version'
 
 
-class ModelCardSortOrder(str, Enum):
+class ModelCardSortOrder(StrEnum):
     """Enum class for ModelCardSortOrder."""
     
     ASCENDING = 'Ascending'
@@ -11217,7 +11217,7 @@ class ModelCardVersionSummary(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
 
 
-class ModelCardSortBy(str, Enum):
+class ModelCardSortBy(StrEnum):
     """Enum class for ModelCardSortBy."""
     
     NAME = 'Name'
@@ -11244,7 +11244,7 @@ class ModelCardSummary(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
 
 
-class ModelMetadataFilterType(str, Enum):
+class ModelMetadataFilterType(StrEnum):
     """Enum class for ModelMetadataFilterType."""
     
     DOMAIN = 'Domain'
@@ -11299,7 +11299,7 @@ class ModelMetadataSummary(Base):
     framework_version: str
 
 
-class ModelPackageGroupSortBy(str, Enum):
+class ModelPackageGroupSortBy(StrEnum):
     """Enum class for ModelPackageGroupSortBy."""
     
     NAME = 'Name'
@@ -11326,7 +11326,7 @@ class ModelPackageGroupSummary(Base):
     model_package_group_description: Optional[str] = Unassigned()
 
 
-class ModelPackageType(str, Enum):
+class ModelPackageType(StrEnum):
     """Enum class for ModelPackageType."""
     
     VERSIONED = 'Versioned'
@@ -11334,7 +11334,7 @@ class ModelPackageType(str, Enum):
     BOTH = 'Both'
 
 
-class ModelPackageSortBy(str, Enum):
+class ModelPackageSortBy(StrEnum):
     """Enum class for ModelPackageSortBy."""
     
     NAME = 'Name'
@@ -11367,7 +11367,7 @@ class ModelPackageSummary(Base):
     model_approval_status: Optional[ModelApprovalStatus] = Unassigned()
 
 
-class ModelSortKey(str, Enum):
+class ModelSortKey(StrEnum):
     """Enum class for ModelSortKey."""
     
     NAME = 'Name'
@@ -11390,14 +11390,14 @@ class ModelSummary(Base):
     creation_time: datetime.datetime
 
 
-class MonitoringAlertHistorySortKey(str, Enum):
+class MonitoringAlertHistorySortKey(StrEnum):
     """Enum class for MonitoringAlertHistorySortKey."""
     
     CREATION_TIME = 'CreationTime'
     STATUS = 'Status'
 
 
-class MonitoringAlertStatus(str, Enum):
+class MonitoringAlertStatus(StrEnum):
     """Enum class for MonitoringAlertStatus."""
     
     IN_ALERT = 'InAlert'
@@ -11470,7 +11470,7 @@ class MonitoringAlertSummary(Base):
     actions: MonitoringAlertActions
 
 
-class MonitoringExecutionSortKey(str, Enum):
+class MonitoringExecutionSortKey(StrEnum):
     """Enum class for MonitoringExecutionSortKey."""
     
     CREATION_TIME = 'CreationTime'
@@ -11478,7 +11478,7 @@ class MonitoringExecutionSortKey(str, Enum):
     STATUS = 'Status'
 
 
-class MonitoringScheduleSortKey(str, Enum):
+class MonitoringScheduleSortKey(StrEnum):
     """Enum class for MonitoringScheduleSortKey."""
     
     NAME = 'Name'
@@ -11512,7 +11512,7 @@ class MonitoringScheduleSummary(Base):
     monitoring_type: Optional[MonitoringType] = Unassigned()
 
 
-class NotebookInstanceLifecycleConfigSortKey(str, Enum):
+class NotebookInstanceLifecycleConfigSortKey(StrEnum):
     """Enum class for NotebookInstanceLifecycleConfigSortKey."""
     
     NAME = 'Name'
@@ -11520,7 +11520,7 @@ class NotebookInstanceLifecycleConfigSortKey(str, Enum):
     LAST_MODIFIED_TIME = 'LastModifiedTime'
 
 
-class NotebookInstanceLifecycleConfigSortOrder(str, Enum):
+class NotebookInstanceLifecycleConfigSortOrder(StrEnum):
     """Enum class for NotebookInstanceLifecycleConfigSortOrder."""
     
     ASCENDING = 'Ascending'
@@ -11545,7 +11545,7 @@ class NotebookInstanceLifecycleConfigSummary(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
 
 
-class NotebookInstanceSortKey(str, Enum):
+class NotebookInstanceSortKey(StrEnum):
     """Enum class for NotebookInstanceSortKey."""
     
     NAME = 'Name'
@@ -11553,7 +11553,7 @@ class NotebookInstanceSortKey(str, Enum):
     STATUS = 'Status'
 
 
-class NotebookInstanceSortOrder(str, Enum):
+class NotebookInstanceSortOrder(StrEnum):
     """Enum class for NotebookInstanceSortOrder."""
     
     ASCENDING = 'Ascending'
@@ -11590,7 +11590,7 @@ class NotebookInstanceSummary(Base):
     additional_code_repositories: Optional[List[str]] = Unassigned()
 
 
-class StepStatus(str, Enum):
+class StepStatus(StrEnum):
     """Enum class for StepStatus."""
     
     STARTING = 'Starting'
@@ -11785,7 +11785,7 @@ class PipelineExecutionStep(Base):
     selective_execution_result: Optional[SelectiveExecutionResult] = Unassigned()
 
 
-class SortPipelineExecutionsBy(str, Enum):
+class SortPipelineExecutionsBy(StrEnum):
     """Enum class for SortPipelineExecutionsBy."""
     
     CREATION_TIME = 'CreationTime'
@@ -11828,7 +11828,7 @@ class Parameter(Base):
     value: str
 
 
-class SortPipelinesBy(str, Enum):
+class SortPipelinesBy(StrEnum):
     """Enum class for SortPipelinesBy."""
     
     NAME = 'Name'
@@ -11887,14 +11887,14 @@ class ProcessingJobSummary(Base):
     exit_message: Optional[str] = Unassigned()
 
 
-class ProjectSortBy(str, Enum):
+class ProjectSortBy(StrEnum):
     """Enum class for ProjectSortBy."""
     
     NAME = 'Name'
     CREATION_TIME = 'CreationTime'
 
 
-class ProjectSortOrder(str, Enum):
+class ProjectSortOrder(StrEnum):
     """Enum class for ProjectSortOrder."""
     
     ASCENDING = 'Ascending'
@@ -11923,14 +11923,14 @@ class ProjectSummary(Base):
     project_description: Optional[str] = Unassigned()
 
 
-class ResourceCatalogSortOrder(str, Enum):
+class ResourceCatalogSortOrder(StrEnum):
     """Enum class for ResourceCatalogSortOrder."""
     
     ASCENDING = 'Ascending'
     DESCENDING = 'Descending'
 
 
-class ResourceCatalogSortBy(str, Enum):
+class ResourceCatalogSortBy(StrEnum):
     """Enum class for ResourceCatalogSortBy."""
     
     CREATION_TIME = 'CreationTime'
@@ -11954,7 +11954,7 @@ class ResourceCatalog(Base):
     creation_time: datetime.datetime
 
 
-class SpaceSortKey(str, Enum):
+class SpaceSortKey(StrEnum):
     """Enum class for SpaceSortKey."""
     
     CREATION_TIME = 'CreationTime'
@@ -12027,7 +12027,7 @@ class SpaceDetails(Base):
     space_display_name: Optional[str] = Unassigned()
 
 
-class StudioLifecycleConfigSortKey(str, Enum):
+class StudioLifecycleConfigSortKey(StrEnum):
     """Enum class for StudioLifecycleConfigSortKey."""
     
     CREATION_TIME = 'CreationTime'
@@ -12055,7 +12055,7 @@ class StudioLifecycleConfigDetails(Base):
     studio_lifecycle_config_app_type: Optional[StudioLifecycleConfigAppType] = Unassigned()
 
 
-class TrainingJobSortByOptions(str, Enum):
+class TrainingJobSortByOptions(StrEnum):
     """Enum class for TrainingJobSortByOptions."""
     
     NAME = 'Name'
@@ -12112,7 +12112,7 @@ class TransformJobSummary(Base):
     failure_reason: Optional[str] = Unassigned()
 
 
-class SortTrialComponentsBy(str, Enum):
+class SortTrialComponentsBy(StrEnum):
     """Enum class for SortTrialComponentsBy."""
     
     NAME = 'Name'
@@ -12151,7 +12151,7 @@ class TrialComponentSummary(Base):
     last_modified_by: Optional[UserContext] = Unassigned()
 
 
-class SortTrialsBy(str, Enum):
+class SortTrialsBy(StrEnum):
     """Enum class for SortTrialsBy."""
     
     NAME = 'Name'
@@ -12180,7 +12180,7 @@ class TrialSummary(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
 
 
-class UserProfileSortKey(str, Enum):
+class UserProfileSortKey(StrEnum):
     """Enum class for UserProfileSortKey."""
     
     CREATION_TIME = 'CreationTime'
@@ -12207,14 +12207,14 @@ class UserProfileDetails(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
 
 
-class ListWorkforcesSortByOptions(str, Enum):
+class ListWorkforcesSortByOptions(StrEnum):
     """Enum class for ListWorkforcesSortByOptions."""
     
     NAME = 'Name'
     CREATE_DATE = 'CreateDate'
 
 
-class ListWorkteamsSortByOptions(str, Enum):
+class ListWorkteamsSortByOptions(StrEnum):
     """Enum class for ListWorkteamsSortByOptions."""
     
     NAME = 'Name'
@@ -12543,7 +12543,7 @@ class ModelPackageGroup(Base):
     tags: Optional[List[Tag]] = Unassigned()
 
 
-class ModelVariantAction(str, Enum):
+class ModelVariantAction(StrEnum):
     """Enum class for ModelVariantAction."""
     
     RETAIN = 'Retain'
@@ -13165,7 +13165,7 @@ class SearchRecord(Base):
     model: Optional[ModelDashboardModel] = Unassigned()
 
 
-class SearchSortOrder(str, Enum):
+class SearchSortOrder(StrEnum):
     """Enum class for SearchSortOrder."""
     
     ASCENDING = 'Ascending'
@@ -13216,7 +13216,7 @@ class ThroughputConfigUpdate(Base):
     provisioned_write_capacity_units: Optional[int] = Unassigned()
 
 
-class VariantPropertyType(str, Enum):
+class VariantPropertyType(StrEnum):
     """Enum class for VariantPropertyType."""
     
     DESIRED_INSTANCE_COUNT = 'DesiredInstanceCount'
