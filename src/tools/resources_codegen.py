@@ -249,7 +249,7 @@ class ResourcesCodeGen():
 
         # Generate the arguments for the 'create' method
         typed_shape_members = self.shapes_extractor.generate_shape_members(operation_input_shape_name)
-        create_args = ",\n".join(f"{attr}: {type}" for attr, type in typed_shape_members.items())
+        create_args = ",\n\t".join(f"{attr}: {type}" for attr, type in typed_shape_members.items())
         create_args += ","
 
         # Convert the resource name to snake case
