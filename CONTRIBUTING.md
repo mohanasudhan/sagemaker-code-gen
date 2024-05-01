@@ -24,9 +24,9 @@ pyenv virtualenv 3.10.14 py3.10.14
 pyenv activate py3.10.14
 ```
 
-* Install dependencies and set PYTHONPATH
+* Install dependencies required for CodeGen and set PYTHONPATH
 ```
-pip install .
+pip install -e ".[codegen]"
 source .env
 ```
 
