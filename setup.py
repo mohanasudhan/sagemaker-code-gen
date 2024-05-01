@@ -11,6 +11,7 @@ setup(
     install_requires=[
         # Add your dependencies here (Include lower and upper bounds as applicable)
         'boto3>=1.34.0,<2.0.0',
+        'pandas',
         'pydantic>=2.7.0,<3.0.0',
         'pytest>=8.0.0,<9.0.0',
     ],

@@ -1,12 +1,21 @@
-import os
+import json
 from src.tools.resources_codegen import ResourcesCodeGen
+from src.tools.resources_extractor import ResourcesExtractor
+from src.tools.shapes_extractor import ShapesExtractor
 from src.tools.constants import SERVICE_JSON_FILE_PATH
 
 class TestGenerateResource:
     @classmethod
     def setup_class(cls):
+        # TODO: leverage pytest fixtures
+        with open(SERVICE_JSON_FILE_PATH, 'r') as file:
+            service_json = json.load(file)
+        
+        shapes_extracter = ShapesExtractor(service_json=service_json)
+        resource_extracter = ResourcesExtractor(service_json=service_json)
+            
         # Initialize parameters here
-        cls.resource_generator = ResourcesCodeGen(SERVICE_JSON_FILE_PATH)
+        cls.resource_generator = ResourcesCodeGen(service_json, shapes_extractor=shapes_extracter, resources_extractor=resource_extracter)
 
     # create a unit test for generate_create_method()
     def test_generate_create_method(self):
