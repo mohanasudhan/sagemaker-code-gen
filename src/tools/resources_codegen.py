@@ -29,7 +29,7 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
 
-class ResourcesCodeGen():
+class ResourcesCodeGen:
     """
     A class for generating resources based on a service JSON file.
 

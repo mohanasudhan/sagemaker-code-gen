@@ -18,7 +18,7 @@ from src.tools.constants import BASIC_JSON_TYPES_TO_PYTHON_TYPES, SHAPE_DAG_FILE
 from src.util.util import reformat_file_with_black, convert_to_snake_case
 
 
-class ShapesExtractor():
+class ShapesExtractor:
     """Extracts the shapes to DAG structure."""
 
     def __init__(self, service_json: dict):

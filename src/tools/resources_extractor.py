@@ -23,7 +23,7 @@ log = logging.getLogger(__name__)
 '''
 This class is used to extract the resources and its actions from the service-2.json file.
 '''
-class ResourcesExtractor():
+class ResourcesExtractor:
     """
     A class for extracting resource information from a service JSON.
     
