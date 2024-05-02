@@ -14,8 +14,7 @@
 import os
 import logging
 
-from src.tools.constants import BASIC_JSON_TYPES_TO_PYTHON_TYPES, \
-                        GENERATED_CLASSES_LOCATION, \
+from src.tools.constants import GENERATED_CLASSES_LOCATION, \
                         RESOURCES_CODEGEN_FILE_NAME, \
                         LICENCES_STRING, \
                         TERMINAL_STATES
@@ -35,8 +34,6 @@ class ResourcesCodeGen:
 
     Args:
         service_json (dict): The Botocore service.json containing the shape definitions.
-        shapes_extractor (ShapesExtractor): An instance of the ShapesExtractor class.
-        resource_extractor (ResourcesExtractor): An instance of the ResourceExtractor class.
         
     Attributes:
         service_json (dict): The Botocore service.json containing the shape definitions.
@@ -56,10 +53,7 @@ class ResourcesCodeGen:
 
     """
 
-    def __init__(self, 
-                 service_json: dict, 
-                 shapes_extractor: ShapesExtractor, 
-                 resources_extractor: ResourcesExtractor):
+    def __init__(self, service_json: dict):
         # Initialize the service_json dict
         self.service_json = service_json
 
@@ -82,15 +76,12 @@ class ResourcesCodeGen:
         self.shapes = self.service_json['shapes']
 
         # Initialize the resources and shapes extractors
-        self.resources_extractor = resources_extractor
-        self.shapes_extractor = shapes_extractor
+        self.resources_extractor = ResourcesExtractor(service_json=service_json)
+        self.shapes_extractor = ShapesExtractor(service_json=service_json)
 
         # Extract the resources plan and shapes DAG
         self.resources_plan = self.resources_extractor.get_resource_plan()
         self.shape_dag = self.shapes_extractor.get_shapes_dag()
-
-        # Generate the resources
-        self.generate_resources()
 
     def generate_license(self) -> str:
         """

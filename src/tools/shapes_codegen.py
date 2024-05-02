@@ -29,10 +29,11 @@ class ShapesCodeGen:
     
     Args:
         service_json (dict): The Botocore service.json containing the shape definitions.
-        shapes_extractor (ShapesExtractor): An instance of the ShapesExtractor class.
         
     Attributes:
         service_json (dict): The Botocore service.json containing the shape definitions.
+        shapes_extractor (ShapesExtractor): An instance of the ShapesExtractor class.
+        shape_dag (dict): Shape DAG generated from service.json
 
     Methods:
         build_graph(): Builds a directed acyclic graph (DAG) representing the dependencies between shapes.
@@ -45,9 +46,9 @@ class ShapesCodeGen:
         generate_shapes(output_folder): Generates the shape classes and writes them to the specified output folder.
     """
 
-    def __init__(self, service_json: dict, shapes_extractor: ShapesExtractor):
+    def __init__(self, service_json: dict):
         self.service_json = service_json
-        self.shapes_extractor = shapes_extractor
+        self.shapes_extractor = ShapesExtractor(service_json=service_json)
         self.shape_dag = self.shapes_extractor.get_shapes_dag()
 
     def build_graph(self):

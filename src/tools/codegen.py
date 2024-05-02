@@ -16,8 +16,6 @@ from src.tools.constants import SERVICE_JSON_FILE_PATH
 from src.tools.utils_codegen import UtilsCodeGen
 from src.tools.shapes_codegen import ShapesCodeGen
 from src.tools.resources_codegen import ResourcesCodeGen
-from src.tools.shapes_extractor import ShapesExtractor
-from src.tools.resources_extractor import ResourcesExtractor
 
 def generate_code(utils_code_gen: UtilsCodeGen, 
                   shapes_code_gen: ShapesCodeGen,
@@ -48,15 +46,9 @@ if __name__ == "__main__":
     with open(SERVICE_JSON_FILE_PATH, 'r') as file:
         service_json = json.load(file)
     
-    shapes_extracter = ShapesExtractor(service_json=service_json)
-    resource_extracter = ResourcesExtractor(service_json=service_json)
-    
     utils_code_gen = UtilsCodeGen()
-    shapes_code_gen = ShapesCodeGen(service_json=service_json, 
-                                    shapes_extractor=shapes_extracter)
-    resources_code_gen = ResourcesCodeGen(service_json=service_json,
-                                          shapes_extractor=shapes_extracter,
-                                          resources_extractor=resource_extracter)
+    shapes_code_gen = ShapesCodeGen(service_json=service_json)
+    resources_code_gen = ResourcesCodeGen(service_json=service_json)
 
     generate_code(utils_code_gen=utils_code_gen,
                   shapes_code_gen=shapes_code_gen,
