@@ -13,12 +13,9 @@
 import logging
 
 from dataclasses import asdict
+
 from src.code_injection.shape_dag import SHAPE_DAG
 from src.code_injection.constants import BASIC_TYPES, STRUCTURE_TYPE, LIST_TYPE, MAP_TYPE
-
-# need to set this to set the shape classes in globals()
-# ToDo: move this and associated code in generated/resources.py to not require "*" import
-from src.generated.shapes import *
 
 
 def pascal_to_snake(pascal_str):
@@ -94,7 +91,7 @@ def serialize(data) -> object:
     return data_dict
 
 
-def _evaluate_list_type(raw_list, shape):
+def _evaluate_list_type(raw_list, shape) -> list:
     """
     Evaluates a list type based on the given shape.
 
@@ -127,7 +124,7 @@ def _evaluate_list_type(raw_list, shape):
                          "Needs additional logic for support")
     return _evaluated_list
 
-def _evaluate_map_type(raw_map, shape):
+def _evaluate_map_type(raw_map, shape) -> dict:
     """
     Evaluates a map type based on the given shape.
 
@@ -176,7 +173,7 @@ def _evaluate_map_type(raw_map, shape):
 
     return _evaluated_map
 
-def transform(data, shape):
+def transform(data, shape) -> dict:
     """
     Transforms the given data based on the given shape.
 
