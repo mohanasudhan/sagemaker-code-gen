@@ -120,7 +120,7 @@ class Action(Base):
         operation_input_args = {
             'ActionName': action_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_action(**operation_input_args)
     
         pprint(response)
@@ -209,7 +209,7 @@ class Algorithm(Base):
         operation_input_args = {
             'AlgorithmName': algorithm_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_algorithm(**operation_input_args)
     
         pprint(response)
@@ -329,7 +329,7 @@ class App(Base):
             'AppType': app_type,
             'AppName': app_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_app(**operation_input_args)
     
         pprint(response)
@@ -437,7 +437,7 @@ class AppImageConfig(Base):
         operation_input_args = {
             'AppImageConfigName': app_image_config_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_app_image_config(**operation_input_args)
     
         pprint(response)
@@ -524,7 +524,7 @@ class Artifact(Base):
         operation_input_args = {
             'ArtifactArn': artifact_arn,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_artifact(**operation_input_args)
     
         pprint(response)
@@ -630,7 +630,7 @@ class AutoMLJob(Base):
         operation_input_args = {
             'AutoMLJobName': auto_m_l_job_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_auto_m_l_job(**operation_input_args)
     
         pprint(response)
@@ -758,7 +758,7 @@ class AutoMLJobV2(Base):
         operation_input_args = {
             'AutoMLJobName': auto_m_l_job_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_auto_m_l_job_v2(**operation_input_args)
     
         pprint(response)
@@ -852,7 +852,7 @@ class Cluster(Base):
         operation_input_args = {
             'ClusterName': cluster_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_cluster(**operation_input_args)
     
         pprint(response)
@@ -949,7 +949,7 @@ class CodeRepository(Base):
         operation_input_args = {
             'CodeRepositoryName': code_repository_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_code_repository(**operation_input_args)
     
         pprint(response)
@@ -1047,7 +1047,7 @@ class CompilationJob(Base):
         operation_input_args = {
             'CompilationJobName': compilation_job_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_compilation_job(**operation_input_args)
     
         pprint(response)
@@ -1163,7 +1163,7 @@ class Context(Base):
         operation_input_args = {
             'ContextName': context_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_context(**operation_input_args)
     
         pprint(response)
@@ -1258,7 +1258,7 @@ class DataQualityJobDefinition(Base):
         operation_input_args = {
             'JobDefinitionName': job_definition_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_data_quality_job_definition(**operation_input_args)
     
         pprint(response)
@@ -1342,7 +1342,7 @@ class DeviceFleet(Base):
         operation_input_args = {
             'DeviceFleetName': device_fleet_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_device_fleet(**operation_input_args)
     
         pprint(response)
@@ -1452,7 +1452,7 @@ class Domain(Base):
         operation_input_args = {
             'DomainId': domain_id,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_domain(**operation_input_args)
     
         pprint(response)
@@ -1564,7 +1564,7 @@ class EdgeDeploymentPlan(Base):
             'NextToken': next_token,
             'MaxResults': max_results,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_edge_deployment_plan(**operation_input_args)
     
         pprint(response)
@@ -1661,7 +1661,7 @@ class EdgePackagingJob(Base):
         operation_input_args = {
             'EdgePackagingJobName': edge_packaging_job_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_edge_packaging_job(**operation_input_args)
     
         pprint(response)
@@ -1769,7 +1769,7 @@ class Endpoint(Base):
         operation_input_args = {
             'EndpointName': endpoint_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_endpoint(**operation_input_args)
     
         pprint(response)
@@ -1889,7 +1889,7 @@ class EndpointConfig(Base):
         operation_input_args = {
             'EndpointConfigName': endpoint_config_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_endpoint_config(**operation_input_args)
     
         pprint(response)
@@ -1970,7 +1970,7 @@ class Experiment(Base):
         operation_input_args = {
             'ExperimentName': experiment_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_experiment(**operation_input_args)
     
         pprint(response)
@@ -2074,7 +2074,7 @@ class FeatureGroup(Base):
             'FeatureGroupName': feature_group_name,
             'NextToken': next_token,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_feature_group(**operation_input_args)
     
         pprint(response)
@@ -2185,7 +2185,7 @@ class FlowDefinition(Base):
         operation_input_args = {
             'FlowDefinitionName': flow_definition_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_flow_definition(**operation_input_args)
     
         pprint(response)
@@ -2293,7 +2293,7 @@ class Hub(Base):
         operation_input_args = {
             'HubName': hub_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_hub(**operation_input_args)
     
         pprint(response)
@@ -2379,7 +2379,7 @@ class HubContent(Base):
             'HubContentName': hub_content_name,
             'HubContentVersion': hub_content_version,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_hub_content(**operation_input_args)
     
         pprint(response)
@@ -2482,7 +2482,7 @@ class HumanTaskUi(Base):
         operation_input_args = {
             'HumanTaskUiName': human_task_ui_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_human_task_ui(**operation_input_args)
     
         pprint(response)
@@ -2600,7 +2600,7 @@ class HyperParameterTuningJob(Base):
         operation_input_args = {
             'HyperParameterTuningJobName': hyper_parameter_tuning_job_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_hyper_parameter_tuning_job(**operation_input_args)
     
         pprint(response)
@@ -2712,7 +2712,7 @@ class Image(Base):
         operation_input_args = {
             'ImageName': image_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_image(**operation_input_args)
     
         pprint(response)
@@ -2840,7 +2840,7 @@ class ImageVersion(Base):
             'Version': version,
             'Alias': alias,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_image_version(**operation_input_args)
     
         pprint(response)
@@ -2953,7 +2953,7 @@ class InferenceComponent(Base):
         operation_input_args = {
             'InferenceComponentName': inference_component_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_inference_component(**operation_input_args)
     
         pprint(response)
@@ -3077,7 +3077,7 @@ class InferenceExperiment(Base):
         operation_input_args = {
             'Name': name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_inference_experiment(**operation_input_args)
     
         pprint(response)
@@ -3204,7 +3204,7 @@ class InferenceRecommendationsJob(Base):
         operation_input_args = {
             'JobName': job_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_inference_recommendations_job(**operation_input_args)
     
         pprint(response)
@@ -3328,7 +3328,7 @@ class LabelingJob(Base):
         operation_input_args = {
             'LabelingJobName': labeling_job_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_labeling_job(**operation_input_args)
     
         pprint(response)
@@ -3440,7 +3440,7 @@ class Model(Base):
         operation_input_args = {
             'ModelName': model_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_model(**operation_input_args)
     
         pprint(response)
@@ -3535,7 +3535,7 @@ class ModelBiasJobDefinition(Base):
         operation_input_args = {
             'JobDefinitionName': job_definition_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_model_bias_job_definition(**operation_input_args)
     
         pprint(response)
@@ -3622,7 +3622,7 @@ class ModelCard(Base):
             'ModelCardName': model_card_name,
             'ModelCardVersion': model_card_version,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_model_card(**operation_input_args)
     
         pprint(response)
@@ -3727,7 +3727,7 @@ class ModelCardExportJob(Base):
         operation_input_args = {
             'ModelCardExportJobArn': model_card_export_job_arn,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_model_card_export_job(**operation_input_args)
     
         pprint(response)
@@ -3837,7 +3837,7 @@ class ModelExplainabilityJobDefinition(Base):
         operation_input_args = {
             'JobDefinitionName': job_definition_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_model_explainability_job_definition(**operation_input_args)
     
         pprint(response)
@@ -3968,7 +3968,7 @@ class ModelPackage(Base):
         operation_input_args = {
             'ModelPackageName': model_package_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_model_package(**operation_input_args)
     
         pprint(response)
@@ -4066,7 +4066,7 @@ class ModelPackageGroup(Base):
         operation_input_args = {
             'ModelPackageGroupName': model_package_group_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_model_package_group(**operation_input_args)
     
         pprint(response)
@@ -4183,7 +4183,7 @@ class ModelQualityJobDefinition(Base):
         operation_input_args = {
             'JobDefinitionName': job_definition_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_model_quality_job_definition(**operation_input_args)
     
         pprint(response)
@@ -4263,7 +4263,7 @@ class MonitoringSchedule(Base):
         operation_input_args = {
             'MonitoringScheduleName': monitoring_schedule_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_monitoring_schedule(**operation_input_args)
     
         pprint(response)
@@ -4410,7 +4410,7 @@ class NotebookInstance(Base):
         operation_input_args = {
             'NotebookInstanceName': notebook_instance_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_notebook_instance(**operation_input_args)
     
         pprint(response)
@@ -4515,7 +4515,7 @@ class NotebookInstanceLifecycleConfig(Base):
         operation_input_args = {
             'NotebookInstanceLifecycleConfigName': notebook_instance_lifecycle_config_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_notebook_instance_lifecycle_config(**operation_input_args)
     
         pprint(response)
@@ -4610,7 +4610,7 @@ class Pipeline(Base):
         operation_input_args = {
             'PipelineName': pipeline_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_pipeline(**operation_input_args)
     
         pprint(response)
@@ -4688,7 +4688,7 @@ class PipelineExecution(Base):
         operation_input_args = {
             'PipelineExecutionArn': pipeline_execution_arn,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_pipeline_execution(**operation_input_args)
     
         pprint(response)
@@ -4818,7 +4818,7 @@ class ProcessingJob(Base):
         operation_input_args = {
             'ProcessingJobName': processing_job_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_processing_job(**operation_input_args)
     
         pprint(response)
@@ -4923,7 +4923,7 @@ class Project(Base):
         operation_input_args = {
             'ProjectName': project_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_project(**operation_input_args)
     
         pprint(response)
@@ -5038,7 +5038,7 @@ class Space(Base):
             'DomainId': domain_id,
             'SpaceName': space_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_space(**operation_input_args)
     
         pprint(response)
@@ -5140,7 +5140,7 @@ class StudioLifecycleConfig(Base):
         operation_input_args = {
             'StudioLifecycleConfigName': studio_lifecycle_config_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_studio_lifecycle_config(**operation_input_args)
     
         pprint(response)
@@ -5295,7 +5295,7 @@ class TrainingJob(Base):
         operation_input_args = {
             'TrainingJobName': training_job_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_training_job(**operation_input_args)
     
         pprint(response)
@@ -5430,7 +5430,7 @@ class TransformJob(Base):
         operation_input_args = {
             'TransformJobName': transform_job_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_transform_job(**operation_input_args)
     
         pprint(response)
@@ -5536,7 +5536,7 @@ class Trial(Base):
         operation_input_args = {
             'TrialName': trial_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_trial(**operation_input_args)
     
         pprint(response)
@@ -5638,7 +5638,7 @@ class TrialComponent(Base):
         operation_input_args = {
             'TrialComponentName': trial_component_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_trial_component(**operation_input_args)
     
         pprint(response)
@@ -5749,7 +5749,7 @@ class UserProfile(Base):
             'DomainId': domain_id,
             'UserProfileName': user_profile_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_user_profile(**operation_input_args)
     
         pprint(response)
@@ -5850,7 +5850,7 @@ class Workforce(Base):
         operation_input_args = {
             'WorkforceName': workforce_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_workforce(**operation_input_args)
     
         pprint(response)
@@ -5949,7 +5949,7 @@ class Workteam(Base):
         operation_input_args = {
             'WorkteamName': workteam_name,
         }
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
         response = client.describe_workteam(**operation_input_args)
     
         pprint(response)
