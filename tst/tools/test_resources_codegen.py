@@ -75,7 +75,7 @@ def get(
         'AppType': app_type,
         'AppName': app_name,
     }
-    client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+    client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     response = client.describe_app(**operation_input_args)
 
     pprint(response)

@@ -68,7 +68,7 @@ def get(
     operation_input_args = {{
 {operation_input_args}
     }}
-    client = SageMakerClient(session=session, region_name=region, service_name='{service_name}')
+    client = SageMakerClient(session=session, region_name=region, service_name='{service_name}').client
     response = client.{operation}(**operation_input_args)
 
     pprint(response)
