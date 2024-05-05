@@ -98,10 +98,11 @@ def refresh(self) -> Optional[object]:
         'AppType': self.app_type,
         'AppName': self.app_name,
     }
-    response = self.client.describe_app(**operation_input_args)
+    client = SageMakerClient().client
+    response = client.describe_app(**operation_input_args)
 
-    # deserialize the response
-
+    # deserialize response and update self
+    transform(response, 'DescribeAppResponse', self)
     return self
 '''
         assert self.resource_generator.generate_refresh_method("App") == expected_output

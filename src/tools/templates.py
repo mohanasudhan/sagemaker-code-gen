@@ -85,10 +85,11 @@ def refresh(self) -> Optional[object]:
     operation_input_args = {{
 {operation_input_args}
     }}
-    response = self.client.{operation}(**operation_input_args)
+    client = SageMakerClient().client
+    response = client.{operation}(**operation_input_args)
 
-    # deserialize the response
-
+    # deserialize response and update self
+    transform(response, '{describe_operation_output_shape}', self)
     return self
 '''
 

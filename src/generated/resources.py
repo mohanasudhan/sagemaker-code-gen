@@ -135,10 +135,11 @@ class Action(Base):
         operation_input_args = {
             'ActionName': self.action_name,
         }
-        response = self.client.describe_action(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_action(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeActionResponse', self)
         return self
     
     def delete(self) -> None:
@@ -223,10 +224,11 @@ class Algorithm(Base):
         operation_input_args = {
             'AlgorithmName': self.algorithm_name,
         }
-        response = self.client.describe_algorithm(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_algorithm(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeAlgorithmOutput', self)
         return self
     
     def delete(self) -> None:
@@ -346,10 +348,11 @@ class App(Base):
             'AppType': self.app_type,
             'AppName': self.app_name,
         }
-        response = self.client.describe_app(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_app(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeAppResponse', self)
         return self
     
     def delete(self) -> None:
@@ -449,10 +452,11 @@ class AppImageConfig(Base):
         operation_input_args = {
             'AppImageConfigName': self.app_image_config_name,
         }
-        response = self.client.describe_app_image_config(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_app_image_config(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeAppImageConfigResponse', self)
         return self
     
     def delete(self) -> None:
@@ -535,10 +539,11 @@ class Artifact(Base):
         operation_input_args = {
             'ArtifactArn': self.artifact_arn,
         }
-        response = self.client.describe_artifact(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_artifact(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeArtifactResponse', self)
         return self
     
     def delete(self) -> None:
@@ -640,10 +645,11 @@ class AutoMLJob(Base):
         operation_input_args = {
             'AutoMLJobName': self.auto_m_l_job_name,
         }
-        response = self.client.describe_auto_m_l_job(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_auto_m_l_job(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeAutoMLJobResponse', self)
         return self
     
     def stop(self) -> None:
@@ -767,10 +773,11 @@ class AutoMLJobV2(Base):
         operation_input_args = {
             'AutoMLJobName': self.auto_m_l_job_name,
         }
-        response = self.client.describe_auto_m_l_job_v2(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_auto_m_l_job_v2(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeAutoMLJobV2Response', self)
         return self
     
     @validate_call
@@ -860,10 +867,11 @@ class Cluster(Base):
         operation_input_args = {
             'ClusterName': self.cluster_name,
         }
-        response = self.client.describe_cluster(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_cluster(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeClusterResponse', self)
         return self
     
     def delete(self) -> None:
@@ -956,10 +964,11 @@ class CodeRepository(Base):
         operation_input_args = {
             'CodeRepositoryName': self.code_repository_name,
         }
-        response = self.client.describe_code_repository(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_code_repository(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeCodeRepositoryOutput', self)
         return self
     
     def delete(self) -> None:
@@ -1053,10 +1062,11 @@ class CompilationJob(Base):
         operation_input_args = {
             'CompilationJobName': self.compilation_job_name,
         }
-        response = self.client.describe_compilation_job(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_compilation_job(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeCompilationJobResponse', self)
         return self
     
     def delete(self) -> None:
@@ -1168,10 +1178,11 @@ class Context(Base):
         operation_input_args = {
             'ContextName': self.context_name,
         }
-        response = self.client.describe_context(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_context(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeContextResponse', self)
         return self
     
     def delete(self) -> None:
@@ -1262,10 +1273,11 @@ class DataQualityJobDefinition(Base):
         operation_input_args = {
             'JobDefinitionName': self.job_definition_name,
         }
-        response = self.client.describe_data_quality_job_definition(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_data_quality_job_definition(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeDataQualityJobDefinitionResponse', self)
         return self
     
     def delete(self) -> None:
@@ -1345,10 +1357,11 @@ class DeviceFleet(Base):
         operation_input_args = {
             'DeviceFleetName': self.device_fleet_name,
         }
-        response = self.client.describe_device_fleet(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_device_fleet(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeDeviceFleetResponse', self)
         return self
     
     def delete(self) -> None:
@@ -1454,10 +1467,11 @@ class Domain(Base):
         operation_input_args = {
             'DomainId': self.domain_id,
         }
-        response = self.client.describe_domain(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_domain(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeDomainResponse', self)
         return self
     
     def delete(self) -> None:
@@ -1567,10 +1581,11 @@ class EdgeDeploymentPlan(Base):
             'NextToken': self.next_token,
             'MaxResults': self.max_results,
         }
-        response = self.client.describe_edge_deployment_plan(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_edge_deployment_plan(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeEdgeDeploymentPlanResponse', self)
         return self
     
     def delete(self) -> None:
@@ -1661,10 +1676,11 @@ class EdgePackagingJob(Base):
         operation_input_args = {
             'EdgePackagingJobName': self.edge_packaging_job_name,
         }
-        response = self.client.describe_edge_packaging_job(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_edge_packaging_job(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeEdgePackagingJobResponse', self)
         return self
     
     def stop(self) -> None:
@@ -1768,10 +1784,11 @@ class Endpoint(Base):
         operation_input_args = {
             'EndpointName': self.endpoint_name,
         }
-        response = self.client.describe_endpoint(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_endpoint(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeEndpointOutput', self)
         return self
     
     def delete(self) -> None:
@@ -1887,10 +1904,11 @@ class EndpointConfig(Base):
         operation_input_args = {
             'EndpointConfigName': self.endpoint_config_name,
         }
-        response = self.client.describe_endpoint_config(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_endpoint_config(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeEndpointConfigOutput', self)
         return self
     
     def delete(self) -> None:
@@ -1967,10 +1985,11 @@ class Experiment(Base):
         operation_input_args = {
             'ExperimentName': self.experiment_name,
         }
-        response = self.client.describe_experiment(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_experiment(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeExperimentResponse', self)
         return self
     
     def delete(self) -> None:
@@ -2071,10 +2090,11 @@ class FeatureGroup(Base):
             'FeatureGroupName': self.feature_group_name,
             'NextToken': self.next_token,
         }
-        response = self.client.describe_feature_group(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_feature_group(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeFeatureGroupResponse', self)
         return self
     
     def delete(self) -> None:
@@ -2180,10 +2200,11 @@ class FlowDefinition(Base):
         operation_input_args = {
             'FlowDefinitionName': self.flow_definition_name,
         }
-        response = self.client.describe_flow_definition(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_flow_definition(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeFlowDefinitionResponse', self)
         return self
     
     def delete(self) -> None:
@@ -2287,10 +2308,11 @@ class Hub(Base):
         operation_input_args = {
             'HubName': self.hub_name,
         }
-        response = self.client.describe_hub(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_hub(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeHubResponse', self)
         return self
     
     def delete(self) -> None:
@@ -2375,10 +2397,11 @@ class HubContent(Base):
             'HubContentName': self.hub_content_name,
             'HubContentVersion': self.hub_content_version,
         }
-        response = self.client.describe_hub_content(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_hub_content(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeHubContentResponse', self)
         return self
     
     def delete(self) -> None:
@@ -2474,10 +2497,11 @@ class HumanTaskUi(Base):
         operation_input_args = {
             'HumanTaskUiName': self.human_task_ui_name,
         }
-        response = self.client.describe_human_task_ui(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_human_task_ui(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeHumanTaskUiResponse', self)
         return self
     
     def delete(self) -> None:
@@ -2591,10 +2615,11 @@ class HyperParameterTuningJob(Base):
         operation_input_args = {
             'HyperParameterTuningJobName': self.hyper_parameter_tuning_job_name,
         }
-        response = self.client.describe_hyper_parameter_tuning_job(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_hyper_parameter_tuning_job(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeHyperParameterTuningJobResponse', self)
         return self
     
     def delete(self) -> None:
@@ -2702,10 +2727,11 @@ class Image(Base):
         operation_input_args = {
             'ImageName': self.image_name,
         }
-        response = self.client.describe_image(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_image(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeImageResponse', self)
         return self
     
     def delete(self) -> None:
@@ -2831,10 +2857,11 @@ class ImageVersion(Base):
             'Version': self.version,
             'Alias': self.alias,
         }
-        response = self.client.describe_image_version(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_image_version(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeImageVersionResponse', self)
         return self
     
     def delete(self) -> None:
@@ -2941,10 +2968,11 @@ class InferenceComponent(Base):
         operation_input_args = {
             'InferenceComponentName': self.inference_component_name,
         }
-        response = self.client.describe_inference_component(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_inference_component(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeInferenceComponentOutput', self)
         return self
     
     def delete(self) -> None:
@@ -3064,10 +3092,11 @@ class InferenceExperiment(Base):
         operation_input_args = {
             'Name': self.name,
         }
-        response = self.client.describe_inference_experiment(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_inference_experiment(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeInferenceExperimentResponse', self)
         return self
     
     def delete(self) -> None:
@@ -3190,10 +3219,11 @@ class InferenceRecommendationsJob(Base):
         operation_input_args = {
             'JobName': self.job_name,
         }
-        response = self.client.describe_inference_recommendations_job(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_inference_recommendations_job(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeInferenceRecommendationsJobResponse', self)
         return self
     
     def stop(self) -> None:
@@ -3313,10 +3343,11 @@ class LabelingJob(Base):
         operation_input_args = {
             'LabelingJobName': self.labeling_job_name,
         }
-        response = self.client.describe_labeling_job(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_labeling_job(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeLabelingJobResponse', self)
         return self
     
     def stop(self) -> None:
@@ -3424,10 +3455,11 @@ class Model(Base):
         operation_input_args = {
             'ModelName': self.model_name,
         }
-        response = self.client.describe_model(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_model(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeModelOutput', self)
         return self
     
     def delete(self) -> None:
@@ -3518,10 +3550,11 @@ class ModelBiasJobDefinition(Base):
         operation_input_args = {
             'JobDefinitionName': self.job_definition_name,
         }
-        response = self.client.describe_model_bias_job_definition(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_model_bias_job_definition(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeModelBiasJobDefinitionResponse', self)
         return self
     
     def delete(self) -> None:
@@ -3605,10 +3638,11 @@ class ModelCard(Base):
             'ModelCardName': self.model_card_name,
             'ModelCardVersion': self.model_card_version,
         }
-        response = self.client.describe_model_card(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_model_card(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeModelCardResponse', self)
         return self
     
     def delete(self) -> None:
@@ -3708,10 +3742,11 @@ class ModelCardExportJob(Base):
         operation_input_args = {
             'ModelCardExportJobArn': self.model_card_export_job_arn,
         }
-        response = self.client.describe_model_card_export_job(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_model_card_export_job(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeModelCardExportJobResponse', self)
         return self
     
     @validate_call
@@ -3817,10 +3852,11 @@ class ModelExplainabilityJobDefinition(Base):
         operation_input_args = {
             'JobDefinitionName': self.job_definition_name,
         }
-        response = self.client.describe_model_explainability_job_definition(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_model_explainability_job_definition(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeModelExplainabilityJobDefinitionResponse', self)
         return self
     
     def delete(self) -> None:
@@ -3947,10 +3983,11 @@ class ModelPackage(Base):
         operation_input_args = {
             'ModelPackageName': self.model_package_name,
         }
-        response = self.client.describe_model_package(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_model_package(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeModelPackageOutput', self)
         return self
     
     def delete(self) -> None:
@@ -4044,10 +4081,11 @@ class ModelPackageGroup(Base):
         operation_input_args = {
             'ModelPackageGroupName': self.model_package_group_name,
         }
-        response = self.client.describe_model_package_group(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_model_package_group(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeModelPackageGroupOutput', self)
         return self
     
     def delete(self) -> None:
@@ -4160,10 +4198,11 @@ class ModelQualityJobDefinition(Base):
         operation_input_args = {
             'JobDefinitionName': self.job_definition_name,
         }
-        response = self.client.describe_model_quality_job_definition(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_model_quality_job_definition(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeModelQualityJobDefinitionResponse', self)
         return self
     
     def delete(self) -> None:
@@ -4239,10 +4278,11 @@ class MonitoringSchedule(Base):
         operation_input_args = {
             'MonitoringScheduleName': self.monitoring_schedule_name,
         }
-        response = self.client.describe_monitoring_schedule(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_monitoring_schedule(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeMonitoringScheduleResponse', self)
         return self
     
     def delete(self) -> None:
@@ -4385,10 +4425,11 @@ class NotebookInstance(Base):
         operation_input_args = {
             'NotebookInstanceName': self.notebook_instance_name,
         }
-        response = self.client.describe_notebook_instance(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_notebook_instance(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeNotebookInstanceOutput', self)
         return self
     
     def delete(self) -> None:
@@ -4489,10 +4530,11 @@ class NotebookInstanceLifecycleConfig(Base):
         operation_input_args = {
             'NotebookInstanceLifecycleConfigName': self.notebook_instance_lifecycle_config_name,
         }
-        response = self.client.describe_notebook_instance_lifecycle_config(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_notebook_instance_lifecycle_config(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeNotebookInstanceLifecycleConfigOutput', self)
         return self
     
     def delete(self) -> None:
@@ -4583,10 +4625,11 @@ class Pipeline(Base):
         operation_input_args = {
             'PipelineName': self.pipeline_name,
         }
-        response = self.client.describe_pipeline(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_pipeline(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribePipelineResponse', self)
         return self
     
     def delete(self) -> None:
@@ -4660,10 +4703,11 @@ class PipelineExecution(Base):
         operation_input_args = {
             'PipelineExecutionArn': self.pipeline_execution_arn,
         }
-        response = self.client.describe_pipeline_execution(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_pipeline_execution(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribePipelineExecutionResponse', self)
         return self
     
     def stop(self) -> None:
@@ -4789,10 +4833,11 @@ class ProcessingJob(Base):
         operation_input_args = {
             'ProcessingJobName': self.processing_job_name,
         }
-        response = self.client.describe_processing_job(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_processing_job(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeProcessingJobResponse', self)
         return self
     
     def stop(self) -> None:
@@ -4893,10 +4938,11 @@ class Project(Base):
         operation_input_args = {
             'ProjectName': self.project_name,
         }
-        response = self.client.describe_project(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_project(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeProjectOutput', self)
         return self
     
     def delete(self) -> None:
@@ -5008,10 +5054,11 @@ class Space(Base):
             'DomainId': self.domain_id,
             'SpaceName': self.space_name,
         }
-        response = self.client.describe_space(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_space(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeSpaceResponse', self)
         return self
     
     def delete(self) -> None:
@@ -5108,10 +5155,11 @@ class StudioLifecycleConfig(Base):
         operation_input_args = {
             'StudioLifecycleConfigName': self.studio_lifecycle_config_name,
         }
-        response = self.client.describe_studio_lifecycle_config(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_studio_lifecycle_config(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeStudioLifecycleConfigResponse', self)
         return self
     
     def delete(self) -> None:
@@ -5262,10 +5310,11 @@ class TrainingJob(Base):
         operation_input_args = {
             'TrainingJobName': self.training_job_name,
         }
-        response = self.client.describe_training_job(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_training_job(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeTrainingJobResponse', self)
         return self
     
     def stop(self) -> None:
@@ -5396,10 +5445,11 @@ class TransformJob(Base):
         operation_input_args = {
             'TransformJobName': self.transform_job_name,
         }
-        response = self.client.describe_transform_job(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_transform_job(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeTransformJobResponse', self)
         return self
     
     def stop(self) -> None:
@@ -5501,10 +5551,11 @@ class Trial(Base):
         operation_input_args = {
             'TrialName': self.trial_name,
         }
-        response = self.client.describe_trial(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_trial(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeTrialResponse', self)
         return self
     
     def delete(self) -> None:
@@ -5602,10 +5653,11 @@ class TrialComponent(Base):
         operation_input_args = {
             'TrialComponentName': self.trial_component_name,
         }
-        response = self.client.describe_trial_component(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_trial_component(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeTrialComponentResponse', self)
         return self
     
     def delete(self) -> None:
@@ -5713,10 +5765,11 @@ class UserProfile(Base):
             'DomainId': self.domain_id,
             'UserProfileName': self.user_profile_name,
         }
-        response = self.client.describe_user_profile(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_user_profile(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeUserProfileResponse', self)
         return self
     
     def delete(self) -> None:
@@ -5812,10 +5865,11 @@ class Workforce(Base):
         operation_input_args = {
             'WorkforceName': self.workforce_name,
         }
-        response = self.client.describe_workforce(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_workforce(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeWorkforceResponse', self)
         return self
     
     def delete(self) -> None:
@@ -5910,10 +5964,11 @@ class Workteam(Base):
         operation_input_args = {
             'WorkteamName': self.workteam_name,
         }
-        response = self.client.describe_workteam(**operation_input_args)
+        client = SageMakerClient().client
+        response = client.describe_workteam(**operation_input_args)
     
-        # deserialize the response
-    
+        # deserialize response and update self
+        transform(response, 'DescribeWorkteamResponse', self)
         return self
     
     def delete(self) -> None:
