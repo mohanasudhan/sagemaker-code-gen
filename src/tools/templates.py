@@ -40,7 +40,7 @@ def create(
     region: Optional[str] = None,
 ) -> Optional[object]:
     logger.debug(f"Creating {resource_lower} resource.")
-    client = SageMakerClient(session=session, region_name=region, service_name='{service_name}')
+    client = SageMakerClient(session=session, region_name=region, service_name='{service_name}').client
 
     operation_input_args = {{
 {operation_input_args}
@@ -113,7 +113,7 @@ def wait(
         # TODO: Raise some generated TimeOutError
         if timeout is not None and time.time() - start_time >= timeout:
             raise Exception("Timeout exceeded. Final resource state - " + current_status)
-
+        print("-", end="")
         time.sleep(poll)
 '''
 
@@ -137,7 +137,7 @@ def wait_for_status(
         # TODO: Raise some generated TimeOutError
         if timeout is not None and time.time() - start_time >= timeout:
             raise Exception("Timeout exceeded. Final resource state - " + current_status)
-
+        print("-", end="")
         time.sleep(poll)
 '''
 
@@ -163,7 +163,7 @@ RESOURCE_BASE_CLASS_TEMPLATE ='''
 class Base(BaseModel):
     @classmethod
     def _serialize(cls, data: Dict) -> Dict:
-        result = {{}}
+        result = {}
         for attr, value in data.items():
             if isinstance(value, Unassigned):
                 continue
@@ -179,12 +179,12 @@ class Base(BaseModel):
         return result
     
     @classmethod
-    def _serialize_list(value: List):
+    def _serialize_list(cls, value: List):
         return [v.serialize() if hasattr(v, 'serialize') else v for v in value]
     
     @classmethod
-    def _serialize_dict(value: Dict):
-        return {{k: v.serialize() if hasattr(v, 'serialize') else v for k, v in value.items()}}
+    def _serialize_dict(cls, value: Dict):
+        return {k: v.serialize() if hasattr(v, 'serialize') else v for k, v in value.items()}
 
 '''
 

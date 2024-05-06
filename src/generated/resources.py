@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 class Base(BaseModel):
     @classmethod
     def _serialize(cls, data: Dict) -> Dict:
-        result = {{}}
+        result = {}
         for attr, value in data.items():
             if isinstance(value, Unassigned):
                 continue
@@ -50,12 +50,12 @@ class Base(BaseModel):
         return result
     
     @classmethod
-    def _serialize_list(value: List):
+    def _serialize_list(cls, value: List):
         return [v.serialize() if hasattr(v, 'serialize') else v for v in value]
     
     @classmethod
-    def _serialize_dict(value: Dict):
-        return {{k: v.serialize() if hasattr(v, 'serialize') else v for k, v in value.items()}}
+    def _serialize_dict(cls, value: Dict):
+        return {k: v.serialize() if hasattr(v, 'serialize') else v for k, v in value.items()}
 
 class Action(Base):
     action_name: Optional[str] = Unassigned()
@@ -87,7 +87,7 @@ class Action(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating action resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'ActionName': action_name,
@@ -177,7 +177,7 @@ class Algorithm(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating algorithm resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'AlgorithmName': algorithm_name,
@@ -257,7 +257,7 @@ class Algorithm(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -289,7 +289,7 @@ class App(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating app resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'DomainId': domain_id,
@@ -385,7 +385,7 @@ class App(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -408,7 +408,7 @@ class AppImageConfig(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating app_image_config resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'AppImageConfigName': app_image_config_name,
@@ -493,7 +493,7 @@ class Artifact(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating artifact resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'ArtifactName': artifact_name,
@@ -595,7 +595,7 @@ class AutoMLJob(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating auto_m_l_job resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'AutoMLJobName': auto_m_l_job_name,
@@ -678,7 +678,7 @@ class AutoMLJob(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -723,7 +723,7 @@ class AutoMLJobV2(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating auto_m_l_job_v2 resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'AutoMLJobName': auto_m_l_job_name,
@@ -799,7 +799,7 @@ class AutoMLJobV2(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -823,7 +823,7 @@ class Cluster(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating cluster resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'ClusterName': cluster_name,
@@ -900,7 +900,7 @@ class Cluster(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -921,7 +921,7 @@ class CodeRepository(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating code_repository resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'CodeRepositoryName': code_repository_name,
@@ -1014,7 +1014,7 @@ class CompilationJob(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating compilation_job resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'CompilationJobName': compilation_job_name,
@@ -1102,7 +1102,7 @@ class CompilationJob(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -1132,7 +1132,7 @@ class Context(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating context resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'ContextName': context_name,
@@ -1223,7 +1223,7 @@ class DataQualityJobDefinition(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating data_quality_job_definition resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'JobDefinitionName': job_definition_name,
@@ -1311,7 +1311,7 @@ class DeviceFleet(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating device_fleet resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'DeviceFleetName': device_fleet_name,
@@ -1415,7 +1415,7 @@ class Domain(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating domain resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'DomainName': domain_name,
@@ -1501,7 +1501,7 @@ class Domain(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -1530,7 +1530,7 @@ class EdgeDeploymentPlan(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating edge_deployment_plan resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'EdgeDeploymentPlanName': edge_deployment_plan_name,
@@ -1628,7 +1628,7 @@ class EdgePackagingJob(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating edge_packaging_job resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'EdgePackagingJobName': edge_packaging_job_name,
@@ -1709,7 +1709,7 @@ class EdgePackagingJob(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -1740,7 +1740,7 @@ class Endpoint(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating endpoint resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'EndpointName': endpoint_name,
@@ -1817,7 +1817,7 @@ class Endpoint(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -1853,7 +1853,7 @@ class EndpointConfig(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating endpoint_config resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'EndpointConfigName': endpoint_config_name,
@@ -1941,7 +1941,7 @@ class Experiment(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating experiment resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'ExperimentName': experiment_name,
@@ -2037,7 +2037,7 @@ class FeatureGroup(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating feature_group resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'FeatureGroupName': feature_group_name,
@@ -2123,7 +2123,7 @@ class FeatureGroup(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -2153,7 +2153,7 @@ class FlowDefinition(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating flow_definition resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'FlowDefinitionName': flow_definition_name,
@@ -2233,7 +2233,7 @@ class FlowDefinition(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -2262,7 +2262,7 @@ class Hub(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating hub resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'HubName': hub_name,
@@ -2341,7 +2341,7 @@ class Hub(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -2433,7 +2433,7 @@ class HubContent(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -2454,7 +2454,7 @@ class HumanTaskUi(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating human_task_ui resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'HumanTaskUiName': human_task_ui_name,
@@ -2530,7 +2530,7 @@ class HumanTaskUi(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -2568,7 +2568,7 @@ class HyperParameterTuningJob(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating hyper_parameter_tuning_job resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'HyperParameterTuningJobName': hyper_parameter_tuning_job_name,
@@ -2655,7 +2655,7 @@ class HyperParameterTuningJob(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -2682,7 +2682,7 @@ class Image(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating image resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'Description': description,
@@ -2760,7 +2760,7 @@ class Image(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -2800,7 +2800,7 @@ class ImageVersion(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating image_version resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'BaseImage': base_image,
@@ -2892,7 +2892,7 @@ class ImageVersion(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -2922,7 +2922,7 @@ class InferenceComponent(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating inference_component resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'InferenceComponentName': inference_component_name,
@@ -3001,7 +3001,7 @@ class InferenceComponent(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -3041,7 +3041,7 @@ class InferenceExperiment(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating inference_experiment resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'Name': name,
@@ -3136,7 +3136,7 @@ class InferenceExperiment(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -3171,7 +3171,7 @@ class InferenceRecommendationsJob(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating inference_recommendations_job resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'JobName': job_name,
@@ -3252,7 +3252,7 @@ class InferenceRecommendationsJob(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -3293,7 +3293,7 @@ class LabelingJob(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating labeling_job resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'LabelingJobName': labeling_job_name,
@@ -3376,7 +3376,7 @@ class LabelingJob(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -3407,7 +3407,7 @@ class Model(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating model resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'ModelName': model_name,
@@ -3500,7 +3500,7 @@ class ModelBiasJobDefinition(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating model_bias_job_definition resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'JobDefinitionName': job_definition_name,
@@ -3590,7 +3590,7 @@ class ModelCard(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating model_card resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'ModelCardName': model_card_name,
@@ -3671,7 +3671,7 @@ class ModelCard(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -3698,7 +3698,7 @@ class ModelCardExportJob(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating model_card_export_job resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'ModelCardName': model_card_name,
@@ -3768,7 +3768,7 @@ class ModelCardExportJob(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -3802,7 +3802,7 @@ class ModelExplainabilityJobDefinition(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating model_explainability_job_definition resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'JobDefinitionName': job_definition_name,
@@ -3923,7 +3923,7 @@ class ModelPackage(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating model_package resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'ModelPackageName': model_package_name,
@@ -4016,7 +4016,7 @@ class ModelPackage(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -4038,7 +4038,7 @@ class ModelPackageGroup(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating model_package_group resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'ModelPackageGroupName': model_package_group_name,
@@ -4114,7 +4114,7 @@ class ModelPackageGroup(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -4148,7 +4148,7 @@ class ModelQualityJobDefinition(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating model_quality_job_definition resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'JobDefinitionName': job_definition_name,
@@ -4235,7 +4235,7 @@ class MonitoringSchedule(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating monitoring_schedule resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'MonitoringScheduleName': monitoring_schedule_name,
@@ -4318,7 +4318,7 @@ class MonitoringSchedule(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -4369,7 +4369,7 @@ class NotebookInstance(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating notebook_instance resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'NotebookInstanceName': notebook_instance_name,
@@ -4465,7 +4465,7 @@ class NotebookInstance(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -4487,7 +4487,7 @@ class NotebookInstanceLifecycleConfig(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating notebook_instance_lifecycle_config resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'NotebookInstanceLifecycleConfigName': notebook_instance_lifecycle_config_name,
@@ -4576,7 +4576,7 @@ class Pipeline(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating pipeline resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'PipelineName': pipeline_name,
@@ -4659,7 +4659,7 @@ class Pipeline(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -4737,7 +4737,7 @@ class PipelineExecution(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -4782,7 +4782,7 @@ class ProcessingJob(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating processing_job resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'ProcessingInputs': processing_inputs,
@@ -4866,7 +4866,7 @@ class ProcessingJob(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -4894,7 +4894,7 @@ class Project(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating project resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'ProjectName': project_name,
@@ -4971,7 +4971,7 @@ class Project(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -5004,7 +5004,7 @@ class Space(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating space resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'DomainId': domain_id,
@@ -5088,7 +5088,7 @@ class Space(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -5111,7 +5111,7 @@ class StudioLifecycleConfig(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating studio_lifecycle_config resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'StudioLifecycleConfigName': studio_lifecycle_config_name,
@@ -5246,7 +5246,7 @@ class TrainingJob(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating training_job resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'TrainingJobName': training_job_name,
@@ -5343,7 +5343,7 @@ class TrainingJob(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -5391,7 +5391,7 @@ class TransformJob(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating transform_job resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'TransformJobName': transform_job_name,
@@ -5478,7 +5478,7 @@ class TransformJob(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -5506,7 +5506,7 @@ class Trial(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating trial resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'TrialName': trial_name,
@@ -5603,7 +5603,7 @@ class TrialComponent(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating trial_component resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'TrialComponentName': trial_component_name,
@@ -5686,7 +5686,7 @@ class TrialComponent(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -5716,7 +5716,7 @@ class UserProfile(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating user_profile resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'DomainId': domain_id,
@@ -5799,7 +5799,7 @@ class UserProfile(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -5819,7 +5819,7 @@ class Workforce(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating workforce resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'CognitoConfig': cognito_config,
@@ -5898,7 +5898,7 @@ class Workforce(Base):
             # TODO: Raise some generated TimeOutError
             if timeout is not None and time.time() - start_time >= timeout:
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
-    
+            print("-", end="")
             time.sleep(poll)
 
 
@@ -5918,7 +5918,7 @@ class Workteam(Base):
         region: Optional[str] = None,
     ) -> Optional[object]:
         logger.debug(f"Creating workteam resource.")
-        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker')
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
             'WorkteamName': workteam_name,
