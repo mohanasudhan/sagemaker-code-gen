@@ -60,6 +60,8 @@ logger = logging.getLogger(__name__)
 # TODO: The file name should be injected, we should update it to be more generic
 SERVICE_JSON_FILE_PATH = os.getcwd() + '/sample/sagemaker/2017-07-24/service-2.json'
 
+BOTOCORE_SERVICE_JSON_FILE_PATH = '/tmp/botocore/botocore/data/sagemaker/2017-07-24/service-2.json'
+
 GENERATED_CLASSES_LOCATION = os.getcwd() + '/src/generated'
 
 UTILS_CODEGEN_FILE_NAME = 'utils.py'
@@ -67,3 +69,7 @@ UTILS_CODEGEN_FILE_NAME = 'utils.py'
 RESOURCES_CODEGEN_FILE_NAME = 'resources.py'
 
 SHAPES_CODEGEN_FILE_NAME = 'shapes.py'
+
+BOTOCORE_PACKAGE_PATH = '/tmp/botocore'
+
+BOTOCORE_PACKAGE_URL = 'https://github.com/boto/botocore.git'
