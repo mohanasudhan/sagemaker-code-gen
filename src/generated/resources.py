@@ -393,6 +393,7 @@ class AppImageConfig(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     kernel_gateway_image_config: Optional[KernelGatewayImageConfig] = Unassigned()
     jupyter_lab_app_image_config: Optional[JupyterLabAppImageConfig] = Unassigned()
+    code_editor_app_image_config: Optional[CodeEditorAppImageConfig] = Unassigned()
     
     @classmethod
     def create(
@@ -401,6 +402,7 @@ class AppImageConfig(Base):
         tags: Optional[List[Tag]] = Unassigned(),
         kernel_gateway_image_config: Optional[KernelGatewayImageConfig] = Unassigned(),
         jupyter_lab_app_image_config: Optional[JupyterLabAppImageConfig] = Unassigned(),
+        code_editor_app_image_config: Optional[CodeEditorAppImageConfig] = Unassigned(),
         session: Optional[Session] = None,
         region: Optional[str] = None,
     ) -> Optional[object]:
@@ -412,6 +414,7 @@ class AppImageConfig(Base):
             'Tags': tags,
             'KernelGatewayImageConfig': kernel_gateway_image_config,
             'JupyterLabAppImageConfig': jupyter_lab_app_image_config,
+            'CodeEditorAppImageConfig': code_editor_app_image_config,
         }
         logger.debug(f"Input request: {operation_input_args}")
         # serialize the input request
@@ -5194,6 +5197,7 @@ class TrainingJob(Base):
         retry_strategy: Optional[RetryStrategy] = Unassigned(),
         remote_debug_config: Optional[RemoteDebugConfig] = Unassigned(),
         infra_check_config: Optional[InfraCheckConfig] = Unassigned(),
+        session_chaining_config: Optional[SessionChainingConfig] = Unassigned(),
         session: Optional[Session] = None,
         region: Optional[str] = None,
     ) -> Optional[object]:
@@ -5225,6 +5229,7 @@ class TrainingJob(Base):
             'RetryStrategy': retry_strategy,
             'RemoteDebugConfig': remote_debug_config,
             'InfraCheckConfig': infra_check_config,
+            'SessionChainingConfig': session_chaining_config,
         }
         logger.debug(f"Input request: {operation_input_args}")
         # serialize the input request
