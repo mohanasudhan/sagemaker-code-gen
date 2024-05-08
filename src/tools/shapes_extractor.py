@@ -150,7 +150,7 @@ class ShapesExtractor:
                           f"{BASIC_JSON_TYPES_TO_PYTHON_TYPES[map_value_shape_type]}]"
         return member_type
 
-    def generate_data_shape_members(self, shape):
+    def generate_data_shape_members_and_string_body(self, shape):
         shape_members = self.generate_shape_members(shape)
         init_data_body = ""
         for attr, value in shape_members.items():
@@ -159,6 +159,12 @@ class ShapesExtractor:
             else:
                 init_data_body += f"{attr}: {value}\n"
         return shape_members, init_data_body
+
+    def generate_data_shape_string_body(self, shape):
+        return self.generate_data_shape_members_and_string_body(shape)[1]
+
+    def generate_data_shape_members(self, shape):
+        return self.generate_data_shape_members_and_string_body(shape)[0]
 
     @lru_cache
     def generate_shape_members(self, shape):

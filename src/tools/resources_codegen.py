@@ -35,13 +35,12 @@ from src.tools.templates import (CREATE_METHOD_TEMPLATE, \
                                  STOP_METHOD_TEMPLATE, DELETE_METHOD_TEMPLATE, \
                                  WAIT_METHOD_TEMPLATE, WAIT_FOR_STATUS_METHOD_TEMPLATE,
                                  POPULATE_DEFAULTS_DECORATOR_TEMPLATE, \
-                                 GET_CONFIG_VALUE_TEMPLATE, CREATE_METHOD_TEMPLATE_WITHOUT_DECORATOR,
+                                 GET_CONFIG_VALUE_TEMPLATE, CREATE_METHOD_TEMPLATE_WITHOUT_DEFAULTS,
                                  LOAD_CONFIG_VALUES_FOR_RESOURCE_TEMPLATE, \
                                  LOAD_DEFAULT_CONFIGS_TEMPLATE)
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
-
 
 TYPE = "type"
 OBJECT = "object"
@@ -122,7 +121,7 @@ class ResourcesCodeGen:
 
         """
         return LICENCES_STRING
-    
+
     def generate_imports(self) -> str:
         """
         Generate the import statements for the generated resources file.
@@ -153,7 +152,7 @@ class ResourcesCodeGen:
 
         # Join the import statements with a newline character and return
         return formated_imports
-    
+
     def generate_base_class(self) -> str:
         """
         Generate the base class for the resources.
@@ -163,7 +162,7 @@ class ResourcesCodeGen:
 
         """
         return RESOURCE_BASE_CLASS_TEMPLATE
-    
+
     def generate_logging(self) -> str:
         """
         Generate the logging statements for the generated resources file.
@@ -201,10 +200,10 @@ class ResourcesCodeGen:
         """
         # Check if the output folder exists, if not, create it
         os.makedirs(output_folder, exist_ok=True)
-        
+
         # Create the full path for the output file
         output_file = os.path.join(output_folder, file_name)
-        
+
         # Open the output file
         with open(output_file, "w") as file:
             # Generate and write the license to the file
@@ -219,7 +218,7 @@ class ResourcesCodeGen:
 
             # Generate and write the base class to the file
             file.write(self.generate_base_class())
-            
+
             # Iterate over the rows in the resources plan
             for _, row in self.resources_plan.iterrows():
                 # Extract the necessary data from the row
@@ -239,7 +238,7 @@ class ResourcesCodeGen:
                                                               raw_actions,
                                                               resource_status_chain,
                                                               resource_states)
-                
+
                 # If the resource class was successfully generated, write it to the file
                 if resource_class:
                     file.write(f"{resource_class}\n\n")
@@ -287,7 +286,7 @@ class ResourcesCodeGen:
         resource_class = ""
 
         # Check if 'get' is in the class methods
-        if 'get' in class_methods:
+        if self._is_get_in_class_methods(class_methods):
             # Start defining the class
             resource_class = f"class {resource_name}(Base):\n"
 
@@ -296,7 +295,7 @@ class ResourcesCodeGen:
             get_operation_shape = get_operation["output"]["shape"]
 
             # Generate the class attributes based on the shape
-            class_attributes = self.shapes_extractor.generate_data_shape_members(get_operation_shape)
+            class_attributes = self.shapes_extractor.generate_data_shape_members_and_string_body(get_operation_shape)
             class_attributes_string = class_attributes[1]
 
             defaults_decorator_method = ""
@@ -307,7 +306,7 @@ class ResourcesCodeGen:
                         resource_name=resource_name,
                         class_attributes=class_attributes[0],
                         config_schema_for_resource=config_schema_for_resource)
-            is_decorator_required = defaults_decorator_method != ""
+            needs_defaults_decorator = defaults_decorator_method != ""
 
             # Generate the 'get' method
             get_method = self.generate_get_method(resource_name)
@@ -321,7 +320,7 @@ class ResourcesCodeGen:
                     resource_class += add_indent(defaults_decorator_method, 4)
 
                 if create_method := self._evaluate_method(resource_name, "create", class_methods,
-                                                          is_decorator_required=is_decorator_required):
+                                                          needs_defaults_decorator=needs_defaults_decorator):
                     resource_class += add_indent(create_method, 4)
 
                 resource_class += add_indent(get_method, 4)
@@ -334,13 +333,13 @@ class ResourcesCodeGen:
 
                 if stop_method := self._evaluate_method(resource_name, "stop", object_methods):
                     resource_class += add_indent(stop_method, 4)
-                
+
                 if wait_method := self._evaluate_method(resource_name, "wait", object_methods):
                     resource_class += add_indent(wait_method, 4)
-                    
+
                 if wait_for_status_method := self._evaluate_method(resource_name, "wait_for_status", object_methods):
                     resource_class += add_indent(wait_for_status_method, 4)
-                                        
+
             except Exception:
                 # If there's an error, log the class attributes for debugging and raise the error
                 log.error(f"DEBUG HELP {class_attributes} \n {create_method} \n {get_method} \n"
@@ -369,7 +368,7 @@ class ResourcesCodeGen:
 
         if is_class_method:
             args = (f"'{member}': {convert_to_snake_case(member)}"
-            for member in input_shape_members)
+                    for member in input_shape_members)
         else:
             args = (f"'{member}': self.{convert_to_snake_case(member)}"
                     for member in input_shape_members)
@@ -451,7 +450,7 @@ class ResourcesCodeGen:
         resource_identifier = ", ".join(identifiers)
 
         # Format the method using the CREATE_METHOD_TEMPLATE
-        if kwargs['is_decorator_required']:
+        if kwargs['needs_defaults_decorator']:
             formatted_method = CREATE_METHOD_TEMPLATE.format(
                 create_args=create_args,
                 resource_lower=resource_lower,
@@ -462,7 +461,7 @@ class ResourcesCodeGen:
                 resource_identifier=resource_identifier,
             )
         else:
-            formatted_method = CREATE_METHOD_TEMPLATE_WITHOUT_DECORATOR.format(
+            formatted_method = CREATE_METHOD_TEMPLATE_WITHOUT_DEFAULTS.format(
                 create_args=create_args,
                 resource_lower=resource_lower,
                 service_name='sagemaker',  # TODO: change service name based on the service - runtime, sagemaker, etc.
@@ -474,7 +473,7 @@ class ResourcesCodeGen:
 
         # Return the formatted method
         return formatted_method
-    
+
     def generate_get_method(self, resource_name) -> str:
         """
         Auto-generate the GET method (describe API) for a resource.
@@ -508,7 +507,7 @@ class ResourcesCodeGen:
         operation = convert_to_snake_case(operation_name)
 
         formatted_method = GET_METHOD_TEMPLATE.format(
-            service_name='sagemaker', # TODO: change service name based on the service - runtime, sagemaker, etc.
+            service_name='sagemaker',  # TODO: change service name based on the service - runtime, sagemaker, etc.
             describe_args=describe_args,
             resource_lower=resource_lower,
             operation_input_args=operation_input_args,
@@ -590,7 +589,7 @@ class ResourcesCodeGen:
             operation=operation,
         )
         return formatted_method
-    
+
     def generate_wait_method(self, resource_name) -> str:
         """Auto-Generate WAIT Method for a waitable resource.
 
@@ -602,7 +601,7 @@ class ResourcesCodeGen:
 
         """
         resource_status_chain, resource_states = self.resources_extractor.get_status_chain_and_states(resource_name)
-        
+
         # Get terminal states for resource
         terminal_resource_states = []
         for state in resource_states:
@@ -610,19 +609,18 @@ class ResourcesCodeGen:
             # Checking lower because case is not consistent accross resources (ie, COMPLETED vs Completed)
             if any(terminal_state.lower() in state.lower() for terminal_state in TERMINAL_STATES):
                 terminal_resource_states.append(state)
-    
+
         # Get resource status key path
         status_key_path = ""
         for member in resource_status_chain:
             status_key_path += f'.{convert_to_snake_case(member["name"])}'
-
 
         formatted_method = WAIT_METHOD_TEMPLATE.format(
             terminal_resource_states=terminal_resource_states,
             status_key_path=status_key_path
         )
         return formatted_method
-    
+
     def generate_wait_for_status_method(self, resource_name) -> str:
         """Auto-Generate WAIT_FOR_STATUS Method for a waitable resource.
 
@@ -647,6 +645,13 @@ class ResourcesCodeGen:
         return formatted_method
 
     def generate_config_schema(self):
+        """
+        Generates the Config Schema that is used by json Schema to validate config jsons .
+        This function creates a python file with a variable that is consumed in the scripts to further fetch configs.
+
+        Input for generating the Schema is the service JSON that is already loaded in the class
+
+        """
         self.resources_extractor = ResourcesExtractor(self.service_json)
         self.resources_plan = self.resources_extractor.get_resource_plan()
 
@@ -655,7 +660,7 @@ class ResourcesCodeGen:
         for _, row in self.resources_plan.iterrows():
             resource_name = row['resource_name']
             # Get the operation and shape for the 'get' method
-            if 'get' in row['class_methods']:
+            if self._is_get_in_class_methods(row['class_methods']):
                 get_operation = self.operations["Describe" + resource_name]
                 get_operation_shape = get_operation["output"]["shape"]
 
@@ -664,7 +669,7 @@ class ResourcesCodeGen:
                 cleaned_class_attributes = self._cleanup_class_attributes_types(class_attributes)
                 resource_name = row['resource_name']
 
-                if default_attributes := self._get_dict_with_default_attributes(cleaned_class_attributes):
+                if default_attributes := self._get_dict_with_default_configurable_attributes(cleaned_class_attributes):
                     resource_properties[resource_name] = {
                         TYPE: OBJECT,
                         PROPERTIES: default_attributes
@@ -700,7 +705,16 @@ class ResourcesCodeGen:
             # Generate and write the license to the file
             file.write(f'SAGEMAKER_PYTHON_SDK_CONFIG_SCHEMA = {json.dumps(combined_config_schema, indent=4)}')
 
-    def _cleanup_class_attributes_types(self, class_attributes: dict):
+    def _cleanup_class_attributes_types(self, class_attributes: dict) -> dict:
+        """
+        Helper function that creates a direct mapping of attribute to type without default parameters assigned and without Optionals
+        Args:
+            class_attributes: attributes of the class in raw form
+
+        Returns:
+            class attributes that have a direct mapping and can be used for processing
+
+        """
         cleaned_class_attributes = {}
         for key, value in class_attributes.items():
             new_val = value.split("=")[0].strip()
@@ -709,7 +723,17 @@ class ResourcesCodeGen:
             cleaned_class_attributes[key] = new_val
         return cleaned_class_attributes
 
-    def _get_dict_with_default_attributes(self, class_attributes: dict) -> dict:
+    def _get_dict_with_default_configurable_attributes(self, class_attributes: dict) -> dict:
+        """
+        Creates default attributes dict for a particular resource.
+        Iterates through all class attributes and filters by attributes that have particular substrings in their name
+        Args:
+            class_attributes: Dict that has all the attributes of a class
+
+        Returns:
+            Dict with attributes that can be configurable
+
+        """
         PYTHON_TYPES = ['str', 'datetime.datetime', 'bool', 'int', 'float']
         default_attributes = {}
         for key, value in class_attributes.items():
@@ -722,12 +746,12 @@ class ResourcesCodeGen:
                                 default_attributes[key] = {
                                     TYPE: 'array',
                                     'items': {
-                                        TYPE: self._get_json_type_from_python_type(element)
+                                        TYPE: self._get_json_schema_type_from_python_type(element)
                                     }
                                 }
                         else:
                             default_attributes[key] = {
-                                TYPE: self._get_json_type_from_python_type(value) or value
+                                TYPE: self._get_json_schema_type_from_python_type(value) or value
                             }
             elif value.startswith('List') or value.startswith('Dict'):
                 log.info("Script does not currently support list of objects as configurable")
@@ -735,18 +759,43 @@ class ResourcesCodeGen:
             else:
                 class_attributes = self.shapes_extractor.generate_shape_members(value)
                 cleaned_class_attributes = self._cleanup_class_attributes_types(class_attributes)
-                if nested_default_attributes := self._get_dict_with_default_attributes(cleaned_class_attributes):
+                if nested_default_attributes := self._get_dict_with_default_configurable_attributes(
+                        cleaned_class_attributes):
                     default_attributes[key] = nested_default_attributes
 
         return default_attributes
 
-    def _get_json_type_from_python_type(self, python_type):
+    def _get_json_schema_type_from_python_type(self, python_type) -> str:
+        """
+        Helper for generating Schema
+        Converts Python Types to JSON Schema compliant string
+        Args:
+            python_type: Type as a string
+
+        Returns:
+            JSON Schema compliant type
+        """
         if python_type.startswith('List'):
             return 'array'
         return PYTHON_TYPES_TO_BASIC_JSON_TYPES.get(python_type, None)
 
     @staticmethod
+    def _is_get_in_class_methods(class_methods) -> bool:
+        """
+        Helper to check if class methods contain Get
+        Args:
+            class_methods: list of methods
+
+        Returns:
+            True if 'get' in list , else False
+        """
+        return 'get' in class_methods
+
+    @staticmethod
     @lru_cache(maxsize=None)
     def _get_config_schema_for_resources():
+        """
+        Fetches Schema JSON for all resources from generated file
+        """
         return SAGEMAKER_PYTHON_SDK_CONFIG_SCHEMA[PROPERTIES][SAGEMAKER][PROPERTIES][PYTHON_SDK][PROPERTIES][RESOURCES][
             PROPERTIES]

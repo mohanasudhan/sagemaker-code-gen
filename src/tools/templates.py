@@ -36,7 +36,7 @@ CREATE_METHOD_TEMPLATE = '''
 @populate_inputs_decorator
 def create(
     cls,
-    {create_args}
+{create_args}
     session: Optional[Session] = None,
     region: Optional[str] = None,
 ) -> Optional[object]:
@@ -44,7 +44,7 @@ def create(
     client = SageMakerClient(session=session, region_name=region, service_name='{service_name}').client
 
     operation_input_args = {{
-        {operation_input_args}
+{operation_input_args}
     }}
         
     logger.debug(f"Input request: {{operation_input_args}}")
@@ -59,7 +59,7 @@ def create(
     return cls.get({resource_identifier}, session=session, region=region)
 '''
 
-CREATE_METHOD_TEMPLATE_WITHOUT_DECORATOR = '''
+CREATE_METHOD_TEMPLATE_WITHOUT_DEFAULTS = '''
 @classmethod
 def create(
     cls,
@@ -97,7 +97,8 @@ def get_config_value(attribute, resource_defaults, global_defaults):
 POPULATE_DEFAULTS_DECORATOR_TEMPLATE = '''
 def populate_inputs_decorator(create_func):
     def wrapper(*args, **kwargs):
-        config_schema_for_resource = {config_schema_for_resource}
+        config_schema_for_resource = \\
+{config_schema_for_resource}
         create_func(*args, **Base.get_updated_kwargs_with_configured_attributes(config_schema_for_resource, **kwargs))
     return wrapper
 '''

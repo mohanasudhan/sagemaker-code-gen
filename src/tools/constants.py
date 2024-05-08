@@ -67,9 +67,9 @@ logger = logging.getLogger(__name__)
 '''
 
 # TODO: The file name should be injected, we should update it to be more generic
-SERVICE_JSON_FILE_PATH = os.getcwd() + '/sample/sagemaker/2017-07-24/service-2.json'
+SERVICE_JSON_FILE_PATH = '/Users/nargokul/workspace/sagemaker-code-gen/sample/sagemaker/2017-07-24/service-2.json'
 
-GENERATED_CLASSES_LOCATION = os.getcwd() + '/src/generated'
+GENERATED_CLASSES_LOCATION = '/Users/nargokul/workspace/sagemaker-code-gen/src/generated'
 
 UTILS_CODEGEN_FILE_NAME = 'utils.py'
 
@@ -78,3 +78,7 @@ RESOURCES_CODEGEN_FILE_NAME = 'resources.py'
 SHAPES_CODEGEN_FILE_NAME = 'shapes.py'
 
 CONFIG_SCHEMA_FILE_NAME = 'config_schema.py'
+
+SHAPE_DAG_FILE_PATH = '/Users/nargokul/workspace/sagemaker-code-gen/src/code_injection/shape_dag.py'
+SERVICE_JSON_FILE_PATH = '/Users/nargokul/workspace/sagemaker-code-gen/sample/sagemaker/2017-07-24/service-2.json'
+GENERATED_CLASSES_LOCATION = '/Users/nargokul/workspace/sagemaker-code-gen/src/generated'

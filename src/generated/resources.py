@@ -204,7 +204,8 @@ class Algorithm(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "training_specification": {
             "additional_s3_data_source": {
               "s3_data_type": {
@@ -228,7 +229,7 @@ class Algorithm(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            algorithm_name: str,
+        algorithm_name: str,
         training_specification: TrainingSpecification,
         algorithm_description: Optional[str] = Unassigned(),
         inference_specification: Optional[InferenceSpecification] = Unassigned(),
@@ -242,7 +243,7 @@ class Algorithm(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'AlgorithmName': algorithm_name,
+            'AlgorithmName': algorithm_name,
             'AlgorithmDescription': algorithm_description,
             'TrainingSpecification': training_specification,
             'InferenceSpecification': inference_specification,
@@ -644,7 +645,8 @@ class AutoMLJob(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "output_data_config": {
             "s3_output_path": {
               "type": "string"
@@ -690,7 +692,7 @@ class AutoMLJob(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            auto_m_l_job_name: str,
+        auto_m_l_job_name: str,
         input_data_config: List[AutoMLChannel],
         output_data_config: AutoMLOutputDataConfig,
         role_arn: str,
@@ -707,7 +709,7 @@ class AutoMLJob(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'AutoMLJobName': auto_m_l_job_name,
+            'AutoMLJobName': auto_m_l_job_name,
             'InputDataConfig': input_data_config,
             'OutputDataConfig': output_data_config,
             'ProblemType': problem_type,
@@ -819,7 +821,8 @@ class AutoMLJobV2(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "output_data_config": {
             "s3_output_path": {
               "type": "string"
@@ -870,7 +873,7 @@ class AutoMLJobV2(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            auto_m_l_job_name: str,
+        auto_m_l_job_name: str,
         auto_m_l_job_input_data_config: List[AutoMLJobChannel],
         output_data_config: AutoMLOutputDataConfig,
         auto_m_l_problem_type_config: AutoMLProblemTypeConfig,
@@ -887,7 +890,7 @@ class AutoMLJobV2(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'AutoMLJobName': auto_m_l_job_name,
+            'AutoMLJobName': auto_m_l_job_name,
             'AutoMLJobInputDataConfig': auto_m_l_job_input_data_config,
             'OutputDataConfig': output_data_config,
             'AutoMLProblemTypeConfig': auto_m_l_problem_type_config,
@@ -977,7 +980,8 @@ class Cluster(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "vpc_config": {
             "security_group_ids": {
               "type": "array",
@@ -1000,7 +1004,7 @@ class Cluster(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            cluster_name: str,
+        cluster_name: str,
         instance_groups: List[ClusterInstanceGroupSpecification],
         vpc_config: Optional[VpcConfig] = Unassigned(),
         tags: Optional[List[Tag]] = Unassigned(),
@@ -1011,7 +1015,7 @@ class Cluster(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'ClusterName': cluster_name,
+            'ClusterName': cluster_name,
             'InstanceGroups': instance_groups,
             'VpcConfig': vpc_config,
             'Tags': tags,
@@ -1188,7 +1192,8 @@ class CompilationJob(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "model_artifacts": {
             "s3_model_artifacts": {
               "type": "string"
@@ -1232,7 +1237,7 @@ class CompilationJob(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            compilation_job_name: str,
+        compilation_job_name: str,
         role_arn: str,
         output_config: OutputConfig,
         stopping_condition: StoppingCondition,
@@ -1247,7 +1252,7 @@ class CompilationJob(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'CompilationJobName': compilation_job_name,
+            'CompilationJobName': compilation_job_name,
             'RoleArn': role_arn,
             'ModelPackageVersionArn': model_package_version_arn,
             'InputConfig': input_config,
@@ -1440,7 +1445,8 @@ class DataQualityJobDefinition(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "data_quality_job_input": {
             "endpoint_input": {
               "s3_input_mode": {
@@ -1513,7 +1519,7 @@ class DataQualityJobDefinition(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            job_definition_name: str,
+        job_definition_name: str,
         data_quality_app_specification: DataQualityAppSpecification,
         data_quality_job_input: DataQualityJobInput,
         data_quality_job_output_config: MonitoringOutputConfig,
@@ -1530,7 +1536,7 @@ class DataQualityJobDefinition(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'JobDefinitionName': job_definition_name,
+            'JobDefinitionName': job_definition_name,
             'DataQualityBaselineConfig': data_quality_baseline_config,
             'DataQualityAppSpecification': data_quality_app_specification,
             'DataQualityJobInput': data_quality_job_input,
@@ -1606,7 +1612,8 @@ class DeviceFleet(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "output_config": {
             "s3_output_location": {
               "type": "string"
@@ -1629,7 +1636,7 @@ class DeviceFleet(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            device_fleet_name: str,
+        device_fleet_name: str,
         output_config: EdgeOutputConfig,
         role_arn: Optional[str] = Unassigned(),
         description: Optional[str] = Unassigned(),
@@ -1642,7 +1649,7 @@ class DeviceFleet(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'DeviceFleetName': device_fleet_name,
+            'DeviceFleetName': device_fleet_name,
             'RoleArn': role_arn,
             'Description': description,
             'OutputConfig': output_config,
@@ -1728,7 +1735,8 @@ class Domain(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "security_group_id_for_domain_boundary": {
             "type": "string"
           },
@@ -1826,7 +1834,7 @@ class Domain(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            domain_name: str,
+        domain_name: str,
         auth_mode: str,
         default_user_settings: UserSettings,
         subnet_ids: List[str],
@@ -1845,7 +1853,7 @@ class Domain(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'DomainName': domain_name,
+            'DomainName': domain_name,
             'AuthMode': auth_mode,
             'DefaultUserSettings': default_user_settings,
             'DomainSettings': domain_settings,
@@ -2044,7 +2052,8 @@ class EdgePackagingJob(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "role_arn": {
             "type": "string"
           },
@@ -2064,7 +2073,7 @@ class EdgePackagingJob(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            edge_packaging_job_name: str,
+        edge_packaging_job_name: str,
         compilation_job_name: str,
         model_name: str,
         model_version: str,
@@ -2079,7 +2088,7 @@ class EdgePackagingJob(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'EdgePackagingJobName': edge_packaging_job_name,
+            'EdgePackagingJobName': edge_packaging_job_name,
             'CompilationJobName': compilation_job_name,
             'ModelName': model_name,
             'ModelVersion': model_version,
@@ -2181,7 +2190,8 @@ class Endpoint(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "data_capture_config": {
             "destination_s3_uri": {
               "type": "string"
@@ -2211,7 +2221,7 @@ class Endpoint(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            endpoint_name: str,
+        endpoint_name: str,
         endpoint_config_name: str,
         deployment_config: Optional[DeploymentConfig] = Unassigned(),
         tags: Optional[List[Tag]] = Unassigned(),
@@ -2222,7 +2232,7 @@ class Endpoint(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'EndpointName': endpoint_name,
+            'EndpointName': endpoint_name,
             'EndpointConfigName': endpoint_config_name,
             'DeploymentConfig': deployment_config,
             'Tags': tags,
@@ -2318,7 +2328,8 @@ class EndpointConfig(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "data_capture_config": {
             "destination_s3_uri": {
               "type": "string"
@@ -2368,7 +2379,7 @@ class EndpointConfig(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            endpoint_config_name: str,
+        endpoint_config_name: str,
         production_variants: List[ProductionVariant],
         data_capture_config: Optional[DataCaptureConfig] = Unassigned(),
         tags: Optional[List[Tag]] = Unassigned(),
@@ -2386,7 +2397,7 @@ class EndpointConfig(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'EndpointConfigName': endpoint_config_name,
+            'EndpointConfigName': endpoint_config_name,
             'ProductionVariants': production_variants,
             'DataCaptureConfig': data_capture_config,
             'Tags': tags,
@@ -2554,7 +2565,8 @@ class FeatureGroup(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "online_store_config": {
             "security_config": {
               "kms_key_id": {
@@ -2586,7 +2598,7 @@ class FeatureGroup(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            feature_group_name: str,
+        feature_group_name: str,
         record_identifier_feature_name: str,
         event_time_feature_name: str,
         feature_definitions: List[FeatureDefinition],
@@ -2603,7 +2615,7 @@ class FeatureGroup(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'FeatureGroupName': feature_group_name,
+            'FeatureGroupName': feature_group_name,
             'RecordIdentifierFeatureName': record_identifier_feature_name,
             'EventTimeFeatureName': event_time_feature_name,
             'FeatureDefinitions': feature_definitions,
@@ -2706,7 +2718,8 @@ class FlowDefinition(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "output_config": {
             "s3_output_path": {
               "type": "string"
@@ -2726,7 +2739,7 @@ class FlowDefinition(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            flow_definition_name: str,
+        flow_definition_name: str,
         output_config: FlowDefinitionOutputConfig,
         role_arn: str,
         human_loop_request_source: Optional[HumanLoopRequestSource] = Unassigned(),
@@ -2740,7 +2753,7 @@ class FlowDefinition(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'FlowDefinitionName': flow_definition_name,
+            'FlowDefinitionName': flow_definition_name,
             'HumanLoopRequestSource': human_loop_request_source,
             'HumanLoopActivationConfig': human_loop_activation_config,
             'HumanLoopConfig': human_loop_config,
@@ -2837,7 +2850,8 @@ class Hub(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "s3_storage_config": {
             "s3_output_path": {
               "type": "string"
@@ -2851,7 +2865,7 @@ class Hub(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            hub_name: str,
+        hub_name: str,
         hub_description: str,
         hub_display_name: Optional[str] = Unassigned(),
         hub_search_keywords: Optional[List[str]] = Unassigned(),
@@ -2864,7 +2878,7 @@ class Hub(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'HubName': hub_name,
+            'HubName': hub_name,
             'HubDescription': hub_description,
             'HubDisplayName': hub_display_name,
             'HubSearchKeywords': hub_search_keywords,
@@ -3157,7 +3171,8 @@ class HyperParameterTuningJob(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "training_job_definition": {
             "role_arn": {
               "type": "string"
@@ -3208,7 +3223,7 @@ class HyperParameterTuningJob(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            hyper_parameter_tuning_job_name: str,
+        hyper_parameter_tuning_job_name: str,
         hyper_parameter_tuning_job_config: HyperParameterTuningJobConfig,
         training_job_definition: Optional[HyperParameterTrainingJobDefinition] = Unassigned(),
         training_job_definitions: Optional[List[HyperParameterTrainingJobDefinition]] = Unassigned(),
@@ -3222,7 +3237,7 @@ class HyperParameterTuningJob(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'HyperParameterTuningJobName': hyper_parameter_tuning_job_name,
+            'HyperParameterTuningJobName': hyper_parameter_tuning_job_name,
             'HyperParameterTuningJobConfig': hyper_parameter_tuning_job_config,
             'TrainingJobDefinition': training_job_definition,
             'TrainingJobDefinitions': training_job_definitions,
@@ -3325,7 +3340,8 @@ class Image(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "role_arn": {
             "type": "string"
           }
@@ -3337,7 +3353,7 @@ class Image(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            image_name: str,
+        image_name: str,
         role_arn: str,
         description: Optional[str] = Unassigned(),
         display_name: Optional[str] = Unassigned(),
@@ -3349,7 +3365,7 @@ class Image(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'Description': description,
+            'Description': description,
             'DisplayName': display_name,
             'ImageName': image_name,
             'RoleArn': role_arn,
@@ -3691,7 +3707,8 @@ class InferenceExperiment(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "role_arn": {
             "type": "string"
           },
@@ -3711,7 +3728,7 @@ class InferenceExperiment(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            name: str,
+        name: str,
         type: str,
         role_arn: str,
         endpoint_name: str,
@@ -3729,7 +3746,7 @@ class InferenceExperiment(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'Name': name,
+            'Name': name,
             'Type': type,
             'Schedule': schedule,
             'Description': description,
@@ -3845,7 +3862,8 @@ class InferenceRecommendationsJob(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "role_arn": {
             "type": "string"
           },
@@ -3876,7 +3894,7 @@ class InferenceRecommendationsJob(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            job_name: str,
+        job_name: str,
         job_type: str,
         role_arn: str,
         input_config: RecommendationJobInputConfig,
@@ -3891,7 +3909,7 @@ class InferenceRecommendationsJob(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'JobName': job_name,
+            'JobName': job_name,
             'JobType': job_type,
             'RoleArn': role_arn,
             'InputConfig': input_config,
@@ -3997,7 +4015,8 @@ class LabelingJob(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "input_config": {
             "data_source": {
               "s3_data_source": {
@@ -4062,7 +4081,7 @@ class LabelingJob(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            labeling_job_name: str,
+        labeling_job_name: str,
         label_attribute_name: str,
         input_config: LabelingJobInputConfig,
         output_config: LabelingJobOutputConfig,
@@ -4079,7 +4098,7 @@ class LabelingJob(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'LabelingJobName': labeling_job_name,
+            'LabelingJobName': labeling_job_name,
             'LabelAttributeName': label_attribute_name,
             'InputConfig': input_config,
             'OutputConfig': output_config,
@@ -4179,7 +4198,8 @@ class Model(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "primary_container": {
             "model_data_source": {
               "s3_data_source": {
@@ -4217,7 +4237,7 @@ class Model(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            model_name: str,
+        model_name: str,
         primary_container: Optional[ContainerDefinition] = Unassigned(),
         containers: Optional[List[ContainerDefinition]] = Unassigned(),
         inference_execution_config: Optional[InferenceExecutionConfig] = Unassigned(),
@@ -4232,7 +4252,7 @@ class Model(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'ModelName': model_name,
+            'ModelName': model_name,
             'PrimaryContainer': primary_container,
             'Containers': containers,
             'InferenceExecutionConfig': inference_execution_config,
@@ -4309,7 +4329,8 @@ class ModelBiasJobDefinition(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "model_bias_job_input": {
             "ground_truth_s3_input": {
               "s3_uri": {
@@ -4382,7 +4403,7 @@ class ModelBiasJobDefinition(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            job_definition_name: str,
+        job_definition_name: str,
         model_bias_app_specification: ModelBiasAppSpecification,
         model_bias_job_input: ModelBiasJobInput,
         model_bias_job_output_config: MonitoringOutputConfig,
@@ -4399,7 +4420,7 @@ class ModelBiasJobDefinition(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'JobDefinitionName': job_definition_name,
+            'JobDefinitionName': job_definition_name,
             'ModelBiasBaselineConfig': model_bias_baseline_config,
             'ModelBiasAppSpecification': model_bias_app_specification,
             'ModelBiasJobInput': model_bias_job_input,
@@ -4478,7 +4499,8 @@ class ModelCard(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "security_config": {
             "kms_key_id": {
               "type": "string"
@@ -4492,7 +4514,7 @@ class ModelCard(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            model_card_name: str,
+        model_card_name: str,
         content: str,
         model_card_status: str,
         security_config: Optional[ModelCardSecurityConfig] = Unassigned(),
@@ -4504,7 +4526,7 @@ class ModelCard(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'ModelCardName': model_card_name,
+            'ModelCardName': model_card_name,
             'SecurityConfig': security_config,
             'Content': content,
             'ModelCardStatus': model_card_status,
@@ -4602,7 +4624,8 @@ class ModelCardExportJob(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "output_config": {
             "s3_output_path": {
               "type": "string"
@@ -4621,7 +4644,7 @@ class ModelCardExportJob(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            model_card_name: str,
+        model_card_name: str,
         model_card_export_job_name: str,
         output_config: ModelCardExportOutputConfig,
         model_card_version: Optional[int] = Unassigned(),
@@ -4632,7 +4655,7 @@ class ModelCardExportJob(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'ModelCardName': model_card_name,
+            'ModelCardName': model_card_name,
             'ModelCardVersion': model_card_version,
             'ModelCardExportJobName': model_card_export_job_name,
             'OutputConfig': output_config,
@@ -4720,7 +4743,8 @@ class ModelExplainabilityJobDefinition(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "model_explainability_job_input": {
             "endpoint_input": {
               "s3_input_mode": {
@@ -4788,7 +4812,7 @@ class ModelExplainabilityJobDefinition(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            job_definition_name: str,
+        job_definition_name: str,
         model_explainability_app_specification: ModelExplainabilityAppSpecification,
         model_explainability_job_input: ModelExplainabilityJobInput,
         model_explainability_job_output_config: MonitoringOutputConfig,
@@ -4805,7 +4829,7 @@ class ModelExplainabilityJobDefinition(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'JobDefinitionName': job_definition_name,
+            'JobDefinitionName': job_definition_name,
             'ModelExplainabilityBaselineConfig': model_explainability_baseline_config,
             'ModelExplainabilityAppSpecification': model_explainability_app_specification,
             'ModelExplainabilityJobInput': model_explainability_job_input,
@@ -4900,7 +4924,8 @@ class ModelPackage(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "validation_specification": {
             "validation_role": {
               "type": "string"
@@ -5019,7 +5044,7 @@ class ModelPackage(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            model_package_name: Optional[str] = Unassigned(),
+        model_package_name: Optional[str] = Unassigned(),
         model_package_group_name: Optional[str] = Unassigned(),
         model_package_description: Optional[str] = Unassigned(),
         inference_specification: Optional[InferenceSpecification] = Unassigned(),
@@ -5046,7 +5071,7 @@ class ModelPackage(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'ModelPackageName': model_package_name,
+            'ModelPackageName': model_package_name,
             'ModelPackageGroupName': model_package_group_name,
             'ModelPackageDescription': model_package_description,
             'InferenceSpecification': inference_specification,
@@ -5255,7 +5280,8 @@ class ModelQualityJobDefinition(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "model_quality_job_input": {
             "ground_truth_s3_input": {
               "s3_uri": {
@@ -5328,7 +5354,7 @@ class ModelQualityJobDefinition(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            job_definition_name: str,
+        job_definition_name: str,
         model_quality_app_specification: ModelQualityAppSpecification,
         model_quality_job_input: ModelQualityJobInput,
         model_quality_job_output_config: MonitoringOutputConfig,
@@ -5345,7 +5371,7 @@ class ModelQualityJobDefinition(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'JobDefinitionName': job_definition_name,
+            'JobDefinitionName': job_definition_name,
             'ModelQualityBaselineConfig': model_quality_baseline_config,
             'ModelQualityAppSpecification': model_quality_app_specification,
             'ModelQualityJobInput': model_quality_job_input,
@@ -5423,7 +5449,8 @@ class MonitoringSchedule(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "monitoring_schedule_config": {
             "monitoring_job_definition": {
               "monitoring_output_config": {
@@ -5479,7 +5506,7 @@ class MonitoringSchedule(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            monitoring_schedule_name: str,
+        monitoring_schedule_name: str,
         monitoring_schedule_config: MonitoringScheduleConfig,
         tags: Optional[List[Tag]] = Unassigned(),
         session: Optional[Session] = None,
@@ -5489,7 +5516,7 @@ class MonitoringSchedule(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'MonitoringScheduleName': monitoring_schedule_name,
+            'MonitoringScheduleName': monitoring_schedule_name,
             'MonitoringScheduleConfig': monitoring_schedule_config,
             'Tags': tags,
         }
@@ -5601,7 +5628,8 @@ class NotebookInstance(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "subnet_id": {
             "type": "string"
           },
@@ -5625,7 +5653,7 @@ class NotebookInstance(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            notebook_instance_name: str,
+        notebook_instance_name: str,
         instance_type: str,
         role_arn: str,
         subnet_id: Optional[str] = Unassigned(),
@@ -5648,7 +5676,7 @@ class NotebookInstance(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'NotebookInstanceName': notebook_instance_name,
+            'NotebookInstanceName': notebook_instance_name,
             'InstanceType': instance_type,
             'SubnetId': subnet_id,
             'SecurityGroupIds': security_group_ids,
@@ -5840,7 +5868,8 @@ class Pipeline(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "role_arn": {
             "type": "string"
           }
@@ -5852,7 +5881,7 @@ class Pipeline(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            pipeline_name: str,
+        pipeline_name: str,
         client_request_token: str,
         role_arn: str,
         pipeline_display_name: Optional[str] = Unassigned(),
@@ -5868,7 +5897,7 @@ class Pipeline(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'PipelineName': pipeline_name,
+            'PipelineName': pipeline_name,
             'PipelineDisplayName': pipeline_display_name,
             'PipelineDefinition': pipeline_definition,
             'PipelineDefinitionS3Location': pipeline_definition_s3_location,
@@ -6057,7 +6086,8 @@ class ProcessingJob(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "processing_resources": {
             "cluster_config": {
               "volume_kms_key_id": {
@@ -6097,7 +6127,7 @@ class ProcessingJob(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            processing_job_name: str,
+        processing_job_name: str,
         processing_resources: ProcessingResources,
         app_specification: AppSpecification,
         role_arn: str,
@@ -6115,7 +6145,7 @@ class ProcessingJob(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'ProcessingInputs': processing_inputs,
+            'ProcessingInputs': processing_inputs,
             'ProcessingOutputConfig': processing_output_config,
             'ProcessingJobName': processing_job_name,
             'ProcessingResources': processing_resources,
@@ -6549,7 +6579,8 @@ class TrainingJob(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "model_artifacts": {
             "s3_model_artifacts": {
               "type": "string"
@@ -6613,7 +6644,7 @@ class TrainingJob(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            training_job_name: str,
+        training_job_name: str,
         algorithm_specification: AlgorithmSpecification,
         role_arn: str,
         output_data_config: OutputDataConfig,
@@ -6644,7 +6675,7 @@ class TrainingJob(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'TrainingJobName': training_job_name,
+            'TrainingJobName': training_job_name,
             'HyperParameters': hyper_parameters,
             'AlgorithmSpecification': algorithm_specification,
             'RoleArn': role_arn,
@@ -6769,7 +6800,8 @@ class TransformJob(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "transform_input": {
             "data_source": {
               "s3_data_source": {
@@ -6811,7 +6843,7 @@ class TransformJob(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            transform_job_name: str,
+        transform_job_name: str,
         model_name: str,
         transform_input: TransformInput,
         transform_output: TransformOutput,
@@ -6832,7 +6864,7 @@ class TransformJob(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'TransformJobName': transform_job_name,
+            'TransformJobName': transform_job_name,
             'ModelName': model_name,
             'MaxConcurrentTransforms': max_concurrent_transforms,
             'ModelClientConfig': model_client_config,
@@ -7145,7 +7177,8 @@ class UserProfile(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "user_settings": {
             "execution_role": {
               "type": "string"
@@ -7198,7 +7231,7 @@ class UserProfile(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            domain_id: str,
+        domain_id: str,
         user_profile_name: str,
         single_sign_on_user_identifier: Optional[str] = Unassigned(),
         single_sign_on_user_value: Optional[str] = Unassigned(),
@@ -7211,7 +7244,7 @@ class UserProfile(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'DomainId': domain_id,
+            'DomainId': domain_id,
             'UserProfileName': user_profile_name,
             'SingleSignOnUserIdentifier': single_sign_on_user_identifier,
             'SingleSignOnUserValue': single_sign_on_user_value,
@@ -7302,7 +7335,8 @@ class Workforce(Base):
     
     def populate_inputs_decorator(create_func):
         def wrapper(*args, **kwargs):
-            config_schema_for_resource =     {
+            config_schema_for_resource = \
+        {
           "workforce": {
             "workforce_vpc_config": {
               "security_group_ids": {
@@ -7327,7 +7361,7 @@ class Workforce(Base):
     @populate_inputs_decorator
     def create(
         cls,
-            workforce_name: str,
+        workforce_name: str,
         cognito_config: Optional[CognitoConfig] = Unassigned(),
         oidc_config: Optional[OidcConfig] = Unassigned(),
         source_ip_config: Optional[SourceIpConfig] = Unassigned(),
@@ -7340,7 +7374,7 @@ class Workforce(Base):
         client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
     
         operation_input_args = {
-                    'CognitoConfig': cognito_config,
+            'CognitoConfig': cognito_config,
             'OidcConfig': oidc_config,
             'SourceIpConfig': source_ip_config,
             'WorkforceName': workforce_name,
