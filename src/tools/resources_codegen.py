@@ -18,7 +18,7 @@ import os
 import json
 
 from code_injection.codec import snake_to_pascal
-from constants import CONFIG_SCHEMA_FILE_NAME, PYTHON_TYPES_TO_BASIC_JSON_TYPES
+from constants import CONFIG_SCHEMA_FILE_NAME, PYTHON_TYPES_TO_BASIC_JSON_TYPES, CONFIGURABLE_ATTRIBUTE_SUBSTRINGS
 from generated.config_schema import SAGEMAKER_PYTHON_SDK_CONFIG_SCHEMA
 from src.tools.constants import GENERATED_CLASSES_LOCATION, \
     RESOURCES_CODEGEN_FILE_NAME, \
@@ -42,7 +42,6 @@ from src.tools.templates import (CREATE_METHOD_TEMPLATE, \
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
-CONFIGURABLE_ATTRIBUTE_SUBSTRINGS = ['kms', 's3', 'subnet', 'tags', 'role', 'security_group']
 
 TYPE = "type"
 OBJECT = "object"
@@ -143,7 +142,7 @@ class ResourcesCodeGen:
             "import jsonschema",
             "from functools import lru_cache",
             "from boto3.session import Session",
-            "from .utils import SageMakerClient, Unassigned",
+            "from .utils import SageMakerClient, Unassigned, snake_to_pascal, pascal_to_snake",
             "from src.code_injection.codec import transform",
             "from .shapes import *",
             "from .config_schema import SAGEMAKER_PYTHON_SDK_CONFIG_SCHEMA"
@@ -180,7 +179,7 @@ class ResourcesCodeGen:
                                     resource_name: str,
                                     class_attributes: dict) -> str:
         return POPULATE_DEFAULTS_DECORATOR_TEMPLATE.format(
-            config_schema_for_resource=config_schema_for_resource.get(PROPERTIES),
+            config_schema_for_resource=add_indent(json.dumps(config_schema_for_resource.get(PROPERTIES), indent=2), 4),
             resource_name=resource_name,
             configurable_attributes=CONFIGURABLE_ATTRIBUTE_SUBSTRINGS,
             class_attributes=class_attributes)

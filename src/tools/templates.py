@@ -98,12 +98,7 @@ POPULATE_DEFAULTS_DECORATOR_TEMPLATE = '''
 def populate_inputs_decorator(create_func):
     def wrapper(*args, **kwargs):
         config_schema_for_resource = {config_schema_for_resource}
-        for configurable_attribute in config_schema_for_resource:
-            if kwargs.get(configurable_attribute) is None:
-                resource_defaults=load_default_configs_for_resource_name(resource_name="{resource_name}")
-                global_defaults=load_default_configs_for_resource_name(resource_name="GlobalDefaults")
-                kwargs[configurable_attribute] = get_config_value(configurable_attribute, resource_defaults, global_defaults)
-        create_func(*args, **kwargs)
+        create_func(*args, **Base.get_updated_kwargs_with_configured_attributes(config_schema_for_resource, **kwargs))
     return wrapper
 '''
 
@@ -212,30 +207,46 @@ def stop(self) -> None:
 RESOURCE_BASE_CLASS_TEMPLATE ='''
 class Base(BaseModel):
     @classmethod
-    def _serialize(cls, data: Dict) -> Dict:
+    def _serialize_dict(cls, data: Dict) -> Dict:
         result = {}
         for attr, value in data.items():
             if isinstance(value, Unassigned):
                 continue
-            
-            if isinstance(value, List):
-                result[attr] = cls._serialize_list(value)
-            elif isinstance(value, Dict):
-                result[attr] = cls._serialize_dict(value)
-            elif hasattr(value, 'serialize'):
-                result[attr] = value.serialize()
-            else:
-                result[attr] = value
+            formatted_attribute = snake_to_pascal(attr) if '_' in attr else cls._capfirst(attr)
+            serialized_value = cls._serialize(value)
+            result[formatted_attribute] = serialized_value
         return result
     
     @classmethod
     def _serialize_list(cls, value: List):
-        return [v.serialize() if hasattr(v, 'serialize') else v for v in value]
-    
-    @classmethod
-    def _serialize_dict(cls, value: Dict):
-        return {k: v.serialize() if hasattr(v, 'serialize') else v for k, v in value.items()}
+        return [cls._serialize(v) for v in value]
 
+    @classmethod
+    def _serialize(cls, value: any):
+        if isinstance(value, List):
+            return cls._serialize_list(value)
+        if isinstance(value, Dict):
+            return cls._serialize_dict(value)
+        if hasattr(value, 'serialize'):
+            return value.serialize()
+        return value
+
+    @staticmethod
+    def _capfirst(s: str):
+        return s[:1].upper() + s[1:]
+            
+    @staticmethod
+    def get_updated_kwargs_with_configured_attributes(config_schema_for_resource: dict, **kwargs):
+        for configurable_attribute in config_schema_for_resource:
+            if kwargs.get(configurable_attribute) is None:
+                resource_defaults = load_default_configs_for_resource_name(resource_name="Cluster")
+                global_defaults = load_default_configs_for_resource_name(resource_name="GlobalDefaults")
+                formatted_attribute = pascal_to_snake(configurable_attribute)
+                kwargs[formatted_attribute] = get_config_value(formatted_attribute,
+                 resource_defaults,
+                 global_defaults)
+        return kwargs
+        
 '''
 LOAD_DEFAULT_CONFIGS_TEMPLATE = '''
 @lru_cache(maxsize=None)
@@ -287,4 +298,36 @@ class {class_name}:
     {docstring}
     """
 {data_class_members}
+'''
+
+SNAKE_TO_PASCAL_FUNCTION = '''
+def snake_to_pascal(snake_str):
+    """
+    Convert a snake_case string to PascalCase.
+
+    Args:
+        snake_str (str): The snake_case string to be converted.
+
+    Returns:
+        str: The PascalCase string.
+
+    """
+    components = snake_str.split('_')
+    return ''.join(x.title() for x in components[0:])
+'''
+
+
+
+PASCAL_TO_SNAKE_FUNCTION = '''
+def pascal_to_snake(pascal_str):
+    """
+    Converts a PascalCase string to snake_case.
+
+    Args:
+        pascal_str (str): The PascalCase string to be converted.
+
+    Returns:
+        str: The converted snake_case string.
+    """
+    return ''.join(['_' + i.lower() if i.isupper() else i for i in pascal_str]).lstrip('_')
 '''

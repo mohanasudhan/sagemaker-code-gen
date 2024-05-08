@@ -18,6 +18,8 @@ OBJECT_METHODS = set(['refresh', 'delete', 'update', 'stop', 'deregister', 'wait
 
 TERMINAL_STATES = set(["Completed", "Stopped", "Deleted", "Failed", "Succeeded", "Cancelled"])
 
+CONFIGURABLE_ATTRIBUTE_SUBSTRINGS = ['kms', 's3', 'subnet', 'tags', 'role', 'security_group']
+
 BASIC_JSON_TYPES_TO_PYTHON_TYPES = {
     "string": "str",
     "integer": "int",
