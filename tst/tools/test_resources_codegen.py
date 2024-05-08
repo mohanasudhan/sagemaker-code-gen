@@ -55,6 +55,35 @@ def create(
 '''
         assert self.resource_generator.generate_create_method("CompilationJob") == expected_output
 
+    def test_generate_update_method(self):
+        expected_output = '''
+def update(self) -> Optional[object]:
+    logger.debug(f"Creating endpoint resource.")
+    client = SageMakerClient().client
+
+    operation_input_args = {
+        'EndpointName': self.endpoint_name,
+        'EndpointConfigName': self.endpoint_config_name,
+        'RetainAllVariantProperties': self.retain_all_variant_properties,
+        'ExcludeRetainedVariantProperties': self.exclude_retained_variant_properties,
+        'DeploymentConfig': self.deployment_config,
+        'RetainDeploymentConfig': self.retain_deployment_config,
+    }
+    logger.debug(f"Input request: {operation_input_args}")
+    # serialize the input request
+    operation_input_args = Endpoint._serialize(operation_input_args)
+    logger.debug(f"Serialized input request: {operation_input_args}")
+
+    # create the resource
+    response = client.update_endpoint(**operation_input_args)
+    logger.debug(f"Response: {response}")
+    self.refresh()
+
+    return self
+'''
+        assert self.resource_generator.generate_update_method(
+            "Endpoint") == expected_output
+
     def test_generate_get_method(self):
         expected_output = '''
 @classmethod
