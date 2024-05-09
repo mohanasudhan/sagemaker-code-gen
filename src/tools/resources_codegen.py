@@ -18,14 +18,15 @@ import os
 import json
 
 from src.code_injection.codec import snake_to_pascal
-from constants import CONFIG_SCHEMA_FILE_NAME, PYTHON_TYPES_TO_BASIC_JSON_TYPES, CONFIGURABLE_ATTRIBUTE_SUBSTRINGS
 from src.generated.config_schema import SAGEMAKER_PYTHON_SDK_CONFIG_SCHEMA
 from src.tools.constants import GENERATED_CLASSES_LOCATION, \
     RESOURCES_CODEGEN_FILE_NAME, \
     LICENCES_STRING, \
     TERMINAL_STATES, \
     BASIC_IMPORTS_STRING, \
-    LOGGER_STRING
+    LOGGER_STRING, \
+    CONFIG_SCHEMA_FILE_NAME, PYTHON_TYPES_TO_BASIC_JSON_TYPES, \
+    CONFIGURABLE_ATTRIBUTE_SUBSTRINGS
 from src.util.util import add_indent, convert_to_snake_case, snake_to_pascal
 from src.tools.resources_extractor import ResourcesExtractor
 from src.tools.shapes_extractor import ShapesExtractor
@@ -312,44 +313,36 @@ class ResourcesCodeGen:
             # Generate the 'get' method
             get_method = self.generate_get_method(resource_name)
 
-            try:
-                # Add the class attributes and methods to the class definition
-                resource_class += add_indent(class_attributes_string, 4)
+            # Add the class attributes and methods to the class definition
+            resource_class += add_indent(class_attributes_string, 4)
 
-                if defaults_decorator_method:
-                    resource_class += "\n"
-                    resource_class += add_indent(defaults_decorator_method, 4)
+            if defaults_decorator_method:
+                resource_class += "\n"
+                resource_class += add_indent(defaults_decorator_method, 4)
 
-                if create_method := self._evaluate_method(resource_name, "create", class_methods,
-                                                          needs_defaults_decorator=needs_defaults_decorator):
-                    resource_class += add_indent(create_method, 4)
+            if create_method := self._evaluate_method(resource_name, "create", class_methods,
+                                                      needs_defaults_decorator=needs_defaults_decorator):
+                resource_class += add_indent(create_method, 4)
 
-                resource_class += add_indent(get_method, 4)
+            resource_class += add_indent(get_method, 4)
 
-                if refresh_method := self._evaluate_method(resource_name, "refresh", object_methods):
-                    resource_class += add_indent(refresh_method, 4)
+            if refresh_method := self._evaluate_method(resource_name, "refresh", object_methods):
+                resource_class += add_indent(refresh_method, 4)
 
-                if update_method := self._evaluate_method(resource_name, "update", object_methods):
-                    resource_class += add_indent(update_method, 4)
+            if update_method := self._evaluate_method(resource_name, "update", object_methods):
+                resource_class += add_indent(update_method, 4)
 
-                if delete_method := self._evaluate_method(resource_name, "delete", object_methods):
-                    resource_class += add_indent(delete_method, 4)
+            if delete_method := self._evaluate_method(resource_name, "delete", object_methods):
+                resource_class += add_indent(delete_method, 4)
 
-                if stop_method := self._evaluate_method(resource_name, "stop", object_methods):
-                    resource_class += add_indent(stop_method, 4)
+            if stop_method := self._evaluate_method(resource_name, "stop", object_methods):
+                resource_class += add_indent(stop_method, 4)
 
-                if wait_method := self._evaluate_method(resource_name, "wait", object_methods):
-                    resource_class += add_indent(wait_method, 4)
+            if wait_method := self._evaluate_method(resource_name, "wait", object_methods):
+                resource_class += add_indent(wait_method, 4)
 
-                if wait_for_status_method := self._evaluate_method(resource_name, "wait_for_status", object_methods):
-                    resource_class += add_indent(wait_for_status_method, 4)
-
-            except Exception:
-                # If there's an error, log the class attributes for debugging and raise the error
-                log.error(f"DEBUG HELP {class_attributes} \n {create_method} \n {get_method} \n"
-                          f"{refresh_method} \n {update_method} \n {delete_method} \n"
-                          f"{stop_method} \n {wait_method} \n {wait_for_status_method}")
-                raise
+            if wait_for_status_method := self._evaluate_method(resource_name, "wait_for_status", object_methods):
+                resource_class += add_indent(wait_for_status_method, 4)
         else:
             # If there's no 'get' method, log a message
             # TODO: Handle the resources without 'get' differently
@@ -741,7 +734,7 @@ class ResourcesCodeGen:
             "required": [SAGEMAKER]
         }
 
-        output = f'../../src/generated/{CONFIG_SCHEMA_FILE_NAME}'
+        output = f'{GENERATED_CLASSES_LOCATION}/{CONFIG_SCHEMA_FILE_NAME}'
         # Open the output file
         with open(output, "w") as file:
             # Generate and write the license to the file

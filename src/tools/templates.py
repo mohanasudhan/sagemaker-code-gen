@@ -56,7 +56,7 @@ def create(
     response = client.{operation}(**operation_input_args)
     logger.debug(f"Response: {{response}}")
 
-    return cls.get({resource_identifier}, session=session, region=region)
+    return cls.get({get_args}, session=session, region=region)
 '''
 
 CREATE_METHOD_TEMPLATE_WITHOUT_DEFAULTS = '''

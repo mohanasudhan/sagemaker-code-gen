@@ -53,7 +53,7 @@ def create(
 
     return cls.get(compilation_job_name=compilation_job_name, session=session, region=region)
 '''
-        assert self.resource_generator.generate_create_method("CompilationJob") == expected_output
+        assert self.resource_generator.generate_create_method("CompilationJob", needs_defaults_decorator=False) == expected_output
 
     def test_generate_update_method(self):
         expected_output = '''
