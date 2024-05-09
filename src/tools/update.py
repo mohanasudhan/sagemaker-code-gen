@@ -87,7 +87,6 @@ def git_commit_and_push():
     
     # Record current branch and checkout to the main branch
     current_branch = repo.active_branch
-    repo.heads.main.checkout()
 
     # Checkout to a new branch
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
