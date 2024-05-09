@@ -223,6 +223,11 @@ SHAPE_DAG = {
                 "shape": "JupyterLabAppImageConfig",
                 "type": "structure",
             },
+            {
+                "name": "CodeEditorAppImageConfig",
+                "shape": "CodeEditorAppImageConfig",
+                "type": "structure",
+            },
         ],
         "type": "structure",
     },
@@ -1163,9 +1168,17 @@ SHAPE_DAG = {
         ],
         "type": "structure",
     },
+    "CodeEditorAppImageConfig": {
+        "members": [
+            {"name": "FileSystemConfig", "shape": "FileSystemConfig", "type": "structure"},
+            {"name": "ContainerConfig", "shape": "ContainerConfig", "type": "structure"},
+        ],
+        "type": "structure",
+    },
     "CodeEditorAppSettings": {
         "members": [
             {"name": "DefaultResourceSpec", "shape": "ResourceSpec", "type": "structure"},
+            {"name": "CustomImages", "shape": "CustomImages", "type": "list"},
             {"name": "LifecycleConfigArns", "shape": "LifecycleConfigArns", "type": "list"},
         ],
         "type": "structure",
@@ -1442,6 +1455,11 @@ SHAPE_DAG = {
             {
                 "name": "JupyterLabAppImageConfig",
                 "shape": "JupyterLabAppImageConfig",
+                "type": "structure",
+            },
+            {
+                "name": "CodeEditorAppImageConfig",
+                "shape": "CodeEditorAppImageConfig",
                 "type": "structure",
             },
         ],
@@ -2508,6 +2526,11 @@ SHAPE_DAG = {
             {"name": "RetryStrategy", "shape": "RetryStrategy", "type": "structure"},
             {"name": "RemoteDebugConfig", "shape": "RemoteDebugConfig", "type": "structure"},
             {"name": "InfraCheckConfig", "shape": "InfraCheckConfig", "type": "structure"},
+            {
+                "name": "SessionChainingConfig",
+                "shape": "SessionChainingConfig",
+                "type": "structure",
+            },
         ],
         "type": "structure",
     },
@@ -2880,6 +2903,22 @@ SHAPE_DAG = {
                 "shape": "KernelGatewayAppSettings",
                 "type": "structure",
             },
+            {
+                "name": "JupyterLabAppSettings",
+                "shape": "JupyterLabAppSettings",
+                "type": "structure",
+            },
+            {
+                "name": "SpaceStorageSettings",
+                "shape": "DefaultSpaceStorageSettings",
+                "type": "structure",
+            },
+            {
+                "name": "CustomPosixUserConfig",
+                "shape": "CustomPosixUserConfig",
+                "type": "structure",
+            },
+            {"name": "CustomFileSystemConfigs", "shape": "CustomFileSystemConfigs", "type": "list"},
         ],
         "type": "structure",
     },
@@ -3385,6 +3424,11 @@ SHAPE_DAG = {
             {
                 "name": "JupyterLabAppImageConfig",
                 "shape": "JupyterLabAppImageConfig",
+                "type": "structure",
+            },
+            {
+                "name": "CodeEditorAppImageConfig",
+                "shape": "CodeEditorAppImageConfig",
                 "type": "structure",
             },
         ],
@@ -11754,6 +11798,16 @@ SHAPE_DAG = {
         ],
         "type": "structure",
     },
+    "SessionChainingConfig": {
+        "members": [
+            {
+                "name": "EnableSessionTagChaining",
+                "shape": "EnableSessionTagChaining",
+                "type": "boolean",
+            }
+        ],
+        "type": "structure",
+    },
     "ShadowModeConfig": {
         "members": [
             {"name": "SourceModelVariantName", "shape": "ModelVariantName", "type": "string"},
@@ -12873,6 +12927,11 @@ SHAPE_DAG = {
             {
                 "name": "JupyterLabAppImageConfig",
                 "shape": "JupyterLabAppImageConfig",
+                "type": "structure",
+            },
+            {
+                "name": "CodeEditorAppImageConfig",
+                "shape": "CodeEditorAppImageConfig",
                 "type": "structure",
             },
         ],
