@@ -1,0 +1,31 @@
+name: Create Release
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Get current version
+        id: current_version
+        run: echo "::set-output name=version::$(node -p 'require("./package.json").version')"
+
+      - name: Increment version number
+        id: new_version
+        run: |
+          import semver from 'semver';
+          const currentVersion = '${{ steps.current_version.outputs.version }}';
+          const releaseType = '${{ github.event.inputs.release_type }}';
+          const newVersion = semver.inc(currentVersion, releaseType);
+          console.log(`::set-output name=version::${newVersion}`);
+
+      - name: Update version number
+        run: echo ${{ steps.new_version.outputs.version }}
