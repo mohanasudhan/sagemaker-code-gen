@@ -1,33 +1,24 @@
 name: Create Release
 
 on:
-  workflow_dispatch: {}
+  pull_request:
+    types: [closed]
+    branches:
+      - main
 
 jobs:
   create-release:
-    name: Create Release
+    if: startsWith(github.event.pull_request.title, 'Daily Sync with Botocore') && github.event.pull_request.user.login == 'pintaoz-aws'
     runs-on: ubuntu-latest
     steps:
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          node-version: 16
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
 
-      - name: Get current version
-        id: current_version
-        run: echo "::set-output name=version::$(cat VERSION)"
-
-      - name: Increment version number
-        id: new_version
-        run: |
-          import semver from 'semver';
-          const currentVersion = '${{ steps.current_version.outputs.version }}';
-          const releaseType = '${{ github.event.inputs.release_type }}';
-          const newVersion = semver.inc(currentVersion, releaseType);
-          console.log(`::set-output name=version::${newVersion}`);
-        shell: node
-
-      - name: Update version number
-        run: echo "${{ steps.new_version.outputs.version }}"
-
+      - name: Run CodeBuild
+        uses: aws-actions/aws-codebuild-run-build@v1
+        with:
+          project-name: AutoRelease
