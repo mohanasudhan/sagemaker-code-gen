@@ -5,6 +5,7 @@
     "endpointPrefix":"api.sagemaker",
     "jsonVersion":"1.1",
     "protocol":"json",
+    "protocols":["json"],
     "serviceAbbreviation":"SageMaker",
     "serviceFullName":"Amazon SageMaker Service",
     "serviceId":"SageMaker",
@@ -704,7 +705,7 @@
         {"shape":"ResourceLimitExceeded"},
         {"shape":"ResourceInUse"}
       ],
-      "documentation":"<p>Creates a space used for real time collaboration in a domain.</p>"
+      "documentation":"<p>Creates a private space or a space used for real time collaboration in a domain.</p>"
     },
     "CreateStudioLifecycleConfig":{
       "name":"CreateStudioLifecycleConfig",
@@ -4477,6 +4478,10 @@
         "JupyterLabAppImageConfig":{
           "shape":"JupyterLabAppImageConfig",
           "documentation":"<p>The configuration for the file system and the runtime, such as the environment variables and entry point.</p>"
+        },
+        "CodeEditorAppImageConfig":{
+          "shape":"CodeEditorAppImageConfig",
+          "documentation":"<p>The configuration for the file system and the runtime, such as the environment variables and entry point.</p>"
         }
       },
       "documentation":"<p>The configuration for running a SageMaker image as a KernelGateway app.</p>"
@@ -4558,12 +4563,102 @@
         "ml.g5.12xlarge",
         "ml.g5.24xlarge",
         "ml.g5.48xlarge",
+        "ml.g6.xlarge",
+        "ml.g6.2xlarge",
+        "ml.g6.4xlarge",
+        "ml.g6.8xlarge",
+        "ml.g6.12xlarge",
+        "ml.g6.16xlarge",
+        "ml.g6.24xlarge",
+        "ml.g6.48xlarge",
         "ml.geospatial.interactive",
         "ml.p4d.24xlarge",
         "ml.p4de.24xlarge",
         "ml.trn1.2xlarge",
         "ml.trn1.32xlarge",
-        "ml.trn1n.32xlarge"
+        "ml.trn1n.32xlarge",
+        "ml.p5.48xlarge",
+        "ml.m6i.large",
+        "ml.m6i.xlarge",
+        "ml.m6i.2xlarge",
+        "ml.m6i.4xlarge",
+        "ml.m6i.8xlarge",
+        "ml.m6i.12xlarge",
+        "ml.m6i.16xlarge",
+        "ml.m6i.24xlarge",
+        "ml.m6i.32xlarge",
+        "ml.m7i.large",
+        "ml.m7i.xlarge",
+        "ml.m7i.2xlarge",
+        "ml.m7i.4xlarge",
+        "ml.m7i.8xlarge",
+        "ml.m7i.12xlarge",
+        "ml.m7i.16xlarge",
+        "ml.m7i.24xlarge",
+        "ml.m7i.48xlarge",
+        "ml.c6i.large",
+        "ml.c6i.xlarge",
+        "ml.c6i.2xlarge",
+        "ml.c6i.4xlarge",
+        "ml.c6i.8xlarge",
+        "ml.c6i.12xlarge",
+        "ml.c6i.16xlarge",
+        "ml.c6i.24xlarge",
+        "ml.c6i.32xlarge",
+        "ml.c7i.large",
+        "ml.c7i.xlarge",
+        "ml.c7i.2xlarge",
+        "ml.c7i.4xlarge",
+        "ml.c7i.8xlarge",
+        "ml.c7i.12xlarge",
+        "ml.c7i.16xlarge",
+        "ml.c7i.24xlarge",
+        "ml.c7i.48xlarge",
+        "ml.r6i.large",
+        "ml.r6i.xlarge",
+        "ml.r6i.2xlarge",
+        "ml.r6i.4xlarge",
+        "ml.r6i.8xlarge",
+        "ml.r6i.12xlarge",
+        "ml.r6i.16xlarge",
+        "ml.r6i.24xlarge",
+        "ml.r6i.32xlarge",
+        "ml.r7i.large",
+        "ml.r7i.xlarge",
+        "ml.r7i.2xlarge",
+        "ml.r7i.4xlarge",
+        "ml.r7i.8xlarge",
+        "ml.r7i.12xlarge",
+        "ml.r7i.16xlarge",
+        "ml.r7i.24xlarge",
+        "ml.r7i.48xlarge",
+        "ml.m6id.large",
+        "ml.m6id.xlarge",
+        "ml.m6id.2xlarge",
+        "ml.m6id.4xlarge",
+        "ml.m6id.8xlarge",
+        "ml.m6id.12xlarge",
+        "ml.m6id.16xlarge",
+        "ml.m6id.24xlarge",
+        "ml.m6id.32xlarge",
+        "ml.c6id.large",
+        "ml.c6id.xlarge",
+        "ml.c6id.2xlarge",
+        "ml.c6id.4xlarge",
+        "ml.c6id.8xlarge",
+        "ml.c6id.12xlarge",
+        "ml.c6id.16xlarge",
+        "ml.c6id.24xlarge",
+        "ml.c6id.32xlarge",
+        "ml.r6id.large",
+        "ml.r6id.xlarge",
+        "ml.r6id.2xlarge",
+        "ml.r6id.4xlarge",
+        "ml.r6id.8xlarge",
+        "ml.r6id.12xlarge",
+        "ml.r6id.16xlarge",
+        "ml.r6id.24xlarge",
+        "ml.r6id.32xlarge"
       ]
     },
     "AppList":{
@@ -5763,10 +5858,7 @@
       "type":"string",
       "enum":[
         "AWS/Rekognition/DetectModerationLabels/Image/V3",
-        "AWS/Textract/AnalyzeDocument/Forms/V1",
-        "AWS/Textract/AnalyzeExpense",
-        "AWS/Handshake/VerifyIdentity",
-        "AWS/Bedrock/ModelEvaluation"
+        "AWS/Textract/AnalyzeDocument/Forms/V1"
       ]
     },
     "BacktestResultsLocation":{
@@ -6906,7 +6998,7 @@
     "ClusterInstanceGroupSpecifications":{
       "type":"list",
       "member":{"shape":"ClusterInstanceGroupSpecification"},
-      "max":5,
+      "max":20,
       "min":1
     },
     "ClusterInstanceStatus":{
@@ -6986,14 +7078,14 @@
       "members":{
         "SourceS3Uri":{
           "shape":"S3Uri",
-          "documentation":"<p>An Amazon S3 bucket path where your LifeCycle scripts are stored.</p>"
+          "documentation":"<p>An Amazon S3 bucket path where your lifecycle scripts are stored.</p> <important> <p>Make sure that the S3 bucket path starts with <code>s3://sagemaker-</code>. The <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-prerequisites.html#sagemaker-hyperpod-prerequisites-iam-role-for-hyperpod\">IAM role for SageMaker HyperPod</a> has the managed <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/security-iam-awsmanpol-cluster.html\"> <code>AmazonSageMakerClusterInstanceRolePolicy</code> </a> attached, which allows access to S3 buckets with the specific prefix <code>sagemaker-</code>.</p> </important>"
         },
         "OnCreate":{
           "shape":"ClusterLifeCycleConfigFileName",
-          "documentation":"<p>The directory of the LifeCycle script under <code>SourceS3Uri</code>. This LifeCycle script runs during cluster creation.</p>"
+          "documentation":"<p>The file name of the entrypoint script of lifecycle scripts under <code>SourceS3Uri</code>. This entrypoint script runs during cluster creation.</p>"
         }
       },
-      "documentation":"<p>The LifeCycle configuration for a SageMaker HyperPod cluster.</p>"
+      "documentation":"<p>The lifecycle configuration for a SageMaker HyperPod cluster.</p>"
     },
     "ClusterLifeCycleConfigFileName":{
       "type":"string",
@@ -7149,10 +7241,22 @@
       "max":2,
       "min":1
     },
+    "CodeEditorAppImageConfig":{
+      "type":"structure",
+      "members":{
+        "FileSystemConfig":{"shape":"FileSystemConfig"},
+        "ContainerConfig":{"shape":"ContainerConfig"}
+      },
+      "documentation":"<p>The configuration for the file system and kernels in a SageMaker image running as a Code Editor app. The <code>FileSystemConfig</code> object is not supported.</p>"
+    },
     "CodeEditorAppSettings":{
       "type":"structure",
       "members":{
         "DefaultResourceSpec":{"shape":"ResourceSpec"},
+        "CustomImages":{
+          "shape":"CustomImages",
+          "documentation":"<p>A list of custom SageMaker images that are configured to run as a Code Editor app.</p>"
+        },
         "LifecycleConfigArns":{
           "shape":"LifecycleConfigArns",
           "documentation":"<p>The Amazon Resource Name (ARN) of the Code Editor application lifecycle configuration.</p>"
@@ -7880,6 +7984,10 @@
         "JupyterLabAppImageConfig":{
           "shape":"JupyterLabAppImageConfig",
           "documentation":"<p>The <code>JupyterLabAppImageConfig</code>. You can only specify one image kernel in the <code>AppImageConfig</code> API. This kernel is shown to users before the image starts. After the image runs, all kernels are visible in JupyterLab.</p>"
+        },
+        "CodeEditorAppImageConfig":{
+          "shape":"CodeEditorAppImageConfig",
+          "documentation":"<p>The <code>CodeEditorAppImageConfig</code>. You can only specify one image kernel in the AppImageConfig API. This kernel is shown to users before the image starts. After the image runs, all kernels are visible in Code Editor.</p>"
         }
       }
     },
@@ -8655,11 +8763,11 @@
       "members":{
         "FeatureGroupName":{
           "shape":"FeatureGroupName",
-          "documentation":"<p>The name of the <code>FeatureGroup</code>. The name must be unique within an Amazon Web Services Region in an Amazon Web Services account.</p> <p>The name:</p> <ul> <li> <p>Must start and end with an alphanumeric character.</p> </li> <li> <p>Can only include alphanumeric characters, underscores, and hyphens. Spaces are not allowed.</p> </li> </ul>"
+          "documentation":"<p>The name of the <code>FeatureGroup</code>. The name must be unique within an Amazon Web Services Region in an Amazon Web Services account.</p> <p>The name:</p> <ul> <li> <p>Must start with an alphanumeric character.</p> </li> <li> <p>Can only include alphanumeric characters, underscores, and hyphens. Spaces are not allowed.</p> </li> </ul>"
         },
         "RecordIdentifierFeatureName":{
           "shape":"FeatureName",
-          "documentation":"<p>The name of the <code>Feature</code> whose value uniquely identifies a <code>Record</code> defined in the <code>FeatureStore</code>. Only the latest record per identifier value will be stored in the <code>OnlineStore</code>. <code>RecordIdentifierFeatureName</code> must be one of feature definitions' names.</p> <p>You use the <code>RecordIdentifierFeatureName</code> to access data in a <code>FeatureStore</code>.</p> <p>This name:</p> <ul> <li> <p>Must start and end with an alphanumeric character.</p> </li> <li> <p>Can only contains alphanumeric characters, hyphens, underscores. Spaces are not allowed. </p> </li> </ul>"
+          "documentation":"<p>The name of the <code>Feature</code> whose value uniquely identifies a <code>Record</code> defined in the <code>FeatureStore</code>. Only the latest record per identifier value will be stored in the <code>OnlineStore</code>. <code>RecordIdentifierFeatureName</code> must be one of feature definitions' names.</p> <p>You use the <code>RecordIdentifierFeatureName</code> to access data in a <code>FeatureStore</code>.</p> <p>This name:</p> <ul> <li> <p>Must start with an alphanumeric character.</p> </li> <li> <p>Can only contains alphanumeric characters, hyphens, underscores. Spaces are not allowed. </p> </li> </ul>"
         },
         "EventTimeFeatureName":{
           "shape":"FeatureName",
@@ -10147,6 +10255,10 @@
         "InfraCheckConfig":{
           "shape":"InfraCheckConfig",
           "documentation":"<p>Contains information about the infrastructure health check configuration for the training job.</p>"
+        },
+        "SessionChainingConfig":{
+          "shape":"SessionChainingConfig",
+          "documentation":"<p>Contains information about attribute-based access control (ABAC) for the training job.</p>"
         }
       }
     },
@@ -10429,6 +10541,10 @@
           "shape":"NotificationConfiguration",
           "documentation":"<p>Configures notification of workers regarding available or expiring work items.</p>"
         },
+        "WorkerAccessConfiguration":{
+          "shape":"WorkerAccessConfiguration",
+          "documentation":"<p>Use this optional parameter to constrain access to an Amazon S3 resource based on the IP address using supported IAM global condition keys. The Amazon S3 resource is accessed in the worker portal using a Amazon S3 presigned URL.</p>"
+        },
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>An array of key-value pairs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html\">Resource Tag</a> and <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html#allocation-what\">Using Cost Allocation Tags</a> in the <i> Amazon Web Services Billing and Cost Management User Guide</i>.</p>"
@@ -10489,12 +10605,12 @@
     "CustomFileSystemConfigs":{
       "type":"list",
       "member":{"shape":"CustomFileSystemConfig"},
-      "max":2
+      "max":10
     },
     "CustomFileSystems":{
       "type":"list",
       "member":{"shape":"CustomFileSystem"},
-      "max":1
+      "max":5
     },
     "CustomImage":{
       "type":"structure",
@@ -10934,14 +11050,14 @@
       "members":{
         "DefaultEbsVolumeSizeInGb":{
           "shape":"SpaceEbsVolumeSizeInGb",
-          "documentation":"<p>The default size of the EBS storage volume for a private space.</p>"
+          "documentation":"<p>The default size of the EBS storage volume for a space.</p>"
         },
         "MaximumEbsVolumeSizeInGb":{
           "shape":"SpaceEbsVolumeSizeInGb",
-          "documentation":"<p>The maximum size of the EBS storage volume for a private space.</p>"
+          "documentation":"<p>The maximum size of the EBS storage volume for a space.</p>"
         }
       },
-      "documentation":"<p>A collection of default EBS storage settings that applies to private spaces created within a domain or user profile.</p>"
+      "documentation":"<p>A collection of default EBS storage settings that apply to spaces created within a domain or user profile.</p>"
     },
     "DefaultGid":{
       "type":"integer",
@@ -10960,7 +11076,14 @@
           "documentation":"<p>The security group IDs for the Amazon VPC that the space uses for communication.</p>"
         },
         "JupyterServerAppSettings":{"shape":"JupyterServerAppSettings"},
-        "KernelGatewayAppSettings":{"shape":"KernelGatewayAppSettings"}
+        "KernelGatewayAppSettings":{"shape":"KernelGatewayAppSettings"},
+        "JupyterLabAppSettings":{"shape":"JupyterLabAppSettings"},
+        "SpaceStorageSettings":{"shape":"DefaultSpaceStorageSettings"},
+        "CustomPosixUserConfig":{"shape":"CustomPosixUserConfig"},
+        "CustomFileSystemConfigs":{
+          "shape":"CustomFileSystemConfigs",
+          "documentation":"<p>The settings for assigning a custom file system to a domain. Permitted users can access this file system in Amazon SageMaker Studio.</p>"
+        }
       },
       "documentation":"<p>A collection of settings that apply to spaces created in the domain.</p>"
     },
@@ -10969,10 +11092,10 @@
       "members":{
         "DefaultEbsStorageSettings":{
           "shape":"DefaultEbsStorageSettings",
-          "documentation":"<p>The default EBS storage settings for a private space.</p>"
+          "documentation":"<p>The default EBS storage settings for a space.</p>"
         }
       },
-      "documentation":"<p>The default storage settings for a private space.</p>"
+      "documentation":"<p>The default storage settings for a space.</p>"
     },
     "DefaultUid":{
       "type":"integer",
@@ -12015,6 +12138,10 @@
         "JupyterLabAppImageConfig":{
           "shape":"JupyterLabAppImageConfig",
           "documentation":"<p>The configuration of the JupyterLab app.</p>"
+        },
+        "CodeEditorAppImageConfig":{
+          "shape":"CodeEditorAppImageConfig",
+          "documentation":"<p>The configuration of the Code Editor app.</p>"
         }
       }
     },
@@ -16715,10 +16842,10 @@
       "members":{
         "EbsVolumeSizeInGb":{
           "shape":"SpaceEbsVolumeSizeInGb",
-          "documentation":"<p>The size of an EBS storage volume for a private space.</p>"
+          "documentation":"<p>The size of an EBS storage volume for a space.</p>"
         }
       },
-      "documentation":"<p>A collection of EBS storage settings that applies to private spaces.</p>"
+      "documentation":"<p>A collection of EBS storage settings that apply to both private and shared spaces.</p>"
     },
     "Edge":{
       "type":"structure",
@@ -17111,6 +17238,14 @@
       "type":"structure",
       "members":{
       }
+    },
+    "EnableSessionTagChaining":{"type":"boolean"},
+    "EnabledOrDisabled":{
+      "type":"string",
+      "enum":[
+        "Enabled",
+        "Disabled"
+      ]
     },
     "Endpoint":{
       "type":"structure",
@@ -17754,7 +17889,7 @@
       "members":{
         "FeatureName":{
           "shape":"FeatureName",
-          "documentation":"<p>The name of a feature. The type must be a string. <code>FeatureName</code> cannot be any of the following: <code>is_deleted</code>, <code>write_time</code>, <code>api_invocation_time</code>.</p> <p>The name:</p> <ul> <li> <p>Must start and end with an alphanumeric character.</p> </li> <li> <p>Can only include alphanumeric characters, underscores, and hyphens. Spaces are not allowed.</p> </li> </ul>"
+          "documentation":"<p>The name of a feature. The type must be a string. <code>FeatureName</code> cannot be any of the following: <code>is_deleted</code>, <code>write_time</code>, <code>api_invocation_time</code>.</p> <p>The name:</p> <ul> <li> <p>Must start with an alphanumeric character.</p> </li> <li> <p>Can only include alphanumeric characters, underscores, and hyphens. Spaces are not allowed.</p> </li> </ul>"
         },
         "FeatureType":{
           "shape":"FeatureType",
@@ -19790,6 +19925,20 @@
       },
       "documentation":"<p>The IAM Identity details associated with the user. These details are associated with model package groups, model packages and project entities only.</p>"
     },
+    "IamPolicyConstraints":{
+      "type":"structure",
+      "members":{
+        "SourceIp":{
+          "shape":"EnabledOrDisabled",
+          "documentation":"<p>When <code>SourceIp</code> is <code>Enabled</code> the worker's IP address when a task is rendered in the worker portal is added to the IAM policy as a <code>Condition</code> used to generate the Amazon S3 presigned URL. This IP address is checked by Amazon S3 and must match in order for the Amazon S3 resource to be rendered in the worker portal.</p>"
+        },
+        "VpcSourceIp":{
+          "shape":"EnabledOrDisabled",
+          "documentation":"<p>When <code>VpcSourceIp</code> is <code>Enabled</code> the worker's IP address when a task is rendered in private worker portal inside the VPC is added to the IAM policy as a <code>Condition</code> used to generate the Amazon S3 presigned URL. To render the task successfully Amazon S3 checks that the presigned URL is being accessed over an Amazon S3 VPC Endpoint, and that the worker's IP address matches the IP address in the IAM policy. To learn more about configuring private worker portal, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/samurai-vpc-worker-portal.html\">Use Amazon VPC mode from a private worker portal</a>.</p>"
+        }
+      },
+      "documentation":"<p>Use this parameter to specify a supported global condition key that is added to the IAM policy.</p>"
+    },
     "IdempotencyToken":{
       "type":"string",
       "max":128,
@@ -20990,7 +21139,15 @@
         "ml.r6id.12xlarge",
         "ml.r6id.16xlarge",
         "ml.r6id.24xlarge",
-        "ml.r6id.32xlarge"
+        "ml.r6id.32xlarge",
+        "ml.g6.xlarge",
+        "ml.g6.2xlarge",
+        "ml.g6.4xlarge",
+        "ml.g6.8xlarge",
+        "ml.g6.12xlarge",
+        "ml.g6.16xlarge",
+        "ml.g6.24xlarge",
+        "ml.g6.48xlarge"
       ]
     },
     "Integer":{"type":"integer"},
@@ -21245,7 +21402,7 @@
     "KmsKeyId":{
       "type":"string",
       "max":2048,
-      "pattern":".*"
+      "pattern":"^[a-zA-Z0-9:/_-]*$"
     },
     "LabelAttributeName":{
       "type":"string",
@@ -21880,7 +22037,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The total number of items to return in the response. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the response. To resume pagination, provide the <code>NextToken</code> value in the as part of a subsequent call. The default value is 10.</p>"
+          "documentation":"<p>This parameter defines the maximum number of results that can be returned in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",
@@ -22580,7 +22737,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The total number of items to return in the response. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the response. To resume pagination, provide the <code>NextToken</code> value in the as part of a subsequent call. The default value is 10.</p>"
+          "documentation":"<p>This parameter defines the maximum number of results that can be returned in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
         }
       }
     },
@@ -24964,7 +25121,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The total number of items to return in the response. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the response. To resume pagination, provide the <code>NextToken</code> value in the as part of a subsequent call. The default value is 10.</p>"
+          "documentation":"<p>This parameter defines the maximum number of results that can be returned in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",
@@ -25451,7 +25608,7 @@
         },
         "MaxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The total number of items to return in the response. If the total number of items available is more than the value specified, a <code>NextToken</code> is provided in the response. To resume pagination, provide the <code>NextToken</code> value in the as part of a subsequent call. The default value is 10.</p>"
+          "documentation":"<p>This parameter defines the maximum number of results that can be returned in a single response. The <code>MaxResults</code> parameter is an upper bound, not a target. If there are more results available than the value specified, a <code>NextToken</code> is provided in the response. The <code>NextToken</code> indicates that the user should get the next set of results by providing this token as a part of a subsequent call. The default value for <code>MaxResults</code> is 10.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",
@@ -28877,7 +29034,7 @@
       "members":{
         "OwnerUserProfileName":{
           "shape":"UserProfileName",
-          "documentation":"<p>The user profile who is the owner of the private space.</p>"
+          "documentation":"<p>The user profile who is the owner of the space.</p>"
         }
       },
       "documentation":"<p>The collection of ownership settings for a space.</p>"
@@ -28887,7 +29044,7 @@
       "members":{
         "OwnerUserProfileName":{
           "shape":"UserProfileName",
-          "documentation":"<p>The user profile who is the owner of the private space.</p>"
+          "documentation":"<p>The user profile who is the owner of the space.</p>"
         }
       },
       "documentation":"<p>Specifies summary information about the ownership settings.</p>"
@@ -30256,6 +30413,14 @@
         "ml.g5.16xlarge",
         "ml.g5.24xlarge",
         "ml.g5.48xlarge",
+        "ml.g6.xlarge",
+        "ml.g6.2xlarge",
+        "ml.g6.4xlarge",
+        "ml.g6.8xlarge",
+        "ml.g6.12xlarge",
+        "ml.g6.16xlarge",
+        "ml.g6.24xlarge",
+        "ml.g6.48xlarge",
         "ml.p4d.24xlarge",
         "ml.c7g.large",
         "ml.c7g.xlarge",
@@ -32245,6 +32410,16 @@
       "max":1024,
       "pattern":"^(https|s3)://([^/]+)/?(.*)$"
     },
+    "S3Presign":{
+      "type":"structure",
+      "members":{
+        "IamPolicyConstraints":{
+          "shape":"IamPolicyConstraints",
+          "documentation":"<p>Use this parameter to specify the allowed request source. Possible sources are either <code>SourceIp</code> or <code>VpcSourceIp</code>.</p>"
+        }
+      },
+      "documentation":"<p>This object defines the access restrictions to Amazon S3 resources that are included in custom worker task templates using the Liquid filter, <code>grant_read_access</code>.</p> <p>To learn more about how custom templates are created, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/a2i-custom-templates.html\">Create custom worker task templates</a>.</p>"
+    },
     "S3StorageConfig":{
       "type":"structure",
       "required":["S3Uri"],
@@ -32748,6 +32923,16 @@
       },
       "documentation":"<p>Details that you specify to provision a service catalog product. For information about service catalog, see <a href=\"https://docs.aws.amazon.com/servicecatalog/latest/adminguide/introduction.html\">What is Amazon Web Services Service Catalog</a>. </p>"
     },
+    "SessionChainingConfig":{
+      "type":"structure",
+      "members":{
+        "EnableSessionTagChaining":{
+          "shape":"EnableSessionTagChaining",
+          "documentation":"<p>Set to <code>True</code> to allow SageMaker to extract session tags from a training job creation role and reuse these tags when assuming the training job execution role.</p>"
+        }
+      },
+      "documentation":"<p>Contains information about attribute-based access control (ABAC) for a training job. The session chaining configuration uses Amazon Security Token Service (STS) for your training job to request temporary, limited-privilege credentials to tenants. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/model-access-training-data.html#model-access-training-data-abac\">Attribute-based access control (ABAC) for multi-tenancy training</a>.</p>"
+    },
     "SessionExpirationDurationInSeconds":{
       "type":"integer",
       "max":43200,
@@ -33099,7 +33284,7 @@
         },
         "SpaceStorageSettings":{
           "shape":"SpaceStorageSettings",
-          "documentation":"<p>The storage settings for a private space.</p>"
+          "documentation":"<p>The storage settings for a space.</p>"
         },
         "CustomFileSystems":{
           "shape":"CustomFileSystems",
@@ -33117,7 +33302,7 @@
         },
         "SpaceStorageSettings":{
           "shape":"SpaceStorageSettings",
-          "documentation":"<p>The storage settings for a private space.</p>"
+          "documentation":"<p>The storage settings for a space.</p>"
         }
       },
       "documentation":"<p>Specifies summary information about the space settings.</p>"
@@ -33167,10 +33352,10 @@
       "members":{
         "EbsStorageSettings":{
           "shape":"EbsStorageSettings",
-          "documentation":"<p>A collection of EBS storage settings for a private space.</p>"
+          "documentation":"<p>A collection of EBS storage settings for a space.</p>"
         }
       },
-      "documentation":"<p>The storage settings for a private space.</p>"
+      "documentation":"<p>The storage settings for a space.</p>"
     },
     "SpawnRate":{
       "type":"integer",
@@ -34954,12 +35139,74 @@
         "ml.m5.4xlarge",
         "ml.m5.12xlarge",
         "ml.m5.24xlarge",
+        "ml.m6i.large",
+        "ml.m6i.xlarge",
+        "ml.m6i.2xlarge",
+        "ml.m6i.4xlarge",
+        "ml.m6i.8xlarge",
+        "ml.m6i.12xlarge",
+        "ml.m6i.16xlarge",
+        "ml.m6i.24xlarge",
+        "ml.m6i.32xlarge",
+        "ml.c6i.large",
+        "ml.c6i.xlarge",
+        "ml.c6i.2xlarge",
+        "ml.c6i.4xlarge",
+        "ml.c6i.8xlarge",
+        "ml.c6i.12xlarge",
+        "ml.c6i.16xlarge",
+        "ml.c6i.24xlarge",
+        "ml.c6i.32xlarge",
+        "ml.r6i.large",
+        "ml.r6i.xlarge",
+        "ml.r6i.2xlarge",
+        "ml.r6i.4xlarge",
+        "ml.r6i.8xlarge",
+        "ml.r6i.12xlarge",
+        "ml.r6i.16xlarge",
+        "ml.r6i.24xlarge",
+        "ml.r6i.32xlarge",
+        "ml.m7i.large",
+        "ml.m7i.xlarge",
+        "ml.m7i.2xlarge",
+        "ml.m7i.4xlarge",
+        "ml.m7i.8xlarge",
+        "ml.m7i.12xlarge",
+        "ml.m7i.16xlarge",
+        "ml.m7i.24xlarge",
+        "ml.m7i.48xlarge",
+        "ml.c7i.large",
+        "ml.c7i.xlarge",
+        "ml.c7i.2xlarge",
+        "ml.c7i.4xlarge",
+        "ml.c7i.8xlarge",
+        "ml.c7i.12xlarge",
+        "ml.c7i.16xlarge",
+        "ml.c7i.24xlarge",
+        "ml.c7i.48xlarge",
+        "ml.r7i.large",
+        "ml.r7i.xlarge",
+        "ml.r7i.2xlarge",
+        "ml.r7i.4xlarge",
+        "ml.r7i.8xlarge",
+        "ml.r7i.12xlarge",
+        "ml.r7i.16xlarge",
+        "ml.r7i.24xlarge",
+        "ml.r7i.48xlarge",
         "ml.g4dn.xlarge",
         "ml.g4dn.2xlarge",
         "ml.g4dn.4xlarge",
         "ml.g4dn.8xlarge",
         "ml.g4dn.12xlarge",
-        "ml.g4dn.16xlarge"
+        "ml.g4dn.16xlarge",
+        "ml.g5.xlarge",
+        "ml.g5.2xlarge",
+        "ml.g5.4xlarge",
+        "ml.g5.8xlarge",
+        "ml.g5.12xlarge",
+        "ml.g5.16xlarge",
+        "ml.g5.24xlarge",
+        "ml.g5.48xlarge"
       ]
     },
     "TransformInstanceTypes":{
@@ -35834,6 +36081,10 @@
         "JupyterLabAppImageConfig":{
           "shape":"JupyterLabAppImageConfig",
           "documentation":"<p>The JupyterLab app running on the image.</p>"
+        },
+        "CodeEditorAppImageConfig":{
+          "shape":"CodeEditorAppImageConfig",
+          "documentation":"<p>The Code Editor app running on the image.</p>"
         }
       }
     },
@@ -37021,6 +37272,10 @@
         "NotificationConfiguration":{
           "shape":"NotificationConfiguration",
           "documentation":"<p>Configures SNS topic notifications for available or expiring work items</p>"
+        },
+        "WorkerAccessConfiguration":{
+          "shape":"WorkerAccessConfiguration",
+          "documentation":"<p>Use this optional parameter to constrain access to an Amazon S3 resource based on the IP address using supported IAM global condition keys. The Amazon S3 resource is accessed in the worker portal using a Amazon S3 presigned URL.</p>"
         }
       }
     },
@@ -37169,7 +37424,7 @@
         },
         "SpaceStorageSettings":{
           "shape":"DefaultSpaceStorageSettings",
-          "documentation":"<p>The storage settings for a private space.</p>"
+          "documentation":"<p>The storage settings for a space.</p>"
         },
         "DefaultLandingUri":{
           "shape":"LandingUri",
@@ -37414,6 +37669,16 @@
       },
       "documentation":"<p>Status and billing information about the warm pool.</p>"
     },
+    "WorkerAccessConfiguration":{
+      "type":"structure",
+      "members":{
+        "S3Presign":{
+          "shape":"S3Presign",
+          "documentation":"<p>Defines any Amazon S3 resource constraints.</p>"
+        }
+      },
+      "documentation":"<p>Use this optional parameter to constrain access to an Amazon S3 resource based on the IP address using supported IAM global condition keys. The Amazon S3 resource is accessed in the worker portal using a Amazon S3 presigned URL.</p>"
+    },
     "Workforce":{
       "type":"structure",
       "required":[
@@ -37639,6 +37904,10 @@
         "NotificationConfiguration":{
           "shape":"NotificationConfiguration",
           "documentation":"<p>Configures SNS notifications of available or expiring work items for work teams.</p>"
+        },
+        "WorkerAccessConfiguration":{
+          "shape":"WorkerAccessConfiguration",
+          "documentation":"<p>Describes any access constraints that have been defined for Amazon S3 resources.</p>"
         }
       },
       "documentation":"<p>Provides details about a labeling work team.</p>"

@@ -462,6 +462,7 @@ class AppImageConfig(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     kernel_gateway_image_config: Optional[KernelGatewayImageConfig] = Unassigned()
     jupyter_lab_app_image_config: Optional[JupyterLabAppImageConfig] = Unassigned()
+    code_editor_app_image_config: Optional[CodeEditorAppImageConfig] = Unassigned()
     
     @classmethod
     def create(
@@ -470,6 +471,7 @@ class AppImageConfig(Base):
         tags: Optional[List[Tag]] = Unassigned(),
         kernel_gateway_image_config: Optional[KernelGatewayImageConfig] = Unassigned(),
         jupyter_lab_app_image_config: Optional[JupyterLabAppImageConfig] = Unassigned(),
+        code_editor_app_image_config: Optional[CodeEditorAppImageConfig] = Unassigned(),
         session: Optional[Session] = None,
         region: Optional[str] = None,
     ) -> Optional[object]:
@@ -481,6 +483,7 @@ class AppImageConfig(Base):
             'Tags': tags,
             'KernelGatewayImageConfig': kernel_gateway_image_config,
             'JupyterLabAppImageConfig': jupyter_lab_app_image_config,
+            'CodeEditorAppImageConfig': code_editor_app_image_config,
         }
             
         logger.debug(f"Input request: {operation_input_args}")
@@ -534,6 +537,7 @@ class AppImageConfig(Base):
             'AppImageConfigName': self.app_image_config_name,
             'KernelGatewayImageConfig': self.kernel_gateway_image_config,
             'JupyterLabAppImageConfig': self.jupyter_lab_app_image_config,
+            'CodeEditorAppImageConfig': self.code_editor_app_image_config,
         }
         logger.debug(f"Input request: {operation_input_args}")
         # serialize the input request
@@ -7235,6 +7239,7 @@ class TrainingJob(Base):
         retry_strategy: Optional[RetryStrategy] = Unassigned(),
         remote_debug_config: Optional[RemoteDebugConfig] = Unassigned(),
         infra_check_config: Optional[InfraCheckConfig] = Unassigned(),
+        session_chaining_config: Optional[SessionChainingConfig] = Unassigned(),
         session: Optional[Session] = None,
         region: Optional[str] = None,
     ) -> Optional[object]:
@@ -7266,6 +7271,7 @@ class TrainingJob(Base):
             'RetryStrategy': retry_strategy,
             'RemoteDebugConfig': remote_debug_config,
             'InfraCheckConfig': infra_check_config,
+            'SessionChainingConfig': session_chaining_config,
         }
             
         logger.debug(f"Input request: {operation_input_args}")
@@ -8150,6 +8156,7 @@ class Workteam(Base):
         description: str,
         workforce_name: Optional[str] = Unassigned(),
         notification_configuration: Optional[NotificationConfiguration] = Unassigned(),
+        worker_access_configuration: Optional[WorkerAccessConfiguration] = Unassigned(),
         tags: Optional[List[Tag]] = Unassigned(),
         session: Optional[Session] = None,
         region: Optional[str] = None,
@@ -8163,6 +8170,7 @@ class Workteam(Base):
             'MemberDefinitions': member_definitions,
             'Description': description,
             'NotificationConfiguration': notification_configuration,
+            'WorkerAccessConfiguration': worker_access_configuration,
             'Tags': tags,
         }
             
@@ -8218,6 +8226,7 @@ class Workteam(Base):
             'MemberDefinitions': self.member_definitions,
             'Description': self.description,
             'NotificationConfiguration': self.notification_configuration,
+            'WorkerAccessConfiguration': self.worker_access_configuration,
         }
         logger.debug(f"Input request: {operation_input_args}")
         # serialize the input request
