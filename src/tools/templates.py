@@ -88,7 +88,7 @@ def create(
 
 IMPORT_METHOD_TEMPLATE = '''
 @classmethod
-def {operation}(
+def load(
     cls,
 {import_args}
     session: Optional[Session] = None,

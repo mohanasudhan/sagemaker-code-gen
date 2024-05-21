@@ -3301,7 +3301,7 @@ class HubContent(Base):
             time.sleep(poll)
     
     @classmethod
-    def import_hub_content(
+    def load(
         cls,
         hub_content_name: str,
         hub_content_type: str,

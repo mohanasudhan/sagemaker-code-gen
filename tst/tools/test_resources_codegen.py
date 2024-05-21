@@ -59,7 +59,7 @@ def create(
     def test_generate_import_method(self):
         expected_output = '''
 @classmethod
-def import_hub_content(
+def load(
     cls,
     hub_content_name: str,
     hub_content_type: str,
