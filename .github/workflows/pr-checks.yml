@@ -20,3 +20,5 @@ jobs:
         uses: aws-actions/aws-codebuild-run-build@v1
         with:
           project-name: unit_tests
+          source-version: ${{ github.event.pull_request.head.sha }}
+          report-type: TEST
