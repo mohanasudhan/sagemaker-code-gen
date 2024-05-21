@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.0.8 (2024-05-21)
+
+ * prepare release v0.0.7
+
 ## v0.0.7 (2024-05-21)
 
  * prepare release v0.0.6
