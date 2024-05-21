@@ -283,6 +283,11 @@ def refresh(self) -> Optional[object]:
     return self
 '''
 
+FAILED_STATUS_ERROR_TEMPLATE = '''
+if "failed" in current_status.lower():
+    raise FailedStatusError(resource_type="{resource_name}", status=current_status)
+'''
+
 WAIT_METHOD_TEMPLATE = '''
 @validate_call
 def wait(
@@ -298,11 +303,11 @@ def wait(
         current_status = self{status_key_path}
 
         if current_status in terminal_states:
+{failed_error_block}
             return
 
-        # TODO: Raise some generated TimeOutError
         if timeout is not None and time.time() - start_time >= timeout:
-            raise Exception("Timeout exceeded. Final resource state - " + current_status)
+            raise TimeoutExceededError(resouce_type="{resource_name}", status=current_status)                        
         print("-", end="")
         time.sleep(poll)
 '''
@@ -323,10 +328,9 @@ def wait_for_status(
 
         if status == current_status:
             return
-
-        # TODO: Raise some generated TimeOutError
+{failed_error_block}
         if timeout is not None and time.time() - start_time >= timeout:
-            raise Exception("Timeout exceeded. Final resource state - " + current_status)
+            raise TimeoutExceededError(resouce_type="{resource_name}", status=current_status)
         print("-", end="")
         time.sleep(poll)
 '''
