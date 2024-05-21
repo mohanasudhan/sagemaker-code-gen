@@ -821,20 +821,6 @@ class JupyterLabAppImageConfig(Base):
     container_config: Optional[ContainerConfig] = Unassigned()
 
 
-class CodeEditorAppImageConfig(Base):
-    """
-     CodeEditorAppImageConfig
- 	  <p>The configuration for the file system and kernels in a SageMaker image running as a Code Editor app. The <code>FileSystemConfig</code> object is not supported.</p>
-
- 	 Attributes
-	----------------------
- 	file_system_config
- 	container_config
-    """
-    file_system_config: Optional[FileSystemConfig] = Unassigned()
-    container_config: Optional[ContainerConfig] = Unassigned()
-
-
 class AppImageConfigDetails(Base):
     """
      AppImageConfigDetails
@@ -848,7 +834,6 @@ class AppImageConfigDetails(Base):
  	last_modified_time: 	 <p>When the AppImageConfig was last modified.</p>
  	kernel_gateway_image_config: 	 <p>The configuration for the file system and kernels in the SageMaker image.</p>
  	jupyter_lab_app_image_config: 	 <p>The configuration for the file system and the runtime, such as the environment variables and entry point.</p>
- 	code_editor_app_image_config: 	 <p>The configuration for the file system and the runtime, such as the environment variables and entry point.</p>
     """
     app_image_config_arn: Optional[str] = Unassigned()
     app_image_config_name: Optional[str] = Unassigned()
@@ -856,7 +841,6 @@ class AppImageConfigDetails(Base):
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     kernel_gateway_image_config: Optional[KernelGatewayImageConfig] = Unassigned()
     jupyter_lab_app_image_config: Optional[JupyterLabAppImageConfig] = Unassigned()
-    code_editor_app_image_config: Optional[CodeEditorAppImageConfig] = Unassigned()
 
 
 class AppSpecification(Base):
@@ -2374,12 +2358,12 @@ class ClarifyExplainerConfig(Base):
 class ClusterLifeCycleConfig(Base):
     """
      ClusterLifeCycleConfig
- 	  <p>The lifecycle configuration for a SageMaker HyperPod cluster.</p>
+ 	  <p>The LifeCycle configuration for a SageMaker HyperPod cluster.</p>
 
  	 Attributes
 	----------------------
- 	source_s3_uri: 	 <p>An Amazon S3 bucket path where your lifecycle scripts are stored.</p> <important> <p>Make sure that the S3 bucket path starts with <code>s3://sagemaker-</code>. The <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-hyperpod-prerequisites.html#sagemaker-hyperpod-prerequisites-iam-role-for-hyperpod">IAM role for SageMaker HyperPod</a> has the managed <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/security-iam-awsmanpol-cluster.html"> <code>AmazonSageMakerClusterInstanceRolePolicy</code> </a> attached, which allows access to S3 buckets with the specific prefix <code>sagemaker-</code>.</p> </important>
- 	on_create: 	 <p>The file name of the entrypoint script of lifecycle scripts under <code>SourceS3Uri</code>. This entrypoint script runs during cluster creation.</p>
+ 	source_s3_uri: 	 <p>An Amazon S3 bucket path where your LifeCycle scripts are stored.</p>
+ 	on_create: 	 <p>The directory of the LifeCycle script under <code>SourceS3Uri</code>. This LifeCycle script runs during cluster creation.</p>
     """
     source_s3_uri: str
     on_create: str
@@ -2507,22 +2491,6 @@ class ClusterSummary(Base):
     cluster_status: str
 
 
-class CustomImage(Base):
-    """
-     CustomImage
- 	  <p>A custom SageMaker image. For more information, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html">Bring your own SageMaker image</a>.</p>
-
- 	 Attributes
-	----------------------
- 	image_name: 	 <p>The name of the CustomImage. Must be unique to your account.</p>
- 	image_version_number: 	 <p>The version number of the CustomImage.</p>
- 	app_image_config_name: 	 <p>The name of the AppImageConfig.</p>
-    """
-    image_name: str
-    app_image_config_name: str
-    image_version_number: Optional[int] = Unassigned()
-
-
 class CodeEditorAppSettings(Base):
     """
      CodeEditorAppSettings
@@ -2531,11 +2499,9 @@ class CodeEditorAppSettings(Base):
  	 Attributes
 	----------------------
  	default_resource_spec
- 	custom_images: 	 <p>A list of custom SageMaker images that are configured to run as a Code Editor app.</p>
  	lifecycle_config_arns: 	 <p>The Amazon Resource Name (ARN) of the Code Editor application lifecycle configuration.</p>
     """
     default_resource_spec: Optional[ResourceSpec] = Unassigned()
-    custom_images: Optional[List[CustomImage]] = Unassigned()
     lifecycle_config_arns: Optional[List[str]] = Unassigned()
 
 
@@ -3315,6 +3281,22 @@ class JupyterServerAppSettings(Base):
     code_repositories: Optional[List[CodeRepository]] = Unassigned()
 
 
+class CustomImage(Base):
+    """
+     CustomImage
+ 	  <p>A custom SageMaker image. For more information, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html">Bring your own SageMaker image</a>.</p>
+
+ 	 Attributes
+	----------------------
+ 	image_name: 	 <p>The name of the CustomImage. Must be unique to your account.</p>
+ 	image_version_number: 	 <p>The version number of the CustomImage.</p>
+ 	app_image_config_name: 	 <p>The name of the AppImageConfig.</p>
+    """
+    image_name: str
+    app_image_config_name: str
+    image_version_number: Optional[int] = Unassigned()
+
+
 class KernelGatewayAppSettings(Base):
     """
      KernelGatewayAppSettings
@@ -3392,12 +3374,12 @@ class JupyterLabAppSettings(Base):
 class DefaultEbsStorageSettings(Base):
     """
      DefaultEbsStorageSettings
- 	  <p>A collection of default EBS storage settings that apply to spaces created within a domain or user profile.</p>
+ 	  <p>A collection of default EBS storage settings that applies to private spaces created within a domain or user profile.</p>
 
  	 Attributes
 	----------------------
- 	default_ebs_volume_size_in_gb: 	 <p>The default size of the EBS storage volume for a space.</p>
- 	maximum_ebs_volume_size_in_gb: 	 <p>The maximum size of the EBS storage volume for a space.</p>
+ 	default_ebs_volume_size_in_gb: 	 <p>The default size of the EBS storage volume for a private space.</p>
+ 	maximum_ebs_volume_size_in_gb: 	 <p>The maximum size of the EBS storage volume for a private space.</p>
     """
     default_ebs_volume_size_in_gb: int
     maximum_ebs_volume_size_in_gb: int
@@ -3406,11 +3388,11 @@ class DefaultEbsStorageSettings(Base):
 class DefaultSpaceStorageSettings(Base):
     """
      DefaultSpaceStorageSettings
- 	  <p>The default storage settings for a space.</p>
+ 	  <p>The default storage settings for a private space.</p>
 
  	 Attributes
 	----------------------
- 	default_ebs_storage_settings: 	 <p>The default EBS storage settings for a space.</p>
+ 	default_ebs_storage_settings: 	 <p>The default EBS storage settings for a private space.</p>
     """
     default_ebs_storage_settings: Optional[DefaultEbsStorageSettings] = Unassigned()
 
@@ -3473,7 +3455,7 @@ class UserSettings(Base):
  	canvas_app_settings: 	 <p>The Canvas app settings.</p>
  	code_editor_app_settings: 	 <p>The Code Editor application settings.</p>
  	jupyter_lab_app_settings: 	 <p>The settings for the JupyterLab application.</p>
- 	space_storage_settings: 	 <p>The storage settings for a space.</p>
+ 	space_storage_settings: 	 <p>The storage settings for a private space.</p>
  	default_landing_uri: 	 <p>The default experience that the user is directed to when accessing the domain. The supported values are:</p> <ul> <li> <p> <code>studio::</code>: Indicates that Studio is the default experience. This value can only be passed if <code>StudioWebPortal</code> is set to <code>ENABLED</code>.</p> </li> <li> <p> <code>app:JupyterServer:</code>: Indicates that Studio Classic is the default experience.</p> </li> </ul>
  	studio_web_portal: 	 <p>Whether the user can access Studio. If this value is set to <code>DISABLED</code>, the user cannot access Studio, even if that is the default experience for the domain.</p>
  	custom_posix_user_config: 	 <p>Details about the POSIX identity that is used for file system operations.</p>
@@ -3558,19 +3540,11 @@ class DefaultSpaceSettings(Base):
  	security_groups: 	 <p>The security group IDs for the Amazon VPC that the space uses for communication.</p>
  	jupyter_server_app_settings
  	kernel_gateway_app_settings
- 	jupyter_lab_app_settings
- 	space_storage_settings
- 	custom_posix_user_config
- 	custom_file_system_configs: 	 <p>The settings for assigning a custom file system to a domain. Permitted users can access this file system in Amazon SageMaker Studio.</p>
     """
     execution_role: Optional[str] = Unassigned()
     security_groups: Optional[List[str]] = Unassigned()
     jupyter_server_app_settings: Optional[JupyterServerAppSettings] = Unassigned()
     kernel_gateway_app_settings: Optional[KernelGatewayAppSettings] = Unassigned()
-    jupyter_lab_app_settings: Optional[JupyterLabAppSettings] = Unassigned()
-    space_storage_settings: Optional[DefaultSpaceStorageSettings] = Unassigned()
-    custom_posix_user_config: Optional[CustomPosixUserConfig] = Unassigned()
-    custom_file_system_configs: Optional[List[CustomFileSystemConfig]] = Unassigned()
 
 
 class EdgeDeploymentModelConfig(Base):
@@ -3804,7 +3778,7 @@ class FeatureDefinition(Base):
 
  	 Attributes
 	----------------------
- 	feature_name: 	 <p>The name of a feature. The type must be a string. <code>FeatureName</code> cannot be any of the following: <code>is_deleted</code>, <code>write_time</code>, <code>api_invocation_time</code>.</p> <p>The name:</p> <ul> <li> <p>Must start with an alphanumeric character.</p> </li> <li> <p>Can only include alphanumeric characters, underscores, and hyphens. Spaces are not allowed.</p> </li> </ul>
+ 	feature_name: 	 <p>The name of a feature. The type must be a string. <code>FeatureName</code> cannot be any of the following: <code>is_deleted</code>, <code>write_time</code>, <code>api_invocation_time</code>.</p> <p>The name:</p> <ul> <li> <p>Must start and end with an alphanumeric character.</p> </li> <li> <p>Can only include alphanumeric characters, underscores, and hyphens. Spaces are not allowed.</p> </li> </ul>
  	feature_type: 	 <p>The value type of a feature. Valid values are Integral, Fractional, or String.</p>
  	collection_type: 	 <p>A grouping of elements where each element within the collection must have the same feature type (<code>String</code>, <code>Integral</code>, or <code>Fractional</code>).</p> <ul> <li> <p> <code>List</code>: An ordered collection of elements.</p> </li> <li> <p> <code>Set</code>: An unordered collection of unique elements.</p> </li> <li> <p> <code>Vector</code>: A specialized list that represents a fixed-size array of elements. The vector dimension is determined by you. Must have elements with fractional feature types. </p> </li> </ul>
  	collection_config: 	 <p>Configuration for your collection.</p>
@@ -5762,11 +5736,11 @@ class SpaceJupyterLabAppSettings(Base):
 class EbsStorageSettings(Base):
     """
      EbsStorageSettings
- 	  <p>A collection of EBS storage settings that apply to both private and shared spaces.</p>
+ 	  <p>A collection of EBS storage settings that applies to private spaces.</p>
 
  	 Attributes
 	----------------------
- 	ebs_volume_size_in_gb: 	 <p>The size of an EBS storage volume for a space.</p>
+ 	ebs_volume_size_in_gb: 	 <p>The size of an EBS storage volume for a private space.</p>
     """
     ebs_volume_size_in_gb: int
 
@@ -5774,11 +5748,11 @@ class EbsStorageSettings(Base):
 class SpaceStorageSettings(Base):
     """
      SpaceStorageSettings
- 	  <p>The storage settings for a space.</p>
+ 	  <p>The storage settings for a private space.</p>
 
  	 Attributes
 	----------------------
- 	ebs_storage_settings: 	 <p>A collection of EBS storage settings for a space.</p>
+ 	ebs_storage_settings: 	 <p>A collection of EBS storage settings for a private space.</p>
     """
     ebs_storage_settings: Optional[EbsStorageSettings] = Unassigned()
 
@@ -5819,7 +5793,7 @@ class SpaceSettings(Base):
  	code_editor_app_settings: 	 <p>The Code Editor application settings.</p>
  	jupyter_lab_app_settings: 	 <p>The settings for the JupyterLab application.</p>
  	app_type: 	 <p>The type of app created within the space.</p>
- 	space_storage_settings: 	 <p>The storage settings for a space.</p>
+ 	space_storage_settings: 	 <p>The storage settings for a private space.</p>
  	custom_file_systems: 	 <p>A file system, created by you, that you assign to a space for an Amazon SageMaker Domain. Permitted users can access this file system in Amazon SageMaker Studio.</p>
     """
     jupyter_server_app_settings: Optional[JupyterServerAppSettings] = Unassigned()
@@ -5838,7 +5812,7 @@ class OwnershipSettings(Base):
 
  	 Attributes
 	----------------------
- 	owner_user_profile_name: 	 <p>The user profile who is the owner of the space.</p>
+ 	owner_user_profile_name: 	 <p>The user profile who is the owner of the private space.</p>
     """
     owner_user_profile_name: str
 
@@ -5975,18 +5949,6 @@ class InfraCheckConfig(Base):
  	enable_infra_check: 	 <p>Enables an infrastructure health check.</p>
     """
     enable_infra_check: Optional[bool] = Unassigned()
-
-
-class SessionChainingConfig(Base):
-    """
-     SessionChainingConfig
- 	  <p>Contains information about attribute-based access control (ABAC) for a training job. The session chaining configuration uses Amazon Security Token Service (STS) for your training job to request temporary, limited-privilege credentials to tenants. For more information, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/model-access-training-data.html#model-access-training-data-abac">Attribute-based access control (ABAC) for multi-tenancy training</a>.</p>
-
- 	 Attributes
-	----------------------
- 	enable_session_tag_chaining: 	 <p>Set to <code>True</code> to allow SageMaker to extract session tags from a training job creation role and reuse these tags when assuming the training job execution role.</p>
-    """
-    enable_session_tag_chaining: Optional[bool] = Unassigned()
 
 
 class ModelClientConfig(Base):
@@ -6151,44 +6113,6 @@ class NotificationConfiguration(Base):
  	notification_topic_arn: 	 <p>The ARN for the Amazon SNS topic to which notifications should be published.</p>
     """
     notification_topic_arn: Optional[str] = Unassigned()
-
-
-class IamPolicyConstraints(Base):
-    """
-     IamPolicyConstraints
- 	  <p>Use this parameter to specify a supported global condition key that is added to the IAM policy.</p>
-
- 	 Attributes
-	----------------------
- 	source_ip: 	 <p>When <code>SourceIp</code> is <code>Enabled</code> the worker's IP address when a task is rendered in the worker portal is added to the IAM policy as a <code>Condition</code> used to generate the Amazon S3 presigned URL. This IP address is checked by Amazon S3 and must match in order for the Amazon S3 resource to be rendered in the worker portal.</p>
- 	vpc_source_ip: 	 <p>When <code>VpcSourceIp</code> is <code>Enabled</code> the worker's IP address when a task is rendered in private worker portal inside the VPC is added to the IAM policy as a <code>Condition</code> used to generate the Amazon S3 presigned URL. To render the task successfully Amazon S3 checks that the presigned URL is being accessed over an Amazon S3 VPC Endpoint, and that the worker's IP address matches the IP address in the IAM policy. To learn more about configuring private worker portal, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/samurai-vpc-worker-portal.html">Use Amazon VPC mode from a private worker portal</a>.</p>
-    """
-    source_ip: Optional[str] = Unassigned()
-    vpc_source_ip: Optional[str] = Unassigned()
-
-
-class S3Presign(Base):
-    """
-     S3Presign
- 	  <p>This object defines the access restrictions to Amazon S3 resources that are included in custom worker task templates using the Liquid filter, <code>grant_read_access</code>.</p> <p>To learn more about how custom templates are created, see <a href="https://docs.aws.amazon.com/sagemaker/latest/dg/a2i-custom-templates.html">Create custom worker task templates</a>.</p>
-
- 	 Attributes
-	----------------------
- 	iam_policy_constraints: 	 <p>Use this parameter to specify the allowed request source. Possible sources are either <code>SourceIp</code> or <code>VpcSourceIp</code>.</p>
-    """
-    iam_policy_constraints: Optional[IamPolicyConstraints] = Unassigned()
-
-
-class WorkerAccessConfiguration(Base):
-    """
-     WorkerAccessConfiguration
- 	  <p>Use this optional parameter to constrain access to an Amazon S3 resource based on the IP address using supported IAM global condition keys. The Amazon S3 resource is accessed in the worker portal using a Amazon S3 presigned URL.</p>
-
- 	 Attributes
-	----------------------
- 	s3_presign: 	 <p>Defines any Amazon S3 resource constraints.</p>
-    """
-    s3_presign: Optional[S3Presign] = Unassigned()
 
 
 class CustomizedMetricSpecification(Base):
@@ -7366,7 +7290,6 @@ class Workteam(Base):
  	create_date: 	 <p>The date and time that the work team was created (timestamp).</p>
  	last_updated_date: 	 <p>The date and time that the work team was last updated (timestamp).</p>
  	notification_configuration: 	 <p>Configures SNS notifications of available or expiring work items for work teams.</p>
- 	worker_access_configuration: 	 <p>Describes any access constraints that have been defined for Amazon S3 resources.</p>
     """
     workteam_name: str
     member_definitions: List[MemberDefinition]
@@ -7378,7 +7301,6 @@ class Workteam(Base):
     create_date: Optional[datetime.datetime] = Unassigned()
     last_updated_date: Optional[datetime.datetime] = Unassigned()
     notification_configuration: Optional[NotificationConfiguration] = Unassigned()
-    worker_access_configuration: Optional[WorkerAccessConfiguration] = Unassigned()
 
 
 class ProductionVariantServerlessUpdateConfig(Base):
@@ -9231,7 +9153,7 @@ class SpaceSettingsSummary(Base):
  	 Attributes
 	----------------------
  	app_type: 	 <p>The type of app created within the space.</p>
- 	space_storage_settings: 	 <p>The storage settings for a space.</p>
+ 	space_storage_settings: 	 <p>The storage settings for a private space.</p>
     """
     app_type: Optional[str] = Unassigned()
     space_storage_settings: Optional[SpaceStorageSettings] = Unassigned()
@@ -9256,7 +9178,7 @@ class OwnershipSettingsSummary(Base):
 
  	 Attributes
 	----------------------
- 	owner_user_profile_name: 	 <p>The user profile who is the owner of the space.</p>
+ 	owner_user_profile_name: 	 <p>The user profile who is the owner of the private space.</p>
     """
     owner_user_profile_name: Optional[str] = Unassigned()
 

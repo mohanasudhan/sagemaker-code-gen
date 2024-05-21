@@ -223,11 +223,6 @@ SHAPE_DAG = {
                 "shape": "JupyterLabAppImageConfig",
                 "type": "structure",
             },
-            {
-                "name": "CodeEditorAppImageConfig",
-                "shape": "CodeEditorAppImageConfig",
-                "type": "structure",
-            },
         ],
         "type": "structure",
     },
@@ -1168,17 +1163,9 @@ SHAPE_DAG = {
         ],
         "type": "structure",
     },
-    "CodeEditorAppImageConfig": {
-        "members": [
-            {"name": "FileSystemConfig", "shape": "FileSystemConfig", "type": "structure"},
-            {"name": "ContainerConfig", "shape": "ContainerConfig", "type": "structure"},
-        ],
-        "type": "structure",
-    },
     "CodeEditorAppSettings": {
         "members": [
             {"name": "DefaultResourceSpec", "shape": "ResourceSpec", "type": "structure"},
-            {"name": "CustomImages", "shape": "CustomImages", "type": "list"},
             {"name": "LifecycleConfigArns", "shape": "LifecycleConfigArns", "type": "list"},
         ],
         "type": "structure",
@@ -1455,11 +1442,6 @@ SHAPE_DAG = {
             {
                 "name": "JupyterLabAppImageConfig",
                 "shape": "JupyterLabAppImageConfig",
-                "type": "structure",
-            },
-            {
-                "name": "CodeEditorAppImageConfig",
-                "shape": "CodeEditorAppImageConfig",
                 "type": "structure",
             },
         ],
@@ -2526,11 +2508,6 @@ SHAPE_DAG = {
             {"name": "RetryStrategy", "shape": "RetryStrategy", "type": "structure"},
             {"name": "RemoteDebugConfig", "shape": "RemoteDebugConfig", "type": "structure"},
             {"name": "InfraCheckConfig", "shape": "InfraCheckConfig", "type": "structure"},
-            {
-                "name": "SessionChainingConfig",
-                "shape": "SessionChainingConfig",
-                "type": "structure",
-            },
         ],
         "type": "structure",
     },
@@ -2645,11 +2622,6 @@ SHAPE_DAG = {
             {
                 "name": "NotificationConfiguration",
                 "shape": "NotificationConfiguration",
-                "type": "structure",
-            },
-            {
-                "name": "WorkerAccessConfiguration",
-                "shape": "WorkerAccessConfiguration",
                 "type": "structure",
             },
             {"name": "Tags", "shape": "TagList", "type": "list"},
@@ -2908,22 +2880,6 @@ SHAPE_DAG = {
                 "shape": "KernelGatewayAppSettings",
                 "type": "structure",
             },
-            {
-                "name": "JupyterLabAppSettings",
-                "shape": "JupyterLabAppSettings",
-                "type": "structure",
-            },
-            {
-                "name": "SpaceStorageSettings",
-                "shape": "DefaultSpaceStorageSettings",
-                "type": "structure",
-            },
-            {
-                "name": "CustomPosixUserConfig",
-                "shape": "CustomPosixUserConfig",
-                "type": "structure",
-            },
-            {"name": "CustomFileSystemConfigs", "shape": "CustomFileSystemConfigs", "type": "list"},
         ],
         "type": "structure",
     },
@@ -3429,11 +3385,6 @@ SHAPE_DAG = {
             {
                 "name": "JupyterLabAppImageConfig",
                 "shape": "JupyterLabAppImageConfig",
-                "type": "structure",
-            },
-            {
-                "name": "CodeEditorAppImageConfig",
-                "shape": "CodeEditorAppImageConfig",
                 "type": "structure",
             },
         ],
@@ -6665,13 +6616,6 @@ SHAPE_DAG = {
             {"name": "Arn", "shape": "String", "type": "string"},
             {"name": "PrincipalId", "shape": "String", "type": "string"},
             {"name": "SourceIdentity", "shape": "String", "type": "string"},
-        ],
-        "type": "structure",
-    },
-    "IamPolicyConstraints": {
-        "members": [
-            {"name": "SourceIp", "shape": "EnabledOrDisabled", "type": "string"},
-            {"name": "VpcSourceIp", "shape": "EnabledOrDisabled", "type": "string"},
         ],
         "type": "structure",
     },
@@ -11589,12 +11533,6 @@ SHAPE_DAG = {
         ],
         "type": "structure",
     },
-    "S3Presign": {
-        "members": [
-            {"name": "IamPolicyConstraints", "shape": "IamPolicyConstraints", "type": "structure"}
-        ],
-        "type": "structure",
-    },
     "S3StorageConfig": {
         "members": [
             {"name": "S3Uri", "shape": "S3Uri", "type": "string"},
@@ -11813,16 +11751,6 @@ SHAPE_DAG = {
         "members": [
             {"name": "ProvisioningArtifactId", "shape": "ServiceCatalogEntityId", "type": "string"},
             {"name": "ProvisioningParameters", "shape": "ProvisioningParameters", "type": "list"},
-        ],
-        "type": "structure",
-    },
-    "SessionChainingConfig": {
-        "members": [
-            {
-                "name": "EnableSessionTagChaining",
-                "shape": "EnableSessionTagChaining",
-                "type": "boolean",
-            }
         ],
         "type": "structure",
     },
@@ -12947,11 +12875,6 @@ SHAPE_DAG = {
                 "shape": "JupyterLabAppImageConfig",
                 "type": "structure",
             },
-            {
-                "name": "CodeEditorAppImageConfig",
-                "shape": "CodeEditorAppImageConfig",
-                "type": "structure",
-            },
         ],
         "type": "structure",
     },
@@ -13569,11 +13492,6 @@ SHAPE_DAG = {
                 "shape": "NotificationConfiguration",
                 "type": "structure",
             },
-            {
-                "name": "WorkerAccessConfiguration",
-                "shape": "WorkerAccessConfiguration",
-                "type": "structure",
-            },
         ],
         "type": "structure",
     },
@@ -13723,10 +13641,6 @@ SHAPE_DAG = {
         ],
         "type": "structure",
     },
-    "WorkerAccessConfiguration": {
-        "members": [{"name": "S3Presign", "shape": "S3Presign", "type": "structure"}],
-        "type": "structure",
-    },
     "Workforce": {
         "members": [
             {"name": "WorkforceName", "shape": "WorkforceName", "type": "string"},
@@ -13796,11 +13710,6 @@ SHAPE_DAG = {
             {
                 "name": "NotificationConfiguration",
                 "shape": "NotificationConfiguration",
-                "type": "structure",
-            },
-            {
-                "name": "WorkerAccessConfiguration",
-                "shape": "WorkerAccessConfiguration",
                 "type": "structure",
             },
         ],
