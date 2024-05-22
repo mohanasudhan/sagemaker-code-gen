@@ -850,7 +850,7 @@ class AutoMLJob(Base):
                 return
     
             if timeout is not None and time.time() - start_time >= timeout:
-                raise TimeoutExceededError(resouce_type="AutoMLJob", status=current_status)                        
+                raise TimeoutExceededError(resouce_type="AutoMLJob", status=current_status)
             print("-", end="")
             time.sleep(poll)
 
@@ -1027,7 +1027,7 @@ class AutoMLJobV2(Base):
                 return
     
             if timeout is not None and time.time() - start_time >= timeout:
-                raise TimeoutExceededError(resouce_type="AutoMLJobV2", status=current_status)                        
+                raise TimeoutExceededError(resouce_type="AutoMLJobV2", status=current_status)
             print("-", end="")
             time.sleep(poll)
 
@@ -1451,7 +1451,7 @@ class CompilationJob(Base):
                 return
     
             if timeout is not None and time.time() - start_time >= timeout:
-                raise TimeoutExceededError(resouce_type="CompilationJob", status=current_status)                        
+                raise TimeoutExceededError(resouce_type="CompilationJob", status=current_status)
             print("-", end="")
             time.sleep(poll)
 
@@ -2363,7 +2363,7 @@ class EdgePackagingJob(Base):
                 return
     
             if timeout is not None and time.time() - start_time >= timeout:
-                raise TimeoutExceededError(resouce_type="EdgePackagingJob", status=current_status)                        
+                raise TimeoutExceededError(resouce_type="EdgePackagingJob", status=current_status)
             print("-", end="")
             time.sleep(poll)
 
@@ -3783,7 +3783,7 @@ class HyperParameterTuningJob(Base):
                 return
     
             if timeout is not None and time.time() - start_time >= timeout:
-                raise TimeoutExceededError(resouce_type="HyperParameterTuningJob", status=current_status)                        
+                raise TimeoutExceededError(resouce_type="HyperParameterTuningJob", status=current_status)
             print("-", end="")
             time.sleep(poll)
 
@@ -4568,7 +4568,7 @@ class InferenceRecommendationsJob(Base):
                 return
     
             if timeout is not None and time.time() - start_time >= timeout:
-                raise TimeoutExceededError(resouce_type="InferenceRecommendationsJob", status=current_status)                        
+                raise TimeoutExceededError(resouce_type="InferenceRecommendationsJob", status=current_status)
             print("-", end="")
             time.sleep(poll)
 
@@ -4762,7 +4762,7 @@ class LabelingJob(Base):
                 return
     
             if timeout is not None and time.time() - start_time >= timeout:
-                raise TimeoutExceededError(resouce_type="LabelingJob", status=current_status)                        
+                raise TimeoutExceededError(resouce_type="LabelingJob", status=current_status)
             print("-", end="")
             time.sleep(poll)
 
@@ -5331,7 +5331,7 @@ class ModelCardExportJob(Base):
                 return
     
             if timeout is not None and time.time() - start_time >= timeout:
-                raise TimeoutExceededError(resouce_type="ModelCardExportJob", status=current_status)                        
+                raise TimeoutExceededError(resouce_type="ModelCardExportJob", status=current_status)
             print("-", end="")
             time.sleep(poll)
 
@@ -7012,7 +7012,7 @@ class ProcessingJob(Base):
                 return
     
             if timeout is not None and time.time() - start_time >= timeout:
-                raise TimeoutExceededError(resouce_type="ProcessingJob", status=current_status)                        
+                raise TimeoutExceededError(resouce_type="ProcessingJob", status=current_status)
             print("-", end="")
             time.sleep(poll)
 
@@ -7639,7 +7639,7 @@ class TrainingJob(Base):
                 return
     
             if timeout is not None and time.time() - start_time >= timeout:
-                raise TimeoutExceededError(resouce_type="TrainingJob", status=current_status)                        
+                raise TimeoutExceededError(resouce_type="TrainingJob", status=current_status)
             print("-", end="")
             time.sleep(poll)
 
@@ -7821,7 +7821,7 @@ class TransformJob(Base):
                 return
     
             if timeout is not None and time.time() - start_time >= timeout:
-                raise TimeoutExceededError(resouce_type="TransformJob", status=current_status)                        
+                raise TimeoutExceededError(resouce_type="TransformJob", status=current_status)
             print("-", end="")
             time.sleep(poll)
 

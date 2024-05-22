@@ -7,7 +7,12 @@ class SageMakerCoreError(Exception):
         Exception.__init__(self, msg)
         self.kwargs = kwargs
 
-### Waiter Exceptions
+### Generic Validation Errors
+class ValidationError(SageMakerCoreError):
+    """Raised when a validation error occurs."""
+    fmt = "An error occurred while validating user input/setup: {message}"
+
+### Waiter Errors
 class WaiterError(SageMakerCoreError):
     """Raised when an error occurs while waiting."""
     fmt = "An error occurred while waiting for {resource_type}. Final Resource State: {status}."
@@ -19,3 +24,21 @@ class FailedStatusError(WaiterError):
 class TimeoutExceededError(WaiterError):
     """Raised when a specified timeout is exceeded"""
     fmt = "Timeout exceeded while waiting for {resource_type}. Final Resource State: {status}. Increase the timeout and try again."
+ 
+### Intelligent Defaults Errors
+class IntelligentDefaultError(SageMakerCoreError):
+    """Raised when an error occurs in the Intelligent Defaults"""
+    fmt = "An error occurred while loading Intelligent Defaults: {message}"
+
+class LocalConfigNotFoundError(IntelligentDefaultError):
+    """Raised when a configuration file is not found in local file system"""
+    fmt = "Failed to load configuration file from location: {file_path}. {debug_message}"
+    pass
+
+class S3ConfigNotFoundError(IntelligentDefaultError):
+    """Raised when a configuration file is not found in S3"""
+    fmt = "Failed to load configuration file from S3 location: {s3_uri}. {debug_message}"
+
+class ConfigSchemaValidationError(IntelligentDefaultError, ValidationError):
+    """Raised when a configuration file does not adhere to the schema"""
+    fmt = "Failed to validate configuration file from location: {file_path}. {debug_message}"

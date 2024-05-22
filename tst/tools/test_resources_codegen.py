@@ -232,7 +232,7 @@ def wait(
             return
 
         if timeout is not None and time.time() - start_time >= timeout:
-            raise TimeoutExceededError(resouce_type="TrainingJob", status=current_status)                        
+            raise TimeoutExceededError(resouce_type="TrainingJob", status=current_status)
         print("-", end="")
         time.sleep(poll)
 '''

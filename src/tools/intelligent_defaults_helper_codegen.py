@@ -55,16 +55,17 @@ class IntelligentDefaultsHelperCodeGen:
         imports = [
             BASIC_IMPORTS_STRING,
             "import os",
-            "from platformdirs import site_config_dir, user_config_dir",
-            "import jsonschema",
-            "from functools import lru_cache",
-            "from .shapes import *",
-            "from .config_schema import SAGEMAKER_PYTHON_SDK_CONFIG_SCHEMA",
-            "from botocore.utils import merge_dicts",
             "import boto3",
-            "from six.moves.urllib.parse import urlparse",
             "import yaml",
-            "import pathlib"
+            "import pathlib",
+            "import jsonschema",
+            "from platformdirs import site_config_dir, user_config_dir",
+            "from functools import lru_cache",
+            "from botocore.utils import merge_dicts",
+            "from six.moves.urllib.parse import urlparse",
+            "from .shapes import *",
+            "from .exceptions import *",
+            "from .config_schema import SAGEMAKER_PYTHON_SDK_CONFIG_SCHEMA",
         ]
         formated_imports = "\n".join(imports)
         formated_imports += "\n\n"
