@@ -36,9 +36,8 @@ from src.tools.templates import (CREATE_METHOD_TEMPLATE, \
                                  STOP_METHOD_TEMPLATE, DELETE_METHOD_TEMPLATE, \
                                  WAIT_METHOD_TEMPLATE, WAIT_FOR_STATUS_METHOD_TEMPLATE,
                                  UPDATE_METHOD_TEMPLATE, POPULATE_DEFAULTS_DECORATOR_TEMPLATE, \
-                                 GET_CONFIG_VALUE_TEMPLATE, CREATE_METHOD_TEMPLATE_WITHOUT_DEFAULTS,
-                                 LOAD_CONFIG_VALUES_FOR_RESOURCE_TEMPLATE, \
-                                 LOAD_DEFAULT_CONFIGS_TEMPLATE, IMPORT_METHOD_TEMPLATE)
+                                 CREATE_METHOD_TEMPLATE_WITHOUT_DEFAULTS,
+                                 IMPORT_METHOD_TEMPLATE)
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
