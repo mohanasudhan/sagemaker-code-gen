@@ -85,7 +85,7 @@ def load_default_configs(additional_config_paths: List[str] = None, s3_resource=
                 validate_sagemaker_config(config_from_file)
             except jsonschema.exceptions.ValidationError as error:
                 raise ConfigSchemaValidationError(file_path=file_path,
-                                                  debug_message=str(error))
+                                                  message=str(error))
             merge_dicts(merged_config, config_from_file)
             print("Fetched defaults config from location: %s", file_path)
         else:
@@ -137,7 +137,7 @@ def _get_inferred_s3_uri(s3_uri, s3_resource_for_config):
     if len(s3_files_with_same_prefix) == 0:
         # Customer provided us with an incorrect s3 path.
         raise S3ConfigNotFoundError(s3_uri=s3_uri,
-                                    debug_message="Provide a valid S3 URI in the format s3://<bucket>/<key-prefix>/{_CONFIG_FILE_NAME}")
+                                    message="Provide a valid S3 URI in the format s3://<bucket>/<key-prefix>/{_CONFIG_FILE_NAME}.")
     if len(s3_files_with_same_prefix) > 1:
         # Customer has provided us with a S3 URI which points to a directory
         # search for s3://<bucket>/directory-key-prefix/config.yaml
@@ -147,7 +147,7 @@ def _get_inferred_s3_uri(s3_uri, s3_resource_for_config):
         if inferred_s3_uri not in s3_files_with_same_prefix:
             # We don't know which file we should be operating with.
             raise S3ConfigNotFoundError(s3_uri=s3_uri,
-                                        debug_message="Provide an S3 URI pointing to a directory that contains a {_CONFIG_FILE_NAME} file.")
+                                        message="Provide an S3 URI pointing to a directory that contains a {_CONFIG_FILE_NAME} file.")
         # Customer has a config.yaml present in the directory that was provided as the S3 URI
         return inferred_s3_uri
     return s3_uri
