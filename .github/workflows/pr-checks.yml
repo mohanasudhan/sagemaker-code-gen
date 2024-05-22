@@ -37,6 +37,9 @@ jobs:
         echo $PYTHONPATH
         python -m pip install --upgrade pip
         pip install pylint
+        pip install pytest
+        pip install jsonschema
+        pip install black
     - name: Run Pylint
       run: |
         python_files=$(find . -name '*.py')
