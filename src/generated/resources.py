@@ -323,7 +323,7 @@ class Algorithm(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="Algorithm", status=current_status)
+                raise FailedStatusError(resource_type="Algorithm", status=current_status, reason='(Unknown)')
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="Algorithm", status=current_status)
@@ -454,7 +454,7 @@ class App(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="App", status=current_status)
+                raise FailedStatusError(resource_type="App", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="App", status=current_status)
@@ -845,7 +845,7 @@ class AutoMLJob(Base):
             if current_status in terminal_states:
                 
                 if "failed" in current_status.lower():
-                    raise FailedStatusError(resource_type="AutoMLJob", status=current_status)
+                    raise FailedStatusError(resource_type="AutoMLJob", status=current_status, reason=self.failure_reason)
     
                 return
     
@@ -1022,7 +1022,7 @@ class AutoMLJobV2(Base):
             if current_status in terminal_states:
                 
                 if "failed" in current_status.lower():
-                    raise FailedStatusError(resource_type="AutoMLJobV2", status=current_status)
+                    raise FailedStatusError(resource_type="AutoMLJobV2", status=current_status, reason=self.failure_reason)
     
                 return
     
@@ -1174,7 +1174,7 @@ class Cluster(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="Cluster", status=current_status)
+                raise FailedStatusError(resource_type="Cluster", status=current_status, reason='(Unknown)')
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="Cluster", status=current_status)
@@ -1446,7 +1446,7 @@ class CompilationJob(Base):
             if current_status in terminal_states:
                 
                 if "failed" in current_status.lower():
-                    raise FailedStatusError(resource_type="CompilationJob", status=current_status)
+                    raise FailedStatusError(resource_type="CompilationJob", status=current_status, reason=self.failure_reason)
     
                 return
     
@@ -2126,7 +2126,7 @@ class Domain(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="Domain", status=current_status)
+                raise FailedStatusError(resource_type="Domain", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="Domain", status=current_status)
@@ -2358,7 +2358,7 @@ class EdgePackagingJob(Base):
             if current_status in terminal_states:
                 
                 if "failed" in current_status.lower():
-                    raise FailedStatusError(resource_type="EdgePackagingJob", status=current_status)
+                    raise FailedStatusError(resource_type="EdgePackagingJob", status=current_status, reason=self.edge_packaging_job_status_message)
     
                 return
     
@@ -2531,7 +2531,7 @@ class Endpoint(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="Endpoint", status=current_status)
+                raise FailedStatusError(resource_type="Endpoint", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="Endpoint", status=current_status)
@@ -3079,7 +3079,7 @@ class FeatureGroup(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="FeatureGroup", status=current_status)
+                raise FailedStatusError(resource_type="FeatureGroup", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="FeatureGroup", status=current_status)
@@ -3213,7 +3213,7 @@ class FlowDefinition(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="FlowDefinition", status=current_status)
+                raise FailedStatusError(resource_type="FlowDefinition", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="FlowDefinition", status=current_status)
@@ -3363,7 +3363,7 @@ class Hub(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="Hub", status=current_status)
+                raise FailedStatusError(resource_type="Hub", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="Hub", status=current_status)
@@ -3457,7 +3457,7 @@ class HubContent(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="HubContent", status=current_status)
+                raise FailedStatusError(resource_type="HubContent", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="HubContent", status=current_status)
@@ -3778,7 +3778,7 @@ class HyperParameterTuningJob(Base):
             if current_status in terminal_states:
                 
                 if "failed" in current_status.lower():
-                    raise FailedStatusError(resource_type="HyperParameterTuningJob", status=current_status)
+                    raise FailedStatusError(resource_type="HyperParameterTuningJob", status=current_status, reason=self.failure_reason)
     
                 return
     
@@ -3926,7 +3926,7 @@ class Image(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="Image", status=current_status)
+                raise FailedStatusError(resource_type="Image", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="Image", status=current_status)
@@ -4096,7 +4096,7 @@ class ImageVersion(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="ImageVersion", status=current_status)
+                raise FailedStatusError(resource_type="ImageVersion", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="ImageVersion", status=current_status)
@@ -4231,7 +4231,7 @@ class InferenceComponent(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="InferenceComponent", status=current_status)
+                raise FailedStatusError(resource_type="InferenceComponent", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="InferenceComponent", status=current_status)
@@ -4563,7 +4563,7 @@ class InferenceRecommendationsJob(Base):
             if current_status in terminal_states:
                 
                 if "failed" in current_status.lower():
-                    raise FailedStatusError(resource_type="InferenceRecommendationsJob", status=current_status)
+                    raise FailedStatusError(resource_type="InferenceRecommendationsJob", status=current_status, reason=self.failure_reason)
     
                 return
     
@@ -4757,7 +4757,7 @@ class LabelingJob(Base):
             if current_status in terminal_states:
                 
                 if "failed" in current_status.lower():
-                    raise FailedStatusError(resource_type="LabelingJob", status=current_status)
+                    raise FailedStatusError(resource_type="LabelingJob", status=current_status, reason=self.failure_reason)
     
                 return
     
@@ -5326,7 +5326,7 @@ class ModelCardExportJob(Base):
             if current_status in terminal_states:
                 
                 if "failed" in current_status.lower():
-                    raise FailedStatusError(resource_type="ModelCardExportJob", status=current_status)
+                    raise FailedStatusError(resource_type="ModelCardExportJob", status=current_status, reason=self.failure_reason)
     
                 return
     
@@ -5798,7 +5798,7 @@ class ModelPackage(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="ModelPackage", status=current_status)
+                raise FailedStatusError(resource_type="ModelPackage", status=current_status, reason='(Unknown)')
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="ModelPackage", status=current_status)
@@ -5899,7 +5899,7 @@ class ModelPackageGroup(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="ModelPackageGroup", status=current_status)
+                raise FailedStatusError(resource_type="ModelPackageGroup", status=current_status, reason='(Unknown)')
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="ModelPackageGroup", status=current_status)
@@ -6260,7 +6260,7 @@ class MonitoringSchedule(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="MonitoringSchedule", status=current_status)
+                raise FailedStatusError(resource_type="MonitoringSchedule", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="MonitoringSchedule", status=current_status)
@@ -6473,7 +6473,7 @@ class NotebookInstance(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="NotebookInstance", status=current_status)
+                raise FailedStatusError(resource_type="NotebookInstance", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="NotebookInstance", status=current_status)
@@ -6835,7 +6835,7 @@ class PipelineExecution(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="PipelineExecution", status=current_status)
+                raise FailedStatusError(resource_type="PipelineExecution", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="PipelineExecution", status=current_status)
@@ -7007,7 +7007,7 @@ class ProcessingJob(Base):
             if current_status in terminal_states:
                 
                 if "failed" in current_status.lower():
-                    raise FailedStatusError(resource_type="ProcessingJob", status=current_status)
+                    raise FailedStatusError(resource_type="ProcessingJob", status=current_status, reason=self.failure_reason)
     
                 return
     
@@ -7142,7 +7142,7 @@ class Project(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="Project", status=current_status)
+                raise FailedStatusError(resource_type="Project", status=current_status, reason='(Unknown)')
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="Project", status=current_status)
@@ -7286,7 +7286,7 @@ class Space(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="Space", status=current_status)
+                raise FailedStatusError(resource_type="Space", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="Space", status=current_status)
@@ -7634,7 +7634,7 @@ class TrainingJob(Base):
             if current_status in terminal_states:
                 
                 if "failed" in current_status.lower():
-                    raise FailedStatusError(resource_type="TrainingJob", status=current_status)
+                    raise FailedStatusError(resource_type="TrainingJob", status=current_status, reason=self.failure_reason)
     
                 return
     
@@ -7816,7 +7816,7 @@ class TransformJob(Base):
             if current_status in terminal_states:
                 
                 if "failed" in current_status.lower():
-                    raise FailedStatusError(resource_type="TransformJob", status=current_status)
+                    raise FailedStatusError(resource_type="TransformJob", status=current_status, reason=self.failure_reason)
     
                 return
     
@@ -8085,7 +8085,7 @@ class TrialComponent(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="TrialComponent", status=current_status)
+                raise FailedStatusError(resource_type="TrialComponent", status=current_status, reason='(Unknown)')
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="TrialComponent", status=current_status)
@@ -8278,7 +8278,7 @@ class UserProfile(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="UserProfile", status=current_status)
+                raise FailedStatusError(resource_type="UserProfile", status=current_status, reason=self.failure_reason)
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="UserProfile", status=current_status)
@@ -8433,7 +8433,7 @@ class Workforce(Base):
                 return
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="Workforce", status=current_status)
+                raise FailedStatusError(resource_type="Workforce", status=current_status, reason='(Unknown)')
     
             if timeout is not None and time.time() - start_time >= timeout:
                 raise TimeoutExceededError(resouce_type="Workforce", status=current_status)

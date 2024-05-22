@@ -19,7 +19,7 @@ class WaiterError(SageMakerCoreError):
 
 class FailedStatusError(WaiterError):
     """Raised when a resource enters a failed state."""
-    fmt = "Encountered unexpected failed state while waiting for {resource_type}. Final Resource State: {status}."
+    fmt = "Encountered unexpected failed state while waiting for {resource_type}. Final Resource State: {status}. Failure Reason: {reason}"
 
 class TimeoutExceededError(WaiterError):
     """Raised when a specified timeout is exceeded"""

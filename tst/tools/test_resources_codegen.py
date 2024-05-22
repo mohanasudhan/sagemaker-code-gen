@@ -227,7 +227,7 @@ def wait(
         if current_status in terminal_states:
             
             if "failed" in current_status.lower():
-                raise FailedStatusError(resource_type="TrainingJob", status=current_status)
+                raise FailedStatusError(resource_type="TrainingJob", status=current_status, reason=self.failure_reason)
 
             return
 
@@ -257,7 +257,7 @@ def wait_for_status(
             return
         
         if "failed" in current_status.lower():
-            raise FailedStatusError(resource_type="InferenceComponent", status=current_status)
+            raise FailedStatusError(resource_type="InferenceComponent", status=current_status, reason=self.failure_reason)
 
         if timeout is not None and time.time() - start_time >= timeout:
             raise TimeoutExceededError(resouce_type="InferenceComponent", status=current_status)

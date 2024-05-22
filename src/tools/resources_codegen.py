@@ -884,7 +884,26 @@ class ResourcesCodeGen:
             operation=operation,
         )
         return formatted_method
+    
+    def _get_failure_reason_ref(self, resource_name: str) -> str:
+        """Get the failure reason reference for a resource object.
 
+        Args:
+            resource_name (str): The resource name.
+
+        Returns:
+            str: The failure reason reference for resource object
+        """
+        describe_output = self.operations["Describe" + resource_name]["output"]["shape"]
+        shape_members = self.shapes[describe_output]
+        
+        for member in shape_members["members"]:
+            if "FailureReason" in member or "StatusMessage" in member:
+                return f"self.{convert_to_snake_case(member)}"
+             
+        return "'(Unknown)'"
+        
+        
     def generate_wait_method(self, resource_name: str) -> str:
         """Auto-Generate WAIT Method for a waitable resource.
 
@@ -909,7 +928,8 @@ class ResourcesCodeGen:
         for member in resource_status_chain:
             status_key_path += f'.{convert_to_snake_case(member["name"])}'
             
-        formatted_failed_block = FAILED_STATUS_ERROR_TEMPLATE.format(resource_name=resource_name)
+        failure_reason = self._get_failure_reason_ref(resource_name)
+        formatted_failed_block = FAILED_STATUS_ERROR_TEMPLATE.format(resource_name=resource_name, reason=failure_reason)
         formatted_failed_block = add_indent(formatted_failed_block, 12)
         
         formatted_method = WAIT_METHOD_TEMPLATE.format(
@@ -938,7 +958,8 @@ class ResourcesCodeGen:
             
         formatted_failed_block = ""
         if any("failed" in state.lower() for state in resource_states):
-            formatted_failed_block = FAILED_STATUS_ERROR_TEMPLATE.format(resource_name=resource_name)
+            failure_reason = self._get_failure_reason_ref(resource_name)
+            formatted_failed_block = FAILED_STATUS_ERROR_TEMPLATE.format(resource_name=resource_name, reason=failure_reason)
             formatted_failed_block = add_indent(formatted_failed_block, 8)
 
         formatted_method = WAIT_FOR_STATUS_METHOD_TEMPLATE.format(

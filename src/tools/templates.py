@@ -285,7 +285,7 @@ def refresh(self) -> Optional[object]:
 
 FAILED_STATUS_ERROR_TEMPLATE = '''
 if "failed" in current_status.lower():
-    raise FailedStatusError(resource_type="{resource_name}", status=current_status)
+    raise FailedStatusError(resource_type="{resource_name}", status=current_status, reason={reason})
 '''
 
 WAIT_METHOD_TEMPLATE = '''
