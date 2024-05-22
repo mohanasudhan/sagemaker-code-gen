@@ -26,19 +26,19 @@ class TimeoutExceededError(WaiterError):
     fmt = "Timeout exceeded while waiting for {resource_type}. Final Resource State: {status}. Increase the timeout and try again."
  
 ### Intelligent Defaults Errors
-class IntelligentDefaultError(SageMakerCoreError):
+class IntelligentDefaultsError(SageMakerCoreError):
     """Raised when an error occurs in the Intelligent Defaults"""
     fmt = "An error occurred while loading Intelligent Defaults: {message}"
 
-class LocalConfigNotFoundError(IntelligentDefaultError):
+class LocalConfigNotFoundError(IntelligentDefaultsError):
     """Raised when a configuration file is not found in local file system"""
     fmt = "Failed to load configuration file from location: {file_path}. {debug_message}"
     pass
 
-class S3ConfigNotFoundError(IntelligentDefaultError):
+class S3ConfigNotFoundError(IntelligentDefaultsError):
     """Raised when a configuration file is not found in S3"""
     fmt = "Failed to load configuration file from S3 location: {s3_uri}. {debug_message}"
 
-class ConfigSchemaValidationError(IntelligentDefaultError, ValidationError):
+class ConfigSchemaValidationError(IntelligentDefaultsError, ValidationError):
     """Raised when a configuration file does not adhere to the schema"""
     fmt = "Failed to validate configuration file from location: {file_path}. {debug_message}"

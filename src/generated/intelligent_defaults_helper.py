@@ -110,7 +110,7 @@ def _load_config_from_s3(s3_uri, s3_resource_for_config) -> dict:
         boto_session = boto3.DEFAULT_SESSION or boto3.Session()
         boto_region_name = boto_session.region_name
         if boto_region_name is None:
-            raise IntelligentDefaultError(
+            raise IntelligentDefaultsError(
                 message=("Valid region is not provided in the Boto3 session." +
                          "Setup local AWS configuration with a valid region supported by SageMaker.")
             )
