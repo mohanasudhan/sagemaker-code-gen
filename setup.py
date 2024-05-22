@@ -18,6 +18,7 @@ setup(
     ],
     extras_require={
         "codegen": [
+            'black>=24.3.0, <25.0.0',
             'pandas>=2.2.0, <=2.2.2', 
             'pytest>=8.0.0, <9.0.0',
             'pylint>=3.0.0, <4.0.0'
