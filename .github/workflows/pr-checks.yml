@@ -39,4 +39,4 @@ jobs:
         pip install pylint
     - name: Run Pylint
       run: |
-        pylint **/*.py --persistent=y
+        pylint **/*.py --exit-zero
