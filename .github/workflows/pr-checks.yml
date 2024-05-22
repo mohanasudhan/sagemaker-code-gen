@@ -39,4 +39,5 @@ jobs:
         pip install pylint
     - name: Run Pylint
       run: |
-        pylint **/*.py --exit-zero
+        python_files=$(find . -name '*.py')
+        pylint $python_files --persistent=y
