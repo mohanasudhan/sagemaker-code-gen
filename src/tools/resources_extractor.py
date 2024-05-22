@@ -20,16 +20,18 @@ from src.tools.constants import CLASS_METHODS, OBJECT_METHODS
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
-'''
+"""
 This class is used to extract the resources and its actions from the service-2.json file.
-'''
+"""
+
+
 class ResourcesExtractor:
     """
     A class for extracting resource information from a service JSON.
-    
+
     Args:
         service_json (dict): The Botocore service.json containing the shape definitions.
-    
+
     Attributes:
         service_json (dict): The service JSON containing operations and shapes.
         operations (dict): The operations defined in the service JSON.
@@ -53,9 +55,9 @@ class ResourcesExtractor:
     """
 
     RESOURCE_TO_ADDITIONAL_METHODS = {
-        'Cluster': ['DescribeClusterNode', 'ListClusterNodes'],
+        "Cluster": ["DescribeClusterNode", "ListClusterNodes"],
     }
-    
+
     def __init__(self, service_json: dict):
         """
         Initializes a ResourceExtractor object.
@@ -64,13 +66,13 @@ class ResourcesExtractor:
             service_json (dict): The service JSON containing operations and shapes.
         """
         self.service_json = service_json
-        self.operations = self.service_json['operations']
-        self.shapes = self.service_json['shapes']
+        self.operations = self.service_json["operations"]
+        self.shapes = self.service_json["shapes"]
         self.resource_actions = {}
         self.actions_under_resource = set()
 
         self._extract_resources_plan()
-        
+
     def _filter_actions_for_resources(self, resources):
         """
         Filters actions based on the given resources.
@@ -82,7 +84,14 @@ class ResourcesExtractor:
             None
         """
         for resource in sorted(resources, key=len, reverse=True):
-            filtered_actions = set([a for a in self.actions if a.endswith(resource) or (a.startswith('List') and a.endswith(resource +'s'))])
+            filtered_actions = set(
+                [
+                    a
+                    for a in self.actions
+                    if a.endswith(resource)
+                    or (a.startswith("List") and a.endswith(resource + "s"))
+                ]
+            )
             self.actions_under_resource.update(filtered_actions)
             self.resource_actions[resource] = filtered_actions
 
@@ -96,24 +105,44 @@ class ResourcesExtractor:
             None
         """
         self.actions = set(self.operations.keys())
-        
+
         log.info(f"Total actions - {len(self.actions)}")
-        self.create_resources = set([key[len('Create'):] for key in self.actions if key.startswith('Create')])
+        self.create_resources = set(
+            [key[len("Create") :] for key in self.actions if key.startswith("Create")]
+        )
         self._filter_actions_for_resources(self.create_resources)
 
-        self.add_resources = set([key[len('Add'):] for key in self.actions if key.startswith('Add')])
+        self.add_resources = set(
+            [key[len("Add") :] for key in self.actions if key.startswith("Add")]
+        )
         self._filter_actions_for_resources(self.add_resources)
 
-        self.start_resources = set([key[len('Start'):] for key in self.actions if key.startswith('Start')])
+        self.start_resources = set(
+            [key[len("Start") :] for key in self.actions if key.startswith("Start")]
+        )
         self._filter_actions_for_resources(self.start_resources)
 
-        self.register_resources = set([key[len('Register'):] for key in self.actions if key.startswith('Register')])
+        self.register_resources = set(
+            [
+                key[len("Register") :]
+                for key in self.actions
+                if key.startswith("Register")
+            ]
+        )
         self._filter_actions_for_resources(self.register_resources)
 
-        self.import_resources = set([key[len('Import'):] for key in self.actions if key.startswith('Import')])
+        self.import_resources = set(
+            [key[len("Import") :] for key in self.actions if key.startswith("Import")]
+        )
         self._filter_actions_for_resources(self.import_resources)
 
-        self.resources = self.create_resources | self.add_resources | self.start_resources | self.register_resources | self.import_resources
+        self.resources = (
+            self.create_resources
+            | self.add_resources
+            | self.start_resources
+            | self.register_resources
+            | self.import_resources
+        )
         log.info(f"Total resource - {len(self.resources)}")
 
         log.info(f"Total actions_under_resource - {len(self.actions_under_resource)}")
@@ -133,18 +162,25 @@ class ResourcesExtractor:
         """
         resource_operation = self.operations["Describe" + resource_name]
         resource_operation_output_shape_name = resource_operation["output"]["shape"]
-        output_members_data = self.shapes[resource_operation_output_shape_name]["members"]
+        output_members_data = self.shapes[resource_operation_output_shape_name][
+            "members"
+        ]
         if len(output_members_data) == 1:
             single_member_name = next(iter(output_members_data))
             single_member_shape_name = output_members_data[single_member_name]["shape"]
             status_chain = []
-            status_chain.append({"name": single_member_name, "shape_name": single_member_shape_name })
-            resource_status_chain, resource_states = self._get_status_chain_and_states(single_member_shape_name, status_chain)
+            status_chain.append(
+                {"name": single_member_name, "shape_name": single_member_shape_name}
+            )
+            resource_status_chain, resource_states = self._get_status_chain_and_states(
+                single_member_shape_name, status_chain
+            )
         else:
-            resource_status_chain, resource_states = self._get_status_chain_and_states(resource_operation_output_shape_name)
-            
+            resource_status_chain, resource_states = self._get_status_chain_and_states(
+                resource_operation_output_shape_name
+            )
+
         return resource_status_chain, resource_states
-        
 
     def _get_status_chain_and_states(self, shape_name, status_chain: list = None):
         """
@@ -160,24 +196,27 @@ class ResourcesExtractor:
         """
         if status_chain is None:
             status_chain = []
-            
+
         member_data = self.shapes[shape_name]["members"]
-        status_name = next((member for member in member_data if "status" in member.lower()), None)      
+        status_name = next(
+            (member for member in member_data if "status" in member.lower()), None
+        )
         if status_name is None:
             return [], []
-        
+
         status_shape_name = member_data[status_name]["shape"]
-        
+
         status_chain.append({"name": status_name, "shape_name": status_shape_name})
-        
+
         if "enum" in self.shapes[status_shape_name]:
             resource_states = self.shapes[status_shape_name]["enum"]
             return status_chain, resource_states
         else:
-            status_chain, resource_states = self._get_status_chain_and_states(status_shape_name, status_chain)       
-            return status_chain , resource_states
-        
-    
+            status_chain, resource_states = self._get_status_chain_and_states(
+                status_shape_name, status_chain
+            )
+            return status_chain, resource_states
+
     def _extract_resource_plan_as_dataframe(self):
         """
         Builds a DataFrame containing resource information.
@@ -185,9 +224,19 @@ class ResourcesExtractor:
         Returns:
             None
         """
-        self.df = pd.DataFrame(columns=['resource_name', 'type', 'class_methods', 
-                                        'object_methods', 'chain_resource_name', 'additional_methods', 
-                                        'raw_actions', 'resource_status_chain', 'resource_states'])
+        self.df = pd.DataFrame(
+            columns=[
+                "resource_name",
+                "type",
+                "class_methods",
+                "object_methods",
+                "chain_resource_name",
+                "additional_methods",
+                "raw_actions",
+                "resource_status_chain",
+                "resource_states",
+            ]
+        )
 
         for resource, actions in sorted(self.resource_actions.items()):
             class_methods = set()
@@ -201,30 +250,35 @@ class ResourcesExtractor:
                 action_low = action.lower()
                 resource_low = resource.lower()
 
-                if action_low.split(resource_low)[0] == 'describe':
-                    class_methods.add('get')
-                    object_methods.add('refresh')
-                    
+                if action_low.split(resource_low)[0] == "describe":
+                    class_methods.add("get")
+                    object_methods.add("refresh")
+
                     output_shape_name = self.operations[action]["output"]["shape"]
                     output_members_data = self.shapes[output_shape_name]["members"]
-                    
-                    resource_status_chain, resource_states = self.get_status_chain_and_states(resource)
-                    
+
+                    resource_status_chain, resource_states = (
+                        self.get_status_chain_and_states(resource)
+                    )
+
                     if resource_low.endswith("job") or resource_low.endswith("jobv2"):
                         object_methods.add("wait")
                     elif resource_states and resource_low != "action":
                         object_methods.add("wait_for_status")
-                        
-                    continue            
 
-                if action_low.split(resource_low)[0] == 'create':
-                    shape_name = self.operations[action]['input']['shape']
+                    continue
+
+                if action_low.split(resource_low)[0] == "create":
+                    shape_name = self.operations[action]["input"]["shape"]
                     input = self.shapes[shape_name]
-                    for member in input['members']:
-                        if member.endswith('Name') or member.endswith('Names'):
-                            chain_resource_name = member[:-len('Name')]
+                    for member in input["members"]:
+                        if member.endswith("Name") or member.endswith("Names"):
+                            chain_resource_name = member[: -len("Name")]
 
-                            if chain_resource_name != resource and chain_resource_name in self.resources:
+                            if (
+                                chain_resource_name != resource
+                                and chain_resource_name in self.resources
+                            ):
                                 chain_resource_names.add(chain_resource_name)
 
                 if action_low.split(resource_low)[0] in CLASS_METHODS:
@@ -237,21 +291,23 @@ class ResourcesExtractor:
             if resource in self.RESOURCE_TO_ADDITIONAL_METHODS:
                 additional_methods.update(self.RESOURCE_TO_ADDITIONAL_METHODS[resource])
 
-            new_row = pd.DataFrame({
-                'resource_name': [resource],
-                'type': ['resource'],
-                'class_methods': [list(sorted(class_methods))],
-                'object_methods': [list(sorted(object_methods))],
-                'chain_resource_name': [list(sorted(chain_resource_names))],
-                'additional_methods': [list(sorted(additional_methods))],
-                'raw_actions': [list(sorted(actions))],
-                'resource_status_chain': [list(resource_status_chain)],
-                'resource_states': [list(resource_states)]
-            })
+            new_row = pd.DataFrame(
+                {
+                    "resource_name": [resource],
+                    "type": ["resource"],
+                    "class_methods": [list(sorted(class_methods))],
+                    "object_methods": [list(sorted(object_methods))],
+                    "chain_resource_name": [list(sorted(chain_resource_names))],
+                    "additional_methods": [list(sorted(additional_methods))],
+                    "raw_actions": [list(sorted(actions))],
+                    "resource_status_chain": [list(resource_status_chain)],
+                    "resource_states": [list(resource_states)],
+                }
+            )
 
             self.df = pd.concat([self.df, new_row], ignore_index=True)
 
-        self.df.to_csv('resource_plan.csv', index=False)
+        self.df.to_csv("resource_plan.csv", index=False)
 
     def get_resource_plan(self):
         """
@@ -261,10 +317,9 @@ class ResourcesExtractor:
             df (DataFrame): The resource plan DataFrame.
         """
         return self.df
-    
 
 
-file_path = os.getcwd() + '/sample/sagemaker/2017-07-24/service-2.json'
-with open(file_path, 'r') as file:
+file_path = os.getcwd() + "/sample/sagemaker/2017-07-24/service-2.json"
+with open(file_path, "r") as file:
     data = json.load(file)
 resource_extractor = ResourcesExtractor(data)

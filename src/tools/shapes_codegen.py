@@ -18,18 +18,23 @@ export PYTHONPATH=<sagemaker-code-gen repo directory>:$PYTHONPATH
 import os
 import textwrap
 
-from src.tools.constants import LICENCES_STRING, GENERATED_CLASSES_LOCATION, SHAPES_CODEGEN_FILE_NAME
+from src.tools.constants import (
+    LICENCES_STRING,
+    GENERATED_CLASSES_LOCATION,
+    SHAPES_CODEGEN_FILE_NAME,
+)
 from src.tools.shapes_extractor import ShapesExtractor
 from src.util.util import add_indent, convert_to_snake_case
 from src.tools.templates import SHAPE_CLASS_TEMPLATE, SHAPE_BASE_CLASS_TEMPLATE
 
+
 class ShapesCodeGen:
     """
     Generates shape classes based on an input Botocore service.json.
-    
+
     Args:
         service_json (dict): The Botocore service.json containing the shape definitions.
-        
+
     Attributes:
         service_json (dict): The Botocore service.json containing the shape definitions.
         shapes_extractor (ShapesExtractor): An instance of the ShapesExtractor class.
@@ -173,7 +178,7 @@ class ShapesCodeGen:
             str: The license string.
         """
         return LICENCES_STRING
-    
+
     def generate_imports(self):
         """
         Generates the import statements for the generated shape classes.
@@ -216,9 +221,11 @@ class ShapesCodeGen:
             return False
         return True
 
-    def generate_shapes(self,
-                        output_folder=GENERATED_CLASSES_LOCATION, 
-                        file_name=SHAPES_CODEGEN_FILE_NAME) -> None:
+    def generate_shapes(
+        self,
+        output_folder=GENERATED_CLASSES_LOCATION,
+        file_name=SHAPES_CODEGEN_FILE_NAME,
+    ) -> None:
         """
         Generates the shape classes and writes them to the specified output folder.
 
@@ -226,7 +233,7 @@ class ShapesCodeGen:
         """
         # Check if the output folder exists, if not, create it
         os.makedirs(output_folder, exist_ok=True)
-        
+
         # Create the full path for the output file
         output_file = os.path.join(output_folder, file_name)
 
@@ -235,16 +242,16 @@ class ShapesCodeGen:
             # Generate and write the license to the file
             license = self.generate_license()
             file.write(license)
-            
+
             # Generate and write the imports to the file
             imports = self.generate_imports()
             file.write(imports)
-            
+
             # Generate and write Base Class
             base_class = self.generate_base_class()
             file.write(base_class)
             file.write("\n\n")
-            
+
             # Write Unassigned Class
             class_definition_string = '''\
             class Unassigned:
@@ -256,21 +263,22 @@ class ShapesCodeGen:
                         cls._instance = super().__new__(cls)
                     return cls._instance
             '''
-            wrapped_class_definition = textwrap.indent(textwrap.dedent(class_definition_string),
-                                                       prefix='')
+            wrapped_class_definition = textwrap.indent(
+                textwrap.dedent(class_definition_string), prefix=""
+            )
             file.write(wrapped_class_definition)
             file.write("\n")
-            
+
             # Iterate through shapes in topological order and generate classes
             topological_order = self.topological_sort()
             for shape in topological_order:
-                
+
                 # Extract the necessary data for the shape
                 if self._filter_input_output_shapes(shape):
-                    shape_dict = self.service_json['shapes'][shape]
+                    shape_dict = self.service_json["shapes"][shape]
                     shape_type = shape_dict["type"]
                     if shape_type == "structure":
-                        
+
                         # Generate and write data class for shape
                         shape_class = self.generate_data_class_for_shape(shape)
                         file.write(shape_class)

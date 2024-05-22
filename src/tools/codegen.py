@@ -17,11 +17,18 @@ from src.tools.shapes_codegen import ShapesCodeGen
 from src.tools.resources_codegen import ResourcesCodeGen
 from typing import Optional
 
-from src.tools.intelligent_defaults_helper_codegen import IntelligentDefaultsHelperCodeGen
+from src.tools.intelligent_defaults_helper_codegen import (
+    IntelligentDefaultsHelperCodeGen,
+)
 
-def generate_code(shapes_code_gen: Optional[ShapesCodeGen]=None,
-                  resources_code_gen: Optional[ShapesCodeGen]=None,
-                  intelligent_defaults_helper_code_gen: Optional[IntelligentDefaultsHelperCodeGen] = None) -> None:
+
+def generate_code(
+    shapes_code_gen: Optional[ShapesCodeGen] = None,
+    resources_code_gen: Optional[ShapesCodeGen] = None,
+    intelligent_defaults_helper_code_gen: Optional[
+        IntelligentDefaultsHelperCodeGen
+    ] = None,
+) -> None:
     """
     Generates the code for the given code generators. If any code generator is not
     provided when calling this function, the function will initiate the generator.
@@ -37,20 +44,24 @@ def generate_code(shapes_code_gen: Optional[ShapesCodeGen]=None,
         None
     """
     # TODO: Inject service JSON file path & run through with all the sagemaker service JSON files
-    with open(SERVICE_JSON_FILE_PATH, 'r') as file:
+    with open(SERVICE_JSON_FILE_PATH, "r") as file:
         service_json = json.load(file)
 
     shapes_code_gen = shapes_code_gen or ShapesCodeGen(service_json=service_json)
-    resources_code_gen = resources_code_gen or ResourcesCodeGen(service_json=service_json)
-    intelligent_defaults_helper_code_gen = intelligent_defaults_helper_code_gen or IntelligentDefaultsHelperCodeGen()
+    resources_code_gen = resources_code_gen or ResourcesCodeGen(
+        service_json=service_json
+    )
+    intelligent_defaults_helper_code_gen = (
+        intelligent_defaults_helper_code_gen or IntelligentDefaultsHelperCodeGen()
+    )
 
     shapes_code_gen.generate_shapes()
     resources_code_gen.generate_resources()
     intelligent_defaults_helper_code_gen.generate_helper_functions()
 
 
-''' 
+""" 
 Initializes all the code generator classes and triggers generator.
-'''
+"""
 if __name__ == "__main__":
     generate_code()

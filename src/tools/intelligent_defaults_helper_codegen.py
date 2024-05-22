@@ -1,8 +1,15 @@
-from src.tools.constants import GENERATED_CLASSES_LOCATION, INTELLIGENT_DEFAULTS_HELPER_CODEGEN_FILE_NAME, \
-    LICENCES_STRING, \
-    BASIC_IMPORTS_STRING, LOGGER_STRING
-from src.tools.templates import LOAD_DEFAULT_CONFIGS_AND_HELPERS_TEMPLATE, LOAD_CONFIG_VALUES_FOR_RESOURCE_TEMPLATE, \
-    GET_CONFIG_VALUE_TEMPLATE
+from src.tools.constants import (
+    GENERATED_CLASSES_LOCATION,
+    INTELLIGENT_DEFAULTS_HELPER_CODEGEN_FILE_NAME,
+    LICENCES_STRING,
+    BASIC_IMPORTS_STRING,
+    LOGGER_STRING,
+)
+from src.tools.templates import (
+    LOAD_DEFAULT_CONFIGS_AND_HELPERS_TEMPLATE,
+    LOAD_CONFIG_VALUES_FOR_RESOURCE_TEMPLATE,
+    GET_CONFIG_VALUE_TEMPLATE,
+)
 
 
 class IntelligentDefaultsHelperCodeGen:
@@ -10,10 +17,13 @@ class IntelligentDefaultsHelperCodeGen:
     Code generator for IntelligentDefaultsHelper
     """
 
-    def generate_helper_functions(self,
-                                  output_folder=GENERATED_CLASSES_LOCATION,
-                                  file_name=INTELLIGENT_DEFAULTS_HELPER_CODEGEN_FILE_NAME):
+    def generate_helper_functions(
+        self,
+        output_folder=GENERATED_CLASSES_LOCATION,
+        file_name=INTELLIGENT_DEFAULTS_HELPER_CODEGEN_FILE_NAME,
+    ):
         import os
+
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
 
@@ -64,7 +74,7 @@ class IntelligentDefaultsHelperCodeGen:
             "import boto3",
             "from six.moves.urllib.parse import urlparse",
             "import yaml",
-            "import pathlib"
+            "import pathlib",
         ]
         formated_imports = "\n".join(imports)
         formated_imports += "\n\n"
