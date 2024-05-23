@@ -17,7 +17,6 @@ from functools import lru_cache
 import os
 import json
 
-from src.code_injection.codec import snake_to_pascal
 from src.generated.config_schema import SAGEMAKER_PYTHON_SDK_CONFIG_SCHEMA
 from src.tools.constants import (
     GENERATED_CLASSES_LOCATION,
@@ -145,10 +144,11 @@ class ResourcesCodeGen:
         # List of import statements
         imports = [
             BASIC_IMPORTS_STRING,
+            "import datetime",
             "import time",
             "from pprint import pprint",
             "from pydantic import validate_call",
-            "from typing import Literal",
+            "from typing import Dict, List, Literal, Optional\n"
             "from boto3.session import Session",
             "from .utils import SageMakerClient, Unassigned, snake_to_pascal, pascal_to_snake",
             "from .intelligent_defaults_helper import load_default_configs_for_resource_name, get_config_value",

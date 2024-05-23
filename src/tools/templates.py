@@ -40,7 +40,7 @@ def create(
     session: Optional[Session] = None,
     region: Optional[str] = None,
 ) -> Optional[object]:
-    logger.debug(f"Creating {resource_lower} resource.")
+    logger.debug("Creating {resource_lower} resource.")
     client = SageMakerClient(session=session, region_name=region, service_name='{service_name}').client
 
     operation_input_args = {{
@@ -67,7 +67,7 @@ def create(
     session: Optional[Session] = None,
     region: Optional[str] = None,
 ) -> Optional[object]:
-    logger.debug(f"Creating {resource_lower} resource.")
+    logger.debug("Creating {resource_lower} resource.")
     client = SageMakerClient(session=session, region_name=region, service_name='{service_name}').client
 
     operation_input_args = {{
@@ -115,7 +115,7 @@ def load(
 
 UPDATE_METHOD_TEMPLATE = """
 def update(self) -> Optional[object]:
-    logger.debug(f"Creating {resource_lower} resource.")
+    logger.debug("Creating {resource_lower} resource.")
     client = SageMakerClient().client
 
     operation_input_args = {{

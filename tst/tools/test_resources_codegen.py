@@ -30,7 +30,7 @@ def create(
     session: Optional[Session] = None,
     region: Optional[str] = None,
 ) -> Optional[object]:
-    logger.debug(f"Creating compilation_job resource.")
+    logger.debug("Creating compilation_job resource.")
     client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
 
     operation_input_args = {
@@ -117,7 +117,7 @@ def load(
     def test_generate_update_method(self):
         expected_output = """
 def update(self) -> Optional[object]:
-    logger.debug(f"Creating endpoint resource.")
+    logger.debug("Creating endpoint resource.")
     client = SageMakerClient().client
 
     operation_input_args = {
