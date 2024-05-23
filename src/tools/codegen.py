@@ -60,7 +60,7 @@ def generate_code(
     intelligent_defaults_helper_code_gen.generate_helper_functions()
 
 
-""" 
+"""
 Initializes all the code generator classes and triggers generator.
 """
 if __name__ == "__main__":

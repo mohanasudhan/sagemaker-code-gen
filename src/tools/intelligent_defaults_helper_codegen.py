@@ -1,3 +1,4 @@
+import os
 from src.tools.constants import (
     GENERATED_CLASSES_LOCATION,
     INTELLIGENT_DEFAULTS_HELPER_CODEGEN_FILE_NAME,
@@ -22,8 +23,6 @@ class IntelligentDefaultsHelperCodeGen:
         output_folder=GENERATED_CLASSES_LOCATION,
         file_name=INTELLIGENT_DEFAULTS_HELPER_CODEGEN_FILE_NAME,
     ):
-        import os
-
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
 
@@ -73,6 +72,7 @@ class IntelligentDefaultsHelperCodeGen:
             "from botocore.utils import merge_dicts",
             "import boto3",
             "from six.moves.urllib.parse import urlparse",
+            "from typing import List",
             "import yaml",
             "import pathlib",
         ]

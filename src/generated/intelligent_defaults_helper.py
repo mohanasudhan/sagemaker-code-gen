@@ -22,6 +22,7 @@ from .config_schema import SAGEMAKER_PYTHON_SDK_CONFIG_SCHEMA
 from botocore.utils import merge_dicts
 import boto3
 from six.moves.urllib.parse import urlparse
+from typing import List
 import yaml
 import pathlib
 
