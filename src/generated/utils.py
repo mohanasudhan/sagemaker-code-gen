@@ -136,7 +136,18 @@ class ResourceIterator(Generic[T]):
             
 
             init_data = transform(item, self.summary_key)
-            return self.resource_cls(**init_data)
+            resource_object = self.resource_cls(**init_data)
+            try:
+                resource_object.refresh()
+            except botocore.exceptions.ClientError as error:
+                if error.response['Error']['Code'] == 'ThrottlingException' and retry < 5:
+                    time.sleep(sleep)
+                    sleep *= 2
+                    retry += 1
+                    logger.debug(f"ThrottlingException encountered. Retrying in {sleep} seconds.")
+                    return self.__next__(sleep=sleep, retry=retry)
+                raise error
+            return resource_object
         elif len(self.items) > 0 and self.index >= len(self.items) and self.next_token is None:
             raise StopIteration
         else:
