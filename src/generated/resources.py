@@ -19,7 +19,7 @@ from pprint import pprint
 from pydantic import validate_call
 from typing import Literal
 from boto3.session import Session
-from .utils import SageMakerClient, Unassigned, snake_to_pascal, pascal_to_snake
+from .utils import SageMakerClient, ResourceIterator, Unassigned, snake_to_pascal, pascal_to_snake
 from .intelligent_defaults_helper import load_default_configs_for_resource_name, get_config_value
 from src.code_injection.codec import transform
 from .shapes import *
@@ -73,7 +73,7 @@ class Base(BaseModel):
         return kwargs
         
 class Action(Base):
-    action_name: Optional[str] = Unassigned()
+    action_name: str
     action_arn: Optional[str] = Unassigned()
     source: Optional[ActionSource] = Unassigned()
     action_type: Optional[str] = Unassigned()
@@ -187,18 +187,52 @@ class Action(Base):
             'ActionName': self.action_name,
         }
         self.client.delete_action(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        source_uri: Optional[str] = Unassigned(),
+        action_type: Optional[str] = Unassigned(),
+        created_after: Optional[datetime.datetime] = Unassigned(),
+        created_before: Optional[datetime.datetime] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Action]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SourceUri': source_uri,
+            'ActionType': action_type,
+            'CreatedAfter': created_after,
+            'CreatedBefore': created_before,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_actions",
+            list_method_kwargs=operation_input_args,
+            summaries_key="ActionSummaries",
+            summary_key="ActionSummary",
+            resource_cls=Action
+        )
 
 
 class Algorithm(Base):
     algorithm_name: str
-    algorithm_arn: str
-    creation_time: datetime.datetime
-    training_specification: TrainingSpecification
-    algorithm_status: str
-    algorithm_status_details: AlgorithmStatusDetails
+    algorithm_arn: Optional[str] = Unassigned()
     algorithm_description: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
+    training_specification: Optional[TrainingSpecification] = Unassigned()
     inference_specification: Optional[InferenceSpecification] = Unassigned()
     validation_specification: Optional[AlgorithmValidationSpecification] = Unassigned()
+    algorithm_status: Optional[str] = Unassigned()
+    algorithm_status_details: Optional[AlgorithmStatusDetails] = Unassigned()
     product_id: Optional[str] = Unassigned()
     certify_for_marketplace: Optional[bool] = Unassigned()
 
@@ -324,13 +358,45 @@ class Algorithm(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Algorithm]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'NameContains': name_contains,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_algorithms",
+            list_method_kwargs=operation_input_args,
+            summaries_key="AlgorithmSummaryList",
+            summary_key="AlgorithmSummary",
+            resource_cls=Algorithm
+        )
 
 
 class App(Base):
+    domain_id: str
+    app_type: str
+    app_name: str
     app_arn: Optional[str] = Unassigned()
-    app_type: Optional[str] = Unassigned()
-    app_name: Optional[str] = Unassigned()
-    domain_id: Optional[str] = Unassigned()
     user_profile_name: Optional[str] = Unassigned()
     space_name: Optional[str] = Unassigned()
     status: Optional[str] = Unassigned()
@@ -453,11 +519,43 @@ class App(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        sort_order: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        domain_id_equals: Optional[str] = Unassigned(),
+        user_profile_name_equals: Optional[str] = Unassigned(),
+        space_name_equals: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[App]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SortOrder': sort_order,
+            'SortBy': sort_by,
+            'DomainIdEquals': domain_id_equals,
+            'UserProfileNameEquals': user_profile_name_equals,
+            'SpaceNameEquals': space_name_equals,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_apps",
+            list_method_kwargs=operation_input_args,
+            summaries_key="AppList",
+            summary_key="AppDetails",
+            resource_cls=App
+        )
 
 
 class AppImageConfig(Base):
+    app_image_config_name: str
     app_image_config_arn: Optional[str] = Unassigned()
-    app_image_config_name: Optional[str] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     kernel_gateway_image_config: Optional[KernelGatewayImageConfig] = Unassigned()
@@ -553,11 +651,47 @@ class AppImageConfig(Base):
             'AppImageConfigName': self.app_image_config_name,
         }
         self.client.delete_app_image_config(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        name_contains: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[AppImageConfig]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'NameContains': name_contains,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+            'ModifiedTimeBefore': modified_time_before,
+            'ModifiedTimeAfter': modified_time_after,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_app_image_configs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="AppImageConfigList",
+            summary_key="AppImageConfigDetails",
+            resource_cls=AppImageConfig
+        )
 
 
 class Artifact(Base):
+    artifact_arn: str
     artifact_name: Optional[str] = Unassigned()
-    artifact_arn: Optional[str] = Unassigned()
     source: Optional[ArtifactSource] = Unassigned()
     artifact_type: Optional[str] = Unassigned()
     properties: Optional[Dict[str, str]] = Unassigned()
@@ -664,25 +798,59 @@ class Artifact(Base):
             'Source': self.source,
         }
         self.client.delete_artifact(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        source_uri: Optional[str] = Unassigned(),
+        artifact_type: Optional[str] = Unassigned(),
+        created_after: Optional[datetime.datetime] = Unassigned(),
+        created_before: Optional[datetime.datetime] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Artifact]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SourceUri': source_uri,
+            'ArtifactType': artifact_type,
+            'CreatedAfter': created_after,
+            'CreatedBefore': created_before,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_artifacts",
+            list_method_kwargs=operation_input_args,
+            summaries_key="ArtifactSummaries",
+            summary_key="ArtifactSummary",
+            resource_cls=Artifact
+        )
 
 
 class AutoMLJob(Base):
     auto_m_l_job_name: str
-    auto_m_l_job_arn: str
-    input_data_config: List[AutoMLChannel]
-    output_data_config: AutoMLOutputDataConfig
-    role_arn: str
-    creation_time: datetime.datetime
-    last_modified_time: datetime.datetime
-    auto_m_l_job_status: str
-    auto_m_l_job_secondary_status: str
+    auto_m_l_job_arn: Optional[str] = Unassigned()
+    input_data_config: Optional[List[AutoMLChannel]] = Unassigned()
+    output_data_config: Optional[AutoMLOutputDataConfig] = Unassigned()
+    role_arn: Optional[str] = Unassigned()
     auto_m_l_job_objective: Optional[AutoMLJobObjective] = Unassigned()
     problem_type: Optional[str] = Unassigned()
     auto_m_l_job_config: Optional[AutoMLJobConfig] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     end_time: Optional[datetime.datetime] = Unassigned()
+    last_modified_time: Optional[datetime.datetime] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     partial_failure_reasons: Optional[List[AutoMLPartialFailureReason]] = Unassigned()
     best_candidate: Optional[AutoMLCandidate] = Unassigned()
+    auto_m_l_job_status: Optional[str] = Unassigned()
+    auto_m_l_job_secondary_status: Optional[str] = Unassigned()
     generate_candidate_definitions_only: Optional[bool] = Unassigned()
     auto_m_l_job_artifacts: Optional[AutoMLJobArtifacts] = Unassigned()
     resolved_attributes: Optional[ResolvedAttributes] = Unassigned()
@@ -839,25 +1007,63 @@ class AutoMLJob(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[AutoMLJob]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'NameContains': name_contains,
+            'StatusEquals': status_equals,
+            'SortOrder': sort_order,
+            'SortBy': sort_by,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_auto_m_l_jobs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="AutoMLJobSummaries",
+            summary_key="AutoMLJobSummary",
+            resource_cls=AutoMLJob
+        )
 
 
 class AutoMLJobV2(Base):
     auto_m_l_job_name: str
-    auto_m_l_job_arn: str
-    auto_m_l_job_input_data_config: List[AutoMLJobChannel]
-    output_data_config: AutoMLOutputDataConfig
-    role_arn: str
-    creation_time: datetime.datetime
-    last_modified_time: datetime.datetime
-    auto_m_l_job_status: str
-    auto_m_l_job_secondary_status: str
+    auto_m_l_job_arn: Optional[str] = Unassigned()
+    auto_m_l_job_input_data_config: Optional[List[AutoMLJobChannel]] = Unassigned()
+    output_data_config: Optional[AutoMLOutputDataConfig] = Unassigned()
+    role_arn: Optional[str] = Unassigned()
     auto_m_l_job_objective: Optional[AutoMLJobObjective] = Unassigned()
     auto_m_l_problem_type_config: Optional[AutoMLProblemTypeConfig] = Unassigned()
     auto_m_l_problem_type_config_name: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     end_time: Optional[datetime.datetime] = Unassigned()
+    last_modified_time: Optional[datetime.datetime] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     partial_failure_reasons: Optional[List[AutoMLPartialFailureReason]] = Unassigned()
     best_candidate: Optional[AutoMLCandidate] = Unassigned()
+    auto_m_l_job_status: Optional[str] = Unassigned()
+    auto_m_l_job_secondary_status: Optional[str] = Unassigned()
     auto_m_l_job_artifacts: Optional[AutoMLJobArtifacts] = Unassigned()
     resolved_attributes: Optional[AutoMLResolvedAttributes] = Unassigned()
     model_deploy_config: Optional[ModelDeployConfig] = Unassigned()
@@ -1016,12 +1222,12 @@ class AutoMLJobV2(Base):
 
 
 class Cluster(Base):
-    cluster_arn: str
-    cluster_status: str
-    instance_groups: List[ClusterInstanceGroupDetails]
-    cluster_name: Optional[str] = Unassigned()
+    cluster_name: str
+    cluster_arn: Optional[str] = Unassigned()
+    cluster_status: Optional[str] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     failure_message: Optional[str] = Unassigned()
+    instance_groups: Optional[List[ClusterInstanceGroupDetails]] = Unassigned()
     vpc_config: Optional[VpcConfig] = Unassigned()
 
     
@@ -1159,13 +1365,45 @@ class Cluster(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Cluster]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'NameContains': name_contains,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_clusters",
+            list_method_kwargs=operation_input_args,
+            summaries_key="ClusterSummaries",
+            summary_key="ClusterSummary",
+            resource_cls=Cluster
+        )
 
 
 class CodeRepository(Base):
     code_repository_name: str
-    code_repository_arn: str
-    creation_time: datetime.datetime
-    last_modified_time: datetime.datetime
+    code_repository_arn: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
+    last_modified_time: Optional[datetime.datetime] = Unassigned()
     git_config: Optional[GitConfig] = Unassigned()
     
     @classmethod
@@ -1259,21 +1497,21 @@ class CodeRepository(Base):
 
 class CompilationJob(Base):
     compilation_job_name: str
-    compilation_job_arn: str
-    compilation_job_status: str
-    stopping_condition: StoppingCondition
-    creation_time: datetime.datetime
-    last_modified_time: datetime.datetime
-    failure_reason: str
-    model_artifacts: ModelArtifacts
-    role_arn: str
-    input_config: InputConfig
-    output_config: OutputConfig
+    compilation_job_arn: Optional[str] = Unassigned()
+    compilation_job_status: Optional[str] = Unassigned()
     compilation_start_time: Optional[datetime.datetime] = Unassigned()
     compilation_end_time: Optional[datetime.datetime] = Unassigned()
+    stopping_condition: Optional[StoppingCondition] = Unassigned()
     inference_image: Optional[str] = Unassigned()
     model_package_version_arn: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
+    last_modified_time: Optional[datetime.datetime] = Unassigned()
+    failure_reason: Optional[str] = Unassigned()
+    model_artifacts: Optional[ModelArtifacts] = Unassigned()
     model_digests: Optional[ModelDigests] = Unassigned()
+    role_arn: Optional[str] = Unassigned()
+    input_config: Optional[InputConfig] = Unassigned()
+    output_config: Optional[OutputConfig] = Unassigned()
     vpc_config: Optional[NeoVpcConfig] = Unassigned()
     derived_information: Optional[DerivedInformation] = Unassigned()
 
@@ -1428,10 +1666,48 @@ class CompilationJob(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[CompilationJob]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'NameContains': name_contains,
+            'StatusEquals': status_equals,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_compilation_jobs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="CompilationJobSummaries",
+            summary_key="CompilationJobSummary",
+            resource_cls=CompilationJob
+        )
 
 
 class Context(Base):
-    context_name: Optional[str] = Unassigned()
+    context_name: str
     context_arn: Optional[str] = Unassigned()
     source: Optional[ContextSource] = Unassigned()
     context_type: Optional[str] = Unassigned()
@@ -1538,19 +1814,53 @@ class Context(Base):
             'ContextName': self.context_name,
         }
         self.client.delete_context(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        source_uri: Optional[str] = Unassigned(),
+        context_type: Optional[str] = Unassigned(),
+        created_after: Optional[datetime.datetime] = Unassigned(),
+        created_before: Optional[datetime.datetime] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Context]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SourceUri': source_uri,
+            'ContextType': context_type,
+            'CreatedAfter': created_after,
+            'CreatedBefore': created_before,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_contexts",
+            list_method_kwargs=operation_input_args,
+            summaries_key="ContextSummaries",
+            summary_key="ContextSummary",
+            resource_cls=Context
+        )
 
 
 class DataQualityJobDefinition(Base):
-    job_definition_arn: str
     job_definition_name: str
-    creation_time: datetime.datetime
-    data_quality_app_specification: DataQualityAppSpecification
-    data_quality_job_input: DataQualityJobInput
-    data_quality_job_output_config: MonitoringOutputConfig
-    job_resources: MonitoringResources
-    role_arn: str
+    job_definition_arn: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     data_quality_baseline_config: Optional[DataQualityBaselineConfig] = Unassigned()
+    data_quality_app_specification: Optional[DataQualityAppSpecification] = Unassigned()
+    data_quality_job_input: Optional[DataQualityJobInput] = Unassigned()
+    data_quality_job_output_config: Optional[MonitoringOutputConfig] = Unassigned()
+    job_resources: Optional[MonitoringResources] = Unassigned()
     network_config: Optional[MonitoringNetworkConfig] = Unassigned()
+    role_arn: Optional[str] = Unassigned()
     stopping_condition: Optional[MonitoringStoppingCondition] = Unassigned()
 
     
@@ -1708,15 +2018,49 @@ class DataQualityJobDefinition(Base):
             'JobDefinitionName': self.job_definition_name,
         }
         self.client.delete_data_quality_job_definition(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        endpoint_name: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[DataQualityJobDefinition]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'EndpointName': endpoint_name,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'NameContains': name_contains,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_data_quality_job_definitions",
+            list_method_kwargs=operation_input_args,
+            summaries_key="MonitoringJobDefinitionSummaryList",
+            summary_key="MonitoringJobDefinitionSummary",
+            resource_cls=DataQualityJobDefinition
+        )
 
 
 class DeviceFleet(Base):
     device_fleet_name: str
-    device_fleet_arn: str
-    output_config: EdgeOutputConfig
-    creation_time: datetime.datetime
-    last_modified_time: datetime.datetime
+    device_fleet_arn: Optional[str] = Unassigned()
+    output_config: Optional[EdgeOutputConfig] = Unassigned()
     description: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
+    last_modified_time: Optional[datetime.datetime] = Unassigned()
     role_arn: Optional[str] = Unassigned()
     iot_role_alias: Optional[str] = Unassigned()
 
@@ -1840,11 +2184,47 @@ class DeviceFleet(Base):
             'DeviceFleetName': self.device_fleet_name,
         }
         self.client.delete_device_fleet(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[DeviceFleet]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'NameContains': name_contains,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_device_fleets",
+            list_method_kwargs=operation_input_args,
+            summaries_key="DeviceFleetSummaries",
+            summary_key="DeviceFleetSummary",
+            resource_cls=DeviceFleet
+        )
 
 
 class Domain(Base):
+    domain_id: str
     domain_arn: Optional[str] = Unassigned()
-    domain_id: Optional[str] = Unassigned()
     domain_name: Optional[str] = Unassigned()
     home_efs_file_system_id: Optional[str] = Unassigned()
     single_sign_on_managed_application_instance_id: Optional[str] = Unassigned()
@@ -2098,17 +2478,33 @@ class Domain(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Domain]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_domains",
+            summaries_key="DomainList",
+            summary_key="DomainDetails",
+            resource_cls=Domain
+        )
 
 
 class EdgeDeploymentPlan(Base):
-    edge_deployment_plan_arn: str
     edge_deployment_plan_name: str
-    model_configs: List[EdgeDeploymentModelConfig]
-    device_fleet_name: str
-    stages: List[DeploymentStageStatusSummary]
+    edge_deployment_plan_arn: Optional[str] = Unassigned()
+    model_configs: Optional[List[EdgeDeploymentModelConfig]] = Unassigned()
+    device_fleet_name: Optional[str] = Unassigned()
     edge_deployment_success: Optional[int] = Unassigned()
     edge_deployment_pending: Optional[int] = Unassigned()
     edge_deployment_failed: Optional[int] = Unassigned()
+    stages: Optional[List[DeploymentStageStatusSummary]] = Unassigned()
     next_token: Optional[str] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
@@ -2190,18 +2586,56 @@ class EdgeDeploymentPlan(Base):
             'EdgeDeploymentPlanName': self.edge_deployment_plan_name,
         }
         self.client.delete_edge_deployment_plan(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        device_fleet_name_contains: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[EdgeDeploymentPlan]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'NameContains': name_contains,
+            'DeviceFleetNameContains': device_fleet_name_contains,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_edge_deployment_plans",
+            list_method_kwargs=operation_input_args,
+            summaries_key="EdgeDeploymentPlanSummaries",
+            summary_key="EdgeDeploymentPlanSummary",
+            resource_cls=EdgeDeploymentPlan
+        )
 
 
 class EdgePackagingJob(Base):
-    edge_packaging_job_arn: str
     edge_packaging_job_name: str
-    edge_packaging_job_status: str
+    edge_packaging_job_arn: Optional[str] = Unassigned()
     compilation_job_name: Optional[str] = Unassigned()
     model_name: Optional[str] = Unassigned()
     model_version: Optional[str] = Unassigned()
     role_arn: Optional[str] = Unassigned()
     output_config: Optional[EdgeOutputConfig] = Unassigned()
     resource_key: Optional[str] = Unassigned()
+    edge_packaging_job_status: Optional[str] = Unassigned()
     edge_packaging_job_status_message: Optional[str] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
@@ -2329,18 +2763,58 @@ class EdgePackagingJob(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        model_name_contains: Optional[str] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[EdgePackagingJob]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'NameContains': name_contains,
+            'ModelNameContains': model_name_contains,
+            'StatusEquals': status_equals,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_edge_packaging_jobs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="EdgePackagingJobSummaries",
+            summary_key="EdgePackagingJobSummary",
+            resource_cls=EdgePackagingJob
+        )
 
 
 class Endpoint(Base):
     endpoint_name: str
-    endpoint_arn: str
-    endpoint_status: str
-    creation_time: datetime.datetime
-    last_modified_time: datetime.datetime
+    endpoint_arn: Optional[str] = Unassigned()
     endpoint_config_name: Optional[str] = Unassigned()
     production_variants: Optional[List[ProductionVariantSummary]] = Unassigned()
     data_capture_config: Optional[DataCaptureConfigSummary] = Unassigned()
+    endpoint_status: Optional[str] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
+    last_modified_time: Optional[datetime.datetime] = Unassigned()
     last_deployment_config: Optional[DeploymentConfig] = Unassigned()
     async_inference_config: Optional[AsyncInferenceConfig] = Unassigned()
     pending_deployment_summary: Optional[PendingDeploymentSummary] = Unassigned()
@@ -2493,15 +2967,53 @@ class Endpoint(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Endpoint]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'NameContains': name_contains,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'StatusEquals': status_equals,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_endpoints",
+            list_method_kwargs=operation_input_args,
+            summaries_key="EndpointSummaryList",
+            summary_key="EndpointSummary",
+            resource_cls=Endpoint
+        )
 
 
 class EndpointConfig(Base):
     endpoint_config_name: str
-    endpoint_config_arn: str
-    production_variants: List[ProductionVariant]
-    creation_time: datetime.datetime
+    endpoint_config_arn: Optional[str] = Unassigned()
+    production_variants: Optional[List[ProductionVariant]] = Unassigned()
     data_capture_config: Optional[DataCaptureConfig] = Unassigned()
     kms_key_id: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     async_inference_config: Optional[AsyncInferenceConfig] = Unassigned()
     explainer_config: Optional[ExplainerConfig] = Unassigned()
     shadow_production_variants: Optional[List[ProductionVariant]] = Unassigned()
@@ -2643,10 +3155,42 @@ class EndpointConfig(Base):
             'EndpointConfigName': self.endpoint_config_name,
         }
         self.client.delete_endpoint_config(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[EndpointConfig]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'NameContains': name_contains,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_endpoint_configs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="EndpointConfigSummaryList",
+            summary_key="EndpointConfigSummary",
+            resource_cls=EndpointConfig
+        )
 
 
 class Experiment(Base):
-    experiment_name: Optional[str] = Unassigned()
+    experiment_name: str
     experiment_arn: Optional[str] = Unassigned()
     display_name: Optional[str] = Unassigned()
     source: Optional[ExperimentSource] = Unassigned()
@@ -2746,16 +3290,45 @@ class Experiment(Base):
             'ExperimentName': self.experiment_name,
         }
         self.client.delete_experiment(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        created_after: Optional[datetime.datetime] = Unassigned(),
+        created_before: Optional[datetime.datetime] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Experiment]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreatedAfter': created_after,
+            'CreatedBefore': created_before,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_experiments",
+            list_method_kwargs=operation_input_args,
+            summaries_key="ExperimentSummaries",
+            summary_key="ExperimentSummary",
+            resource_cls=Experiment
+        )
 
 
 class FeatureGroup(Base):
-    feature_group_arn: str
     feature_group_name: str
-    record_identifier_feature_name: str
-    event_time_feature_name: str
-    feature_definitions: List[FeatureDefinition]
-    creation_time: datetime.datetime
-    next_token: str
+    feature_group_arn: Optional[str] = Unassigned()
+    record_identifier_feature_name: Optional[str] = Unassigned()
+    event_time_feature_name: Optional[str] = Unassigned()
+    feature_definitions: Optional[List[FeatureDefinition]] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     online_store_config: Optional[OnlineStoreConfig] = Unassigned()
     offline_store_config: Optional[OfflineStoreConfig] = Unassigned()
@@ -2766,6 +3339,7 @@ class FeatureGroup(Base):
     last_update_status: Optional[LastUpdateStatus] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     description: Optional[str] = Unassigned()
+    next_token: Optional[str] = Unassigned()
     online_store_total_size_bytes: Optional[int] = Unassigned()
 
     
@@ -2929,18 +3503,54 @@ class FeatureGroup(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        name_contains: Optional[str] = Unassigned(),
+        feature_group_status_equals: Optional[str] = Unassigned(),
+        offline_store_status_equals: Optional[str] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[FeatureGroup]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'NameContains': name_contains,
+            'FeatureGroupStatusEquals': feature_group_status_equals,
+            'OfflineStoreStatusEquals': offline_store_status_equals,
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'SortOrder': sort_order,
+            'SortBy': sort_by,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_feature_groups",
+            list_method_kwargs=operation_input_args,
+            summaries_key="FeatureGroupSummaries",
+            summary_key="FeatureGroupSummary",
+            resource_cls=FeatureGroup
+        )
 
 
 class FlowDefinition(Base):
-    flow_definition_arn: str
     flow_definition_name: str
-    flow_definition_status: str
-    creation_time: datetime.datetime
-    output_config: FlowDefinitionOutputConfig
-    role_arn: str
+    flow_definition_arn: Optional[str] = Unassigned()
+    flow_definition_status: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     human_loop_request_source: Optional[HumanLoopRequestSource] = Unassigned()
     human_loop_activation_config: Optional[HumanLoopActivationConfig] = Unassigned()
     human_loop_config: Optional[HumanLoopConfig] = Unassigned()
+    output_config: Optional[FlowDefinitionOutputConfig] = Unassigned()
+    role_arn: Optional[str] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
 
     
@@ -3061,19 +3671,47 @@ class FlowDefinition(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[FlowDefinition]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_flow_definitions",
+            list_method_kwargs=operation_input_args,
+            summaries_key="FlowDefinitionSummaries",
+            summary_key="FlowDefinitionSummary",
+            resource_cls=FlowDefinition
+        )
 
 
 class Hub(Base):
     hub_name: str
-    hub_arn: str
-    hub_status: str
-    creation_time: datetime.datetime
-    last_modified_time: datetime.datetime
+    hub_arn: Optional[str] = Unassigned()
     hub_display_name: Optional[str] = Unassigned()
     hub_description: Optional[str] = Unassigned()
     hub_search_keywords: Optional[List[str]] = Unassigned()
     s3_storage_config: Optional[HubS3StorageConfig] = Unassigned()
+    hub_status: Optional[str] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
+    last_modified_time: Optional[datetime.datetime] = Unassigned()
 
     
     def populate_inputs_decorator(create_func):
@@ -3207,25 +3845,61 @@ class Hub(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        name_contains: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Hub]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'NameContains': name_contains,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_hubs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="HubInfoList",
+            summary_key="HubInfo",
+            resource_cls=Hub
+        )
 
 
 class HubContent(Base):
-    hub_content_name: str
-    hub_content_arn: str
-    hub_content_version: str
-    hub_content_type: str
-    document_schema_version: str
     hub_name: str
-    hub_arn: str
-    hub_content_document: str
-    hub_content_status: str
-    creation_time: datetime.datetime
+    hub_content_type: str
+    hub_content_name: str
+    hub_content_arn: Optional[str] = Unassigned()
+    hub_content_version: Optional[str] = Unassigned()
+    document_schema_version: Optional[str] = Unassigned()
+    hub_arn: Optional[str] = Unassigned()
     hub_content_display_name: Optional[str] = Unassigned()
     hub_content_description: Optional[str] = Unassigned()
     hub_content_markdown: Optional[str] = Unassigned()
+    hub_content_document: Optional[str] = Unassigned()
     hub_content_search_keywords: Optional[List[str]] = Unassigned()
     hub_content_dependencies: Optional[List[HubContentDependency]] = Unassigned()
+    hub_content_status: Optional[str] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     
     @classmethod
     def get(
@@ -3344,14 +4018,52 @@ class HubContent(Base):
         logger.debug(f"Response: {response}")
     
         return cls.get(hub_name=hub_name, hub_content_type=hub_content_type, hub_content_name=hub_content_name, session=session, region=region)
+    
+    @classmethod
+    def get_all(
+        cls,
+        hub_name: str,
+        hub_content_type: str,
+        name_contains: Optional[str] = Unassigned(),
+        max_schema_version: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[HubContent]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'HubName': hub_name,
+            'HubContentType': hub_content_type,
+            'NameContains': name_contains,
+            'MaxSchemaVersion': max_schema_version,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_hub_contents",
+            list_method_kwargs=operation_input_args,
+            summaries_key="HubContentInfoList",
+            summary_key="HubContentInfo",
+            resource_cls=HubContent
+        )
 
 
 class HumanTaskUi(Base):
-    human_task_ui_arn: str
     human_task_ui_name: str
-    creation_time: datetime.datetime
-    ui_template: UiTemplateInfo
+    human_task_ui_arn: Optional[str] = Unassigned()
     human_task_ui_status: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
+    ui_template: Optional[UiTemplateInfo] = Unassigned()
     
     @classmethod
     def create(
@@ -3442,20 +4154,48 @@ class HumanTaskUi(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[HumanTaskUi]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_human_task_uis",
+            list_method_kwargs=operation_input_args,
+            summaries_key="HumanTaskUiSummaries",
+            summary_key="HumanTaskUiSummary",
+            resource_cls=HumanTaskUi
+        )
 
 
 class HyperParameterTuningJob(Base):
     hyper_parameter_tuning_job_name: str
-    hyper_parameter_tuning_job_arn: str
-    hyper_parameter_tuning_job_config: HyperParameterTuningJobConfig
-    hyper_parameter_tuning_job_status: str
-    creation_time: datetime.datetime
-    training_job_status_counters: TrainingJobStatusCounters
-    objective_status_counters: ObjectiveStatusCounters
+    hyper_parameter_tuning_job_arn: Optional[str] = Unassigned()
+    hyper_parameter_tuning_job_config: Optional[HyperParameterTuningJobConfig] = Unassigned()
     training_job_definition: Optional[HyperParameterTrainingJobDefinition] = Unassigned()
     training_job_definitions: Optional[List[HyperParameterTrainingJobDefinition]] = Unassigned()
+    hyper_parameter_tuning_job_status: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     hyper_parameter_tuning_end_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
+    training_job_status_counters: Optional[TrainingJobStatusCounters] = Unassigned()
+    objective_status_counters: Optional[ObjectiveStatusCounters] = Unassigned()
     best_training_job: Optional[HyperParameterTrainingJobSummary] = Unassigned()
     overall_best_training_job: Optional[HyperParameterTrainingJobSummary] = Unassigned()
     warm_start_config: Optional[HyperParameterTuningJobWarmStartConfig] = Unassigned()
@@ -3620,15 +4360,53 @@ class HyperParameterTuningJob(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[HyperParameterTuningJob]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'NameContains': name_contains,
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'StatusEquals': status_equals,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_hyper_parameter_tuning_jobs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="HyperParameterTuningJobSummaries",
+            summary_key="HyperParameterTuningJobSummary",
+            resource_cls=HyperParameterTuningJob
+        )
 
 
 class Image(Base):
+    image_name: str
     creation_time: Optional[datetime.datetime] = Unassigned()
     description: Optional[str] = Unassigned()
     display_name: Optional[str] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     image_arn: Optional[str] = Unassigned()
-    image_name: Optional[str] = Unassigned()
     image_status: Optional[str] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     role_arn: Optional[str] = Unassigned()
@@ -3762,6 +4540,42 @@ class Image(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Image]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'NameContains': name_contains,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_images",
+            list_method_kwargs=operation_input_args,
+            summaries_key="Images",
+            summary_key="Image",
+            resource_cls=Image
+        )
 
 
 class ImageVersion(Base):
@@ -3925,19 +4739,55 @@ class ImageVersion(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        image_name: str,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[ImageVersion]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'ImageName': image_name,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_image_versions",
+            list_method_kwargs=operation_input_args,
+            summaries_key="ImageVersions",
+            summary_key="ImageVersion",
+            resource_cls=ImageVersion
+        )
 
 
 class InferenceComponent(Base):
     inference_component_name: str
-    inference_component_arn: str
-    endpoint_name: str
-    endpoint_arn: str
-    creation_time: datetime.datetime
-    last_modified_time: datetime.datetime
+    inference_component_arn: Optional[str] = Unassigned()
+    endpoint_name: Optional[str] = Unassigned()
+    endpoint_arn: Optional[str] = Unassigned()
     variant_name: Optional[str] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     specification: Optional[InferenceComponentSpecificationSummary] = Unassigned()
     runtime_config: Optional[InferenceComponentRuntimeConfigSummary] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
+    last_modified_time: Optional[datetime.datetime] = Unassigned()
     inference_component_status: Optional[str] = Unassigned()
     
     @classmethod
@@ -4056,22 +4906,64 @@ class InferenceComponent(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        endpoint_name_equals: Optional[str] = Unassigned(),
+        variant_name_equals: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[InferenceComponent]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'NameContains': name_contains,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'StatusEquals': status_equals,
+            'EndpointNameEquals': endpoint_name_equals,
+            'VariantNameEquals': variant_name_equals,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_inference_components",
+            list_method_kwargs=operation_input_args,
+            summaries_key="InferenceComponentSummaryList",
+            summary_key="InferenceComponentSummary",
+            resource_cls=InferenceComponent
+        )
 
 
 class InferenceExperiment(Base):
-    arn: str
     name: str
-    type: str
-    status: str
-    endpoint_metadata: EndpointMetadata
-    model_variants: List[ModelVariantConfigSummary]
+    arn: Optional[str] = Unassigned()
+    type: Optional[str] = Unassigned()
     schedule: Optional[InferenceExperimentSchedule] = Unassigned()
+    status: Optional[str] = Unassigned()
     status_reason: Optional[str] = Unassigned()
     description: Optional[str] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     completion_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     role_arn: Optional[str] = Unassigned()
+    endpoint_metadata: Optional[EndpointMetadata] = Unassigned()
+    model_variants: Optional[List[ModelVariantConfigSummary]] = Unassigned()
     data_storage_config: Optional[InferenceExperimentDataStorageConfig] = Unassigned()
     shadow_mode_config: Optional[ShadowModeConfig] = Unassigned()
     kms_key: Optional[str] = Unassigned()
@@ -4237,20 +5129,60 @@ class InferenceExperiment(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        name_contains: Optional[str] = Unassigned(),
+        type: Optional[str] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[InferenceExperiment]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'NameContains': name_contains,
+            'Type': type,
+            'StatusEquals': status_equals,
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_inference_experiments",
+            list_method_kwargs=operation_input_args,
+            summaries_key="InferenceExperimentList",
+            summary_key="InferenceExperimentSummary",
+            resource_cls=InferenceExperiment
+        )
 
 
 class InferenceRecommendationsJob(Base):
     job_name: str
-    job_type: str
-    job_arn: str
-    role_arn: str
-    status: str
-    creation_time: datetime.datetime
-    last_modified_time: datetime.datetime
-    input_config: RecommendationJobInputConfig
     job_description: Optional[str] = Unassigned()
+    job_type: Optional[str] = Unassigned()
+    job_arn: Optional[str] = Unassigned()
+    role_arn: Optional[str] = Unassigned()
+    status: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     completion_time: Optional[datetime.datetime] = Unassigned()
+    last_modified_time: Optional[datetime.datetime] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
+    input_config: Optional[RecommendationJobInputConfig] = Unassigned()
     stopping_conditions: Optional[RecommendationJobStoppingConditions] = Unassigned()
     inference_recommendations: Optional[List[InferenceRecommendation]] = Unassigned()
     endpoint_performances: Optional[List[EndpointPerformance]] = Unassigned()
@@ -4386,25 +5318,67 @@ class InferenceRecommendationsJob(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        model_name_equals: Optional[str] = Unassigned(),
+        model_package_version_arn_equals: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[InferenceRecommendationsJob]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'NameContains': name_contains,
+            'StatusEquals': status_equals,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'ModelNameEquals': model_name_equals,
+            'ModelPackageVersionArnEquals': model_package_version_arn_equals,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_inference_recommendations_jobs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="InferenceRecommendationsJobs",
+            summary_key="InferenceRecommendationsJob",
+            resource_cls=InferenceRecommendationsJob
+        )
 
 
 class LabelingJob(Base):
-    labeling_job_status: str
-    label_counters: LabelCounters
-    creation_time: datetime.datetime
-    last_modified_time: datetime.datetime
-    job_reference_code: str
     labeling_job_name: str
-    labeling_job_arn: str
-    input_config: LabelingJobInputConfig
-    output_config: LabelingJobOutputConfig
-    role_arn: str
-    human_task_config: HumanTaskConfig
+    labeling_job_status: Optional[str] = Unassigned()
+    label_counters: Optional[LabelCounters] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
+    last_modified_time: Optional[datetime.datetime] = Unassigned()
+    job_reference_code: Optional[str] = Unassigned()
+    labeling_job_arn: Optional[str] = Unassigned()
     label_attribute_name: Optional[str] = Unassigned()
+    input_config: Optional[LabelingJobInputConfig] = Unassigned()
+    output_config: Optional[LabelingJobOutputConfig] = Unassigned()
+    role_arn: Optional[str] = Unassigned()
     label_category_config_s3_uri: Optional[str] = Unassigned()
     stopping_conditions: Optional[LabelingJobStoppingConditions] = Unassigned()
     labeling_job_algorithms_config: Optional[LabelingJobAlgorithmsConfig] = Unassigned()
+    human_task_config: Optional[HumanTaskConfig] = Unassigned()
     tags: Optional[List[Tag]] = Unassigned()
     labeling_job_output: Optional[LabelingJobOutput] = Unassigned()
 
@@ -4577,17 +5551,55 @@ class LabelingJob(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[LabelingJob]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'NameContains': name_contains,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'StatusEquals': status_equals,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_labeling_jobs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="LabelingJobSummaryList",
+            summary_key="LabelingJobSummary",
+            resource_cls=LabelingJob
+        )
 
 
 class Model(Base):
     model_name: str
-    creation_time: datetime.datetime
-    model_arn: str
     primary_container: Optional[ContainerDefinition] = Unassigned()
     containers: Optional[List[ContainerDefinition]] = Unassigned()
     inference_execution_config: Optional[InferenceExecutionConfig] = Unassigned()
     execution_role_arn: Optional[str] = Unassigned()
     vpc_config: Optional[VpcConfig] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
+    model_arn: Optional[str] = Unassigned()
     enable_network_isolation: Optional[bool] = Unassigned()
     deployment_recommendation: Optional[DeploymentRecommendation] = Unassigned()
 
@@ -4707,19 +5719,51 @@ class Model(Base):
             'ModelName': self.model_name,
         }
         self.client.delete_model(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Model]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'NameContains': name_contains,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_models",
+            list_method_kwargs=operation_input_args,
+            summaries_key="ModelSummaryList",
+            summary_key="ModelSummary",
+            resource_cls=Model
+        )
 
 
 class ModelBiasJobDefinition(Base):
-    job_definition_arn: str
     job_definition_name: str
-    creation_time: datetime.datetime
-    model_bias_app_specification: ModelBiasAppSpecification
-    model_bias_job_input: ModelBiasJobInput
-    model_bias_job_output_config: MonitoringOutputConfig
-    job_resources: MonitoringResources
-    role_arn: str
+    job_definition_arn: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     model_bias_baseline_config: Optional[ModelBiasBaselineConfig] = Unassigned()
+    model_bias_app_specification: Optional[ModelBiasAppSpecification] = Unassigned()
+    model_bias_job_input: Optional[ModelBiasJobInput] = Unassigned()
+    model_bias_job_output_config: Optional[MonitoringOutputConfig] = Unassigned()
+    job_resources: Optional[MonitoringResources] = Unassigned()
     network_config: Optional[MonitoringNetworkConfig] = Unassigned()
+    role_arn: Optional[str] = Unassigned()
     stopping_condition: Optional[MonitoringStoppingCondition] = Unassigned()
 
     
@@ -4877,17 +5921,51 @@ class ModelBiasJobDefinition(Base):
             'JobDefinitionName': self.job_definition_name,
         }
         self.client.delete_model_bias_job_definition(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        endpoint_name: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[ModelBiasJobDefinition]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'EndpointName': endpoint_name,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'NameContains': name_contains,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_model_bias_job_definitions",
+            list_method_kwargs=operation_input_args,
+            summaries_key="MonitoringJobDefinitionSummaryList",
+            summary_key="MonitoringJobDefinitionSummary",
+            resource_cls=ModelBiasJobDefinition
+        )
 
 
 class ModelCard(Base):
-    model_card_arn: str
     model_card_name: str
-    model_card_version: int
-    content: str
-    model_card_status: str
-    creation_time: datetime.datetime
-    created_by: UserContext
+    model_card_arn: Optional[str] = Unassigned()
+    model_card_version: Optional[int] = Unassigned()
+    content: Optional[str] = Unassigned()
+    model_card_status: Optional[str] = Unassigned()
     security_config: Optional[ModelCardSecurityConfig] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
+    created_by: Optional[UserContext] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     last_modified_by: Optional[UserContext] = Unassigned()
     model_card_processing_status: Optional[str] = Unassigned()
@@ -5024,17 +6102,51 @@ class ModelCard(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        model_card_status: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[ModelCard]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'NameContains': name_contains,
+            'ModelCardStatus': model_card_status,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_model_cards",
+            list_method_kwargs=operation_input_args,
+            summaries_key="ModelCardSummaryList",
+            summary_key="ModelCardSummary",
+            resource_cls=ModelCard
+        )
 
 
 class ModelCardExportJob(Base):
-    model_card_export_job_name: str
     model_card_export_job_arn: str
-    status: str
-    model_card_name: str
-    model_card_version: int
-    output_config: ModelCardExportOutputConfig
-    created_at: datetime.datetime
-    last_modified_at: datetime.datetime
+    model_card_export_job_name: Optional[str] = Unassigned()
+    status: Optional[str] = Unassigned()
+    model_card_name: Optional[str] = Unassigned()
+    model_card_version: Optional[int] = Unassigned()
+    output_config: Optional[ModelCardExportOutputConfig] = Unassigned()
+    created_at: Optional[datetime.datetime] = Unassigned()
+    last_modified_at: Optional[datetime.datetime] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     export_artifacts: Optional[ModelCardExportArtifacts] = Unassigned()
 
@@ -5142,19 +6254,57 @@ class ModelCardExportJob(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        model_card_name: str,
+        model_card_version: Optional[int] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        model_card_export_job_name_contains: Optional[str] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[ModelCardExportJob]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'ModelCardName': model_card_name,
+            'ModelCardVersion': model_card_version,
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'ModelCardExportJobNameContains': model_card_export_job_name_contains,
+            'StatusEquals': status_equals,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_model_card_export_jobs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="ModelCardExportJobSummaryList",
+            summary_key="ModelCardExportJobSummary",
+            resource_cls=ModelCardExportJob
+        )
 
 
 class ModelExplainabilityJobDefinition(Base):
-    job_definition_arn: str
     job_definition_name: str
-    creation_time: datetime.datetime
-    model_explainability_app_specification: ModelExplainabilityAppSpecification
-    model_explainability_job_input: ModelExplainabilityJobInput
-    model_explainability_job_output_config: MonitoringOutputConfig
-    job_resources: MonitoringResources
-    role_arn: str
+    job_definition_arn: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     model_explainability_baseline_config: Optional[ModelExplainabilityBaselineConfig] = Unassigned()
+    model_explainability_app_specification: Optional[ModelExplainabilityAppSpecification] = Unassigned()
+    model_explainability_job_input: Optional[ModelExplainabilityJobInput] = Unassigned()
+    model_explainability_job_output_config: Optional[MonitoringOutputConfig] = Unassigned()
+    job_resources: Optional[MonitoringResources] = Unassigned()
     network_config: Optional[MonitoringNetworkConfig] = Unassigned()
+    role_arn: Optional[str] = Unassigned()
     stopping_condition: Optional[MonitoringStoppingCondition] = Unassigned()
 
     
@@ -5307,20 +6457,54 @@ class ModelExplainabilityJobDefinition(Base):
             'JobDefinitionName': self.job_definition_name,
         }
         self.client.delete_model_explainability_job_definition(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        endpoint_name: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[ModelExplainabilityJobDefinition]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'EndpointName': endpoint_name,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'NameContains': name_contains,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_model_explainability_job_definitions",
+            list_method_kwargs=operation_input_args,
+            summaries_key="MonitoringJobDefinitionSummaryList",
+            summary_key="MonitoringJobDefinitionSummary",
+            resource_cls=ModelExplainabilityJobDefinition
+        )
 
 
 class ModelPackage(Base):
     model_package_name: str
-    model_package_arn: str
-    creation_time: datetime.datetime
-    model_package_status: str
-    model_package_status_details: ModelPackageStatusDetails
     model_package_group_name: Optional[str] = Unassigned()
     model_package_version: Optional[int] = Unassigned()
+    model_package_arn: Optional[str] = Unassigned()
     model_package_description: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     inference_specification: Optional[InferenceSpecification] = Unassigned()
     source_algorithm_specification: Optional[SourceAlgorithmSpecification] = Unassigned()
     validation_specification: Optional[ModelPackageValidationSpecification] = Unassigned()
+    model_package_status: Optional[str] = Unassigned()
+    model_package_status_details: Optional[ModelPackageStatusDetails] = Unassigned()
     certify_for_marketplace: Optional[bool] = Unassigned()
     model_approval_status: Optional[str] = Unassigned()
     created_by: Optional[UserContext] = Unassigned()
@@ -5607,15 +6791,53 @@ class ModelPackage(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        model_approval_status: Optional[str] = Unassigned(),
+        model_package_group_name: Optional[str] = Unassigned(),
+        model_package_type: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[ModelPackage]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'NameContains': name_contains,
+            'ModelApprovalStatus': model_approval_status,
+            'ModelPackageGroupName': model_package_group_name,
+            'ModelPackageType': model_package_type,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_model_packages",
+            list_method_kwargs=operation_input_args,
+            summaries_key="ModelPackageSummaryList",
+            summary_key="ModelPackageSummary",
+            resource_cls=ModelPackage
+        )
 
 
 class ModelPackageGroup(Base):
     model_package_group_name: str
-    model_package_group_arn: str
-    creation_time: datetime.datetime
-    created_by: UserContext
-    model_package_group_status: str
+    model_package_group_arn: Optional[str] = Unassigned()
     model_package_group_description: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
+    created_by: Optional[UserContext] = Unassigned()
+    model_package_group_status: Optional[str] = Unassigned()
     
     @classmethod
     def create(
@@ -5706,19 +6928,51 @@ class ModelPackageGroup(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[ModelPackageGroup]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'NameContains': name_contains,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_model_package_groups",
+            list_method_kwargs=operation_input_args,
+            summaries_key="ModelPackageGroupSummaryList",
+            summary_key="ModelPackageGroupSummary",
+            resource_cls=ModelPackageGroup
+        )
 
 
 class ModelQualityJobDefinition(Base):
-    job_definition_arn: str
     job_definition_name: str
-    creation_time: datetime.datetime
-    model_quality_app_specification: ModelQualityAppSpecification
-    model_quality_job_input: ModelQualityJobInput
-    model_quality_job_output_config: MonitoringOutputConfig
-    job_resources: MonitoringResources
-    role_arn: str
+    job_definition_arn: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     model_quality_baseline_config: Optional[ModelQualityBaselineConfig] = Unassigned()
+    model_quality_app_specification: Optional[ModelQualityAppSpecification] = Unassigned()
+    model_quality_job_input: Optional[ModelQualityJobInput] = Unassigned()
+    model_quality_job_output_config: Optional[MonitoringOutputConfig] = Unassigned()
+    job_resources: Optional[MonitoringResources] = Unassigned()
     network_config: Optional[MonitoringNetworkConfig] = Unassigned()
+    role_arn: Optional[str] = Unassigned()
     stopping_condition: Optional[MonitoringStoppingCondition] = Unassigned()
 
     
@@ -5876,17 +7130,51 @@ class ModelQualityJobDefinition(Base):
             'JobDefinitionName': self.job_definition_name,
         }
         self.client.delete_model_quality_job_definition(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        endpoint_name: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[ModelQualityJobDefinition]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'EndpointName': endpoint_name,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'NameContains': name_contains,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_model_quality_job_definitions",
+            list_method_kwargs=operation_input_args,
+            summaries_key="MonitoringJobDefinitionSummaryList",
+            summary_key="MonitoringJobDefinitionSummary",
+            resource_cls=ModelQualityJobDefinition
+        )
 
 
 class MonitoringSchedule(Base):
-    monitoring_schedule_arn: str
     monitoring_schedule_name: str
-    monitoring_schedule_status: str
-    creation_time: datetime.datetime
-    last_modified_time: datetime.datetime
-    monitoring_schedule_config: MonitoringScheduleConfig
+    monitoring_schedule_arn: Optional[str] = Unassigned()
+    monitoring_schedule_status: Optional[str] = Unassigned()
     monitoring_type: Optional[str] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
+    last_modified_time: Optional[datetime.datetime] = Unassigned()
+    monitoring_schedule_config: Optional[MonitoringScheduleConfig] = Unassigned()
     endpoint_name: Optional[str] = Unassigned()
     last_monitoring_execution_summary: Optional[MonitoringExecutionSummary] = Unassigned()
 
@@ -6063,11 +7351,55 @@ class MonitoringSchedule(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        endpoint_name: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        monitoring_job_definition_name: Optional[str] = Unassigned(),
+        monitoring_type_equals: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[MonitoringSchedule]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'EndpointName': endpoint_name,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'NameContains': name_contains,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'StatusEquals': status_equals,
+            'MonitoringJobDefinitionName': monitoring_job_definition_name,
+            'MonitoringTypeEquals': monitoring_type_equals,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_monitoring_schedules",
+            list_method_kwargs=operation_input_args,
+            summaries_key="MonitoringScheduleSummaryList",
+            summary_key="MonitoringScheduleSummary",
+            resource_cls=MonitoringSchedule
+        )
 
 
 class NotebookInstance(Base):
+    notebook_instance_name: str
     notebook_instance_arn: Optional[str] = Unassigned()
-    notebook_instance_name: Optional[str] = Unassigned()
     notebook_instance_status: Optional[str] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     url: Optional[str] = Unassigned()
@@ -6268,11 +7600,55 @@ class NotebookInstance(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        notebook_instance_lifecycle_config_name_contains: Optional[str] = Unassigned(),
+        default_code_repository_contains: Optional[str] = Unassigned(),
+        additional_code_repository_equals: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[NotebookInstance]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'NameContains': name_contains,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'StatusEquals': status_equals,
+            'NotebookInstanceLifecycleConfigNameContains': notebook_instance_lifecycle_config_name_contains,
+            'DefaultCodeRepositoryContains': default_code_repository_contains,
+            'AdditionalCodeRepositoryEquals': additional_code_repository_equals,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_notebook_instances",
+            list_method_kwargs=operation_input_args,
+            summaries_key="NotebookInstanceSummaryList",
+            summary_key="NotebookInstanceSummary",
+            resource_cls=NotebookInstance
+        )
 
 
 class NotebookInstanceLifecycleConfig(Base):
+    notebook_instance_lifecycle_config_name: str
     notebook_instance_lifecycle_config_arn: Optional[str] = Unassigned()
-    notebook_instance_lifecycle_config_name: Optional[str] = Unassigned()
     on_create: Optional[List[NotebookInstanceLifecycleHook]] = Unassigned()
     on_start: Optional[List[NotebookInstanceLifecycleHook]] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
@@ -6366,11 +7742,47 @@ class NotebookInstanceLifecycleConfig(Base):
             'NotebookInstanceLifecycleConfigName': self.notebook_instance_lifecycle_config_name,
         }
         self.client.delete_notebook_instance_lifecycle_config(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[NotebookInstanceLifecycleConfig]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'NameContains': name_contains,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_notebook_instance_lifecycle_configs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="NotebookInstanceLifecycleConfigSummaryList",
+            summary_key="NotebookInstanceLifecycleConfigSummary",
+            resource_cls=NotebookInstanceLifecycleConfig
+        )
 
 
 class Pipeline(Base):
+    pipeline_name: str
     pipeline_arn: Optional[str] = Unassigned()
-    pipeline_name: Optional[str] = Unassigned()
     pipeline_display_name: Optional[str] = Unassigned()
     pipeline_definition: Optional[str] = Unassigned()
     pipeline_description: Optional[str] = Unassigned()
@@ -6523,11 +7935,43 @@ class Pipeline(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        pipeline_name_prefix: Optional[str] = Unassigned(),
+        created_after: Optional[datetime.datetime] = Unassigned(),
+        created_before: Optional[datetime.datetime] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Pipeline]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'PipelineNamePrefix': pipeline_name_prefix,
+            'CreatedAfter': created_after,
+            'CreatedBefore': created_before,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_pipelines",
+            list_method_kwargs=operation_input_args,
+            summaries_key="PipelineSummaryList",
+            summary_key="PipelineSummary",
+            resource_cls=Pipeline
+        )
 
 
 class PipelineExecution(Base):
+    pipeline_execution_arn: str
     pipeline_arn: Optional[str] = Unassigned()
-    pipeline_execution_arn: Optional[str] = Unassigned()
     pipeline_execution_display_name: Optional[str] = Unassigned()
     pipeline_execution_status: Optional[str] = Unassigned()
     pipeline_execution_description: Optional[str] = Unassigned()
@@ -6623,27 +8067,59 @@ class PipelineExecution(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        pipeline_name: str,
+        created_after: Optional[datetime.datetime] = Unassigned(),
+        created_before: Optional[datetime.datetime] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[PipelineExecution]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'PipelineName': pipeline_name,
+            'CreatedAfter': created_after,
+            'CreatedBefore': created_before,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_pipeline_executions",
+            list_method_kwargs=operation_input_args,
+            summaries_key="PipelineExecutionSummaryList",
+            summary_key="PipelineExecutionSummary",
+            resource_cls=PipelineExecution
+        )
 
 
 class ProcessingJob(Base):
     processing_job_name: str
-    processing_resources: ProcessingResources
-    app_specification: AppSpecification
-    processing_job_arn: str
-    processing_job_status: str
-    creation_time: datetime.datetime
     processing_inputs: Optional[List[ProcessingInput]] = Unassigned()
     processing_output_config: Optional[ProcessingOutputConfig] = Unassigned()
+    processing_resources: Optional[ProcessingResources] = Unassigned()
     stopping_condition: Optional[ProcessingStoppingCondition] = Unassigned()
+    app_specification: Optional[AppSpecification] = Unassigned()
     environment: Optional[Dict[str, str]] = Unassigned()
     network_config: Optional[NetworkConfig] = Unassigned()
     role_arn: Optional[str] = Unassigned()
     experiment_config: Optional[ExperimentConfig] = Unassigned()
+    processing_job_arn: Optional[str] = Unassigned()
+    processing_job_status: Optional[str] = Unassigned()
     exit_message: Optional[str] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     processing_end_time: Optional[datetime.datetime] = Unassigned()
     processing_start_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     monitoring_schedule_arn: Optional[str] = Unassigned()
     auto_m_l_job_arn: Optional[str] = Unassigned()
     training_job_arn: Optional[str] = Unassigned()
@@ -6794,18 +8270,56 @@ class ProcessingJob(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[ProcessingJob]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'NameContains': name_contains,
+            'StatusEquals': status_equals,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_processing_jobs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="ProcessingJobSummaries",
+            summary_key="ProcessingJobSummary",
+            resource_cls=ProcessingJob
+        )
 
 
 class Project(Base):
-    project_arn: str
     project_name: str
-    project_id: str
-    service_catalog_provisioning_details: ServiceCatalogProvisioningDetails
-    project_status: str
-    creation_time: datetime.datetime
+    project_arn: Optional[str] = Unassigned()
+    project_id: Optional[str] = Unassigned()
     project_description: Optional[str] = Unassigned()
+    service_catalog_provisioning_details: Optional[ServiceCatalogProvisioningDetails] = Unassigned()
     service_catalog_provisioned_product_details: Optional[ServiceCatalogProvisionedProductDetails] = Unassigned()
+    project_status: Optional[str] = Unassigned()
     created_by: Optional[UserContext] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     last_modified_by: Optional[UserContext] = Unassigned()
     
@@ -6922,12 +8436,44 @@ class Project(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Project]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'NameContains': name_contains,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_projects",
+            list_method_kwargs=operation_input_args,
+            summaries_key="ProjectSummaryList",
+            summary_key="ProjectSummary",
+            resource_cls=Project
+        )
 
 
 class Space(Base):
-    domain_id: Optional[str] = Unassigned()
+    domain_id: str
+    space_name: str
     space_arn: Optional[str] = Unassigned()
-    space_name: Optional[str] = Unassigned()
     home_efs_file_system_uid: Optional[str] = Unassigned()
     status: Optional[str] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
@@ -7062,11 +8608,41 @@ class Space(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        sort_order: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        domain_id_equals: Optional[str] = Unassigned(),
+        space_name_contains: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Space]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SortOrder': sort_order,
+            'SortBy': sort_by,
+            'DomainIdEquals': domain_id_equals,
+            'SpaceNameContains': space_name_contains,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_spaces",
+            list_method_kwargs=operation_input_args,
+            summaries_key="SpaceList",
+            summary_key="SpaceDetails",
+            resource_cls=Space
+        )
 
 
 class StudioLifecycleConfig(Base):
+    studio_lifecycle_config_name: str
     studio_lifecycle_config_arn: Optional[str] = Unassigned()
-    studio_lifecycle_config_name: Optional[str] = Unassigned()
     creation_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
     studio_lifecycle_config_content: Optional[str] = Unassigned()
@@ -7141,28 +8717,66 @@ class StudioLifecycleConfig(Base):
             'StudioLifecycleConfigName': self.studio_lifecycle_config_name,
         }
         self.client.delete_studio_lifecycle_config(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        name_contains: Optional[str] = Unassigned(),
+        app_type_equals: Optional[str] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[StudioLifecycleConfig]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'NameContains': name_contains,
+            'AppTypeEquals': app_type_equals,
+            'CreationTimeBefore': creation_time_before,
+            'CreationTimeAfter': creation_time_after,
+            'ModifiedTimeBefore': modified_time_before,
+            'ModifiedTimeAfter': modified_time_after,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_studio_lifecycle_configs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="StudioLifecycleConfigsList",
+            summary_key="StudioLifecycleConfigDetails",
+            resource_cls=StudioLifecycleConfig
+        )
 
 
 class TrainingJob(Base):
     training_job_name: str
-    training_job_arn: str
-    model_artifacts: ModelArtifacts
-    training_job_status: str
-    secondary_status: str
-    algorithm_specification: AlgorithmSpecification
-    resource_config: ResourceConfig
-    stopping_condition: StoppingCondition
-    creation_time: datetime.datetime
+    training_job_arn: Optional[str] = Unassigned()
     tuning_job_arn: Optional[str] = Unassigned()
     labeling_job_arn: Optional[str] = Unassigned()
     auto_m_l_job_arn: Optional[str] = Unassigned()
+    model_artifacts: Optional[ModelArtifacts] = Unassigned()
+    training_job_status: Optional[str] = Unassigned()
+    secondary_status: Optional[str] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
     hyper_parameters: Optional[Dict[str, str]] = Unassigned()
+    algorithm_specification: Optional[AlgorithmSpecification] = Unassigned()
     role_arn: Optional[str] = Unassigned()
     input_data_config: Optional[List[Channel]] = Unassigned()
     output_data_config: Optional[OutputDataConfig] = Unassigned()
+    resource_config: Optional[ResourceConfig] = Unassigned()
     warm_pool_status: Optional[WarmPoolStatus] = Unassigned()
     vpc_config: Optional[VpcConfig] = Unassigned()
+    stopping_condition: Optional[StoppingCondition] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     training_start_time: Optional[datetime.datetime] = Unassigned()
     training_end_time: Optional[datetime.datetime] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
@@ -7407,24 +9021,64 @@ class TrainingJob(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        warm_pool_status_equals: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[TrainingJob]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'NameContains': name_contains,
+            'StatusEquals': status_equals,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'WarmPoolStatusEquals': warm_pool_status_equals,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_training_jobs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="TrainingJobSummaries",
+            summary_key="TrainingJobSummary",
+            resource_cls=TrainingJob
+        )
 
 
 class TransformJob(Base):
     transform_job_name: str
-    transform_job_arn: str
-    transform_job_status: str
-    model_name: str
-    transform_input: TransformInput
-    transform_resources: TransformResources
-    creation_time: datetime.datetime
+    transform_job_arn: Optional[str] = Unassigned()
+    transform_job_status: Optional[str] = Unassigned()
     failure_reason: Optional[str] = Unassigned()
+    model_name: Optional[str] = Unassigned()
     max_concurrent_transforms: Optional[int] = Unassigned()
     model_client_config: Optional[ModelClientConfig] = Unassigned()
     max_payload_in_m_b: Optional[int] = Unassigned()
     batch_strategy: Optional[str] = Unassigned()
     environment: Optional[Dict[str, str]] = Unassigned()
+    transform_input: Optional[TransformInput] = Unassigned()
     transform_output: Optional[TransformOutput] = Unassigned()
     data_capture_config: Optional[BatchDataCaptureConfig] = Unassigned()
+    transform_resources: Optional[TransformResources] = Unassigned()
+    creation_time: Optional[datetime.datetime] = Unassigned()
     transform_start_time: Optional[datetime.datetime] = Unassigned()
     transform_end_time: Optional[datetime.datetime] = Unassigned()
     labeling_job_arn: Optional[str] = Unassigned()
@@ -7586,10 +9240,48 @@ class TransformJob(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        creation_time_after: Optional[datetime.datetime] = Unassigned(),
+        creation_time_before: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_after: Optional[datetime.datetime] = Unassigned(),
+        last_modified_time_before: Optional[datetime.datetime] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        status_equals: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[TransformJob]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'CreationTimeAfter': creation_time_after,
+            'CreationTimeBefore': creation_time_before,
+            'LastModifiedTimeAfter': last_modified_time_after,
+            'LastModifiedTimeBefore': last_modified_time_before,
+            'NameContains': name_contains,
+            'StatusEquals': status_equals,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_transform_jobs",
+            list_method_kwargs=operation_input_args,
+            summaries_key="TransformJobSummaries",
+            summary_key="TransformJobSummary",
+            resource_cls=TransformJob
+        )
 
 
 class Trial(Base):
-    trial_name: Optional[str] = Unassigned()
+    trial_name: str
     trial_arn: Optional[str] = Unassigned()
     display_name: Optional[str] = Unassigned()
     experiment_name: Optional[str] = Unassigned()
@@ -7691,10 +9383,44 @@ class Trial(Base):
             'TrialName': self.trial_name,
         }
         self.client.delete_trial(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        experiment_name: Optional[str] = Unassigned(),
+        trial_component_name: Optional[str] = Unassigned(),
+        created_after: Optional[datetime.datetime] = Unassigned(),
+        created_before: Optional[datetime.datetime] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Trial]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'ExperimentName': experiment_name,
+            'TrialComponentName': trial_component_name,
+            'CreatedAfter': created_after,
+            'CreatedBefore': created_before,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_trials",
+            list_method_kwargs=operation_input_args,
+            summaries_key="TrialSummaries",
+            summary_key="TrialSummary",
+            resource_cls=Trial
+        )
 
 
 class TrialComponent(Base):
-    trial_component_name: Optional[str] = Unassigned()
+    trial_component_name: str
     trial_component_arn: Optional[str] = Unassigned()
     display_name: Optional[str] = Unassigned()
     source: Optional[TrialComponentSource] = Unassigned()
@@ -7845,12 +9571,48 @@ class TrialComponent(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        experiment_name: Optional[str] = Unassigned(),
+        trial_name: Optional[str] = Unassigned(),
+        source_arn: Optional[str] = Unassigned(),
+        created_after: Optional[datetime.datetime] = Unassigned(),
+        created_before: Optional[datetime.datetime] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[TrialComponent]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'ExperimentName': experiment_name,
+            'TrialName': trial_name,
+            'SourceArn': source_arn,
+            'CreatedAfter': created_after,
+            'CreatedBefore': created_before,
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_trial_components",
+            list_method_kwargs=operation_input_args,
+            summaries_key="TrialComponentSummaries",
+            summary_key="TrialComponentSummary",
+            resource_cls=TrialComponent
+        )
 
 
 class UserProfile(Base):
-    domain_id: Optional[str] = Unassigned()
+    domain_id: str
+    user_profile_name: str
     user_profile_arn: Optional[str] = Unassigned()
-    user_profile_name: Optional[str] = Unassigned()
     home_efs_file_system_uid: Optional[str] = Unassigned()
     status: Optional[str] = Unassigned()
     last_modified_time: Optional[datetime.datetime] = Unassigned()
@@ -8034,10 +9796,40 @@ class UserProfile(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        sort_order: Optional[str] = Unassigned(),
+        sort_by: Optional[str] = Unassigned(),
+        domain_id_equals: Optional[str] = Unassigned(),
+        user_profile_name_contains: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[UserProfile]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SortOrder': sort_order,
+            'SortBy': sort_by,
+            'DomainIdEquals': domain_id_equals,
+            'UserProfileNameContains': user_profile_name_contains,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_user_profiles",
+            list_method_kwargs=operation_input_args,
+            summaries_key="UserProfileList",
+            summary_key="UserProfileDetails",
+            resource_cls=UserProfile
+        )
 
 
 class Workforce(Base):
-    workforce: Workforce
+    workforce: Optional[Workforce] = Unassigned()
 
     
     def populate_inputs_decorator(create_func):
@@ -8182,10 +9974,38 @@ class Workforce(Base):
                 raise Exception("Timeout exceeded. Final resource state - " + current_status)
             print("-", end="")
             time.sleep(poll)
+    
+    @classmethod
+    def get_all(
+        cls,
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Workforce]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'NameContains': name_contains,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_workforces",
+            list_method_kwargs=operation_input_args,
+            summaries_key="Workforces",
+            summary_key="Workforce",
+            resource_cls=Workforce
+        )
 
 
 class Workteam(Base):
-    workteam: Workteam
+    workteam: Optional[Workteam] = Unassigned()
     
     @classmethod
     def create(
@@ -8282,5 +10102,33 @@ class Workteam(Base):
             'WorkteamName': self.workteam_name,
         }
         self.client.delete_workteam(**operation_input_args)
+    
+    @classmethod
+    def get_all(
+        cls,
+        sort_by: Optional[str] = Unassigned(),
+        sort_order: Optional[str] = Unassigned(),
+        name_contains: Optional[str] = Unassigned(),
+        session: Optional[Session] = None,
+        region: Optional[str] = None,
+    ) -> 'ResourceIterator[Workteam]':
+        client = SageMakerClient(session=session, region_name=region, service_name='sagemaker').client
+            
+        operation_input_args = {
+            'SortBy': sort_by,
+            'SortOrder': sort_order,
+            'NameContains': name_contains,
+    }
+        
+        operation_input_args = {k: v for k, v in operation_input_args.items() if v is not None and not isinstance(v, Unassigned)}
+        
+        return ResourceIterator(
+            client=client,
+            list_method="list_workteams",
+            list_method_kwargs=operation_input_args,
+            summaries_key="Workteams",
+            summary_key="Workteam",
+            resource_cls=Workteam
+        )
 
 
