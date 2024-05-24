@@ -37,7 +37,8 @@ from src.tools.templates import (CREATE_METHOD_TEMPLATE, \
                                  WAIT_METHOD_TEMPLATE, WAIT_FOR_STATUS_METHOD_TEMPLATE,
                                  UPDATE_METHOD_TEMPLATE, POPULATE_DEFAULTS_DECORATOR_TEMPLATE, \
                                  CREATE_METHOD_TEMPLATE_WITHOUT_DEFAULTS,
-                                 IMPORT_METHOD_TEMPLATE)
+                                 IMPORT_METHOD_TEMPLATE, GET_ALL_METHOD_WITH_ARGS_TEMPLATE, \
+                                 GET_ALL_METHOD_NO_ARGS_TEMPLATE)
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -137,7 +138,7 @@ class ResourcesCodeGen:
             "from pydantic import validate_call",
             "from typing import Literal",
             "from boto3.session import Session",
-            "from .utils import SageMakerClient, Unassigned, snake_to_pascal, pascal_to_snake",
+            "from .utils import SageMakerClient, ResourceIterator, Unassigned, snake_to_pascal, pascal_to_snake",
             "from .intelligent_defaults_helper import load_default_configs_for_resource_name, get_config_value",
             "from src.code_injection.codec import transform",
             "from .shapes import *"
@@ -285,24 +286,12 @@ class ResourcesCodeGen:
             get_operation = self.operations["Describe" + resource_name]
             get_operation_shape = get_operation["output"]["shape"]
             
-            required_members = self.shapes[get_operation_shape].get("required", [])
-            
-            # Get intersection of required_members for get and list if list is in class_methods
-            if "list" in class_methods:
-                get_list_operation_output_shape = self.operations["List" + resource_name + "s"]["output"]["shape"]
-                list_operation_output_members = self.shapes[get_list_operation_output_shape]["members"]
-                
-                get_summaries_shape = next({key: value} for key, value in list_operation_output_members.items() if key != "NextToken")
-                get_summaries_shape_name = get_summaries_shape[next(iter(get_summaries_shape))]["shape"]
-                
-                get_summary_shape_name = self.shapes[get_summaries_shape_name]["member"]["shape"]
-                
-                summary_required_members = self.shapes[get_summary_shape_name].get("required", [])
-                                
-                required_members = [member for member in required_members if member in set(summary_required_members)]
+            # Use 'get' operation input as the required class attributes
+            get_operation_input_shape = get_operation["input"]["shape"] 
+            required_attributes = self.shapes[get_operation_input_shape].get("required", [])
             
             # Generate the class attributes based on the shape
-            class_attributes = self.shapes_extractor.generate_data_shape_members_and_string_body(get_operation_shape, tuple(required_members))
+            class_attributes = self.shapes_extractor.generate_data_shape_members_and_string_body(get_operation_shape, tuple(required_attributes))
             class_attributes_string = class_attributes[1]
 
             defaults_decorator_method = ""
@@ -351,6 +340,10 @@ class ResourcesCodeGen:
 
             if import_method := self._evaluate_method(resource_name, "import", class_methods):
                 resource_class += add_indent(import_method, 4)
+                
+            if list_method := self._evaluate_method(resource_name, "get_all", class_methods):
+                resource_class += add_indent(list_method, 4)
+                
         else:
             # If there's no 'get' method, log a message
             # TODO: Handle the resources without 'get' differently
@@ -359,7 +352,7 @@ class ResourcesCodeGen:
         # Return the class definition
         return resource_class
 
-    def _generate_operation_input_args(self, resource_operation: dict, is_class_method: bool) -> str:
+    def _generate_operation_input_args(self, resource_operation: dict, is_class_method: bool, exclude_list: list = []) -> str:
         """Generate the operation input arguments string.
 
         Args:
@@ -374,18 +367,17 @@ class ResourcesCodeGen:
 
         if is_class_method:
             args = (f"'{member}': {convert_to_snake_case(member)}"
-                    for member in input_shape_members)
+                    for member in input_shape_members if convert_to_snake_case(member) not in exclude_list)
         else:
             args = (f"'{member}': self.{convert_to_snake_case(member)}"
-                    for member in input_shape_members)
-
+                    for member in input_shape_members if convert_to_snake_case(member) not in exclude_list)
         operation_input_args = ",\n".join(args)
         operation_input_args += ","
         operation_input_args = add_indent(operation_input_args, 8)
 
         return operation_input_args
 
-    def _generate_method_args(self, operation_input_shape_name: str)-> str:
+    def _generate_method_args(self, operation_input_shape_name: str, exclude_list: list = [])-> str:
         """Generates the arguments for a method.
 
         Args:
@@ -396,7 +388,9 @@ class ResourcesCodeGen:
         """
         typed_shape_members = self.shapes_extractor.generate_shape_members(
             operation_input_shape_name)
-        method_args = ",\n".join(f"{attr}: {attr_type}" for attr, attr_type in typed_shape_members.items())
+        
+        args = (f"{attr}: {attr_type}" for attr, attr_type in typed_shape_members.items() if attr not in exclude_list)
+        method_args = ",\n".join(args)
         method_args += ","
         method_args = add_indent(method_args)
         return method_args
@@ -731,6 +725,55 @@ class ResourcesCodeGen:
         )
         return formatted_method
 
+    def generate_get_all_method(self, resource_name: str) -> str:
+        """Auto-Generate 'get_all' class Method [list API] for a resource.
+        
+        Args:
+            resource_name (str): The resource name.
+            
+        Returns:
+            str: The formatted get_all Method template.
+        """
+        operation_name = "List" + resource_name + "s"
+        operation_metadata = self.operations[operation_name]
+        operation_input_shape_name = operation_metadata["input"]["shape"]
+        
+        operation = convert_to_snake_case(operation_name)
+
+        get_list_operation_output_shape = self.operations[operation_name]["output"]["shape"]
+        list_operation_output_members = self.shapes[get_list_operation_output_shape]["members"]
+        
+        get_summaries_shape = next({key: value} for key, value in list_operation_output_members.items() if key != "NextToken")
+        response_key = get_summaries_shape[next(iter(get_summaries_shape))]["shape"]
+        
+        exclude_list = ["next_token", "max_results"]    
+        
+        get_all_args = self._generate_method_args(operation_input_shape_name, exclude_list)
+        
+        if not get_all_args.strip().strip(","):
+            formatted_method = GET_ALL_METHOD_NO_ARGS_TEMPLATE.format(
+                service_name='sagemaker',
+                resource=resource_name,
+                operation=operation,
+                response_key=response_key
+            )
+            return formatted_method
+        
+        operation_input_args = self._generate_operation_input_args(
+            operation_metadata, is_class_method=True, exclude_list=exclude_list
+        )
+        
+        formatted_method = GET_ALL_METHOD_WITH_ARGS_TEMPLATE.format(
+            service_name='sagemaker',
+            resource=resource_name,
+            operation=operation,
+            get_all_args=get_all_args,
+            operation_input_args=operation_input_args,
+            response_key=response_key
+        )
+        return formatted_method
+        
+        
     def generate_config_schema(self):
         """
         Generates the Config Schema that is used by json Schema to validate config jsons .

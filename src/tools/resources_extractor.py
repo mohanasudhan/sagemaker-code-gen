@@ -228,7 +228,10 @@ class ResourcesExtractor:
                                 chain_resource_names.add(chain_resource_name)
 
                 if action_low.split(resource_low)[0] in CLASS_METHODS:
-                    class_methods.add(action_low.split(resource_low)[0])
+                    if action_low.split(resource_low)[0] == 'list':
+                        class_methods.add('get_all')
+                    else:
+                        class_methods.add(action_low.split(resource_low)[0])
                 elif action_low.split(resource_low)[0] in OBJECT_METHODS:
                     object_methods.add(action_low.split(resource_low)[0])
                 else:

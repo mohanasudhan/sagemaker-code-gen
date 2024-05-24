@@ -106,11 +106,11 @@ class SageMakerClient(metaclass=SingletonMeta):
 class ResourceIterator(Generic[T]):
     def __init__(
         self, 
-        client, 
-        list_method, 
-        list_method_kwargs, 
-        response_key, 
-        resource_cls: Type[T]
+        client: SageMakerClient, 
+        response_key: str, 
+        resource_cls: Type[T],
+        list_method: str, 
+        list_method_kwargs: dict = {}, 
     ):
         self.response_key = response_key
         self.client = client
