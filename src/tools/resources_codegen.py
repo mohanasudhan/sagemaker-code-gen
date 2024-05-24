@@ -284,9 +284,25 @@ class ResourcesCodeGen:
             # Get the operation and shape for the 'get' method
             get_operation = self.operations["Describe" + resource_name]
             get_operation_shape = get_operation["output"]["shape"]
-
+            
+            required_members = self.shapes[get_operation_shape].get("required", [])
+            
+            # Get intersection of required_members for get and list if list is in class_methods
+            if "list" in class_methods:
+                get_list_operation_output_shape = self.operations["List" + resource_name + "s"]["output"]["shape"]
+                list_operation_output_members = self.shapes[get_list_operation_output_shape]["members"]
+                
+                get_summaries_shape = next({key: value} for key, value in list_operation_output_members.items() if key != "NextToken")
+                get_summaries_shape_name = get_summaries_shape[next(iter(get_summaries_shape))]["shape"]
+                
+                get_summary_shape_name = self.shapes[get_summaries_shape_name]["member"]["shape"]
+                
+                summary_required_members = self.shapes[get_summary_shape_name].get("required", [])
+                                
+                required_members = [member for member in required_members if member in set(summary_required_members)]
+            
             # Generate the class attributes based on the shape
-            class_attributes = self.shapes_extractor.generate_data_shape_members_and_string_body(get_operation_shape)
+            class_attributes = self.shapes_extractor.generate_data_shape_members_and_string_body(get_operation_shape, tuple(required_members))
             class_attributes_string = class_attributes[1]
 
             defaults_decorator_method = ""
