@@ -293,7 +293,8 @@ def get_all(
         client=client,
         list_method="{operation}",
         list_method_kwargs=operation_input_args,
-        response_key="{response_key}",
+        summaries_key="{summaries_key}",
+        summary_key="{summary_key}",
         resource_cls={resource}
     )
 '''
@@ -310,7 +311,8 @@ def get_all(
     return ResourceIterator(
         client=client,
         list_method="{operation}",
-        response_key="{response_key}",
+        summaries_key="{summaries_key}",
+        summary_key="{summary_key}",
         resource_cls={resource}
     )
 '''

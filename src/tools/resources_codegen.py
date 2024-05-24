@@ -744,7 +744,8 @@ class ResourcesCodeGen:
         list_operation_output_members = self.shapes[get_list_operation_output_shape]["members"]
         
         get_summaries_shape = next({key: value} for key, value in list_operation_output_members.items() if key != "NextToken")
-        response_key = get_summaries_shape[next(iter(get_summaries_shape))]["shape"]
+        summaries_key = get_summaries_shape[next(iter(get_summaries_shape))]["shape"]
+        summary_key = self.shapes[summaries_key]["member"]["shape"]
         
         exclude_list = ["next_token", "max_results"]    
         
@@ -755,7 +756,8 @@ class ResourcesCodeGen:
                 service_name='sagemaker',
                 resource=resource_name,
                 operation=operation,
-                response_key=response_key
+                summaries_key=summaries_key,
+                summary_key=summary_key
             )
             return formatted_method
         
@@ -769,7 +771,8 @@ class ResourcesCodeGen:
             operation=operation,
             get_all_args=get_all_args,
             operation_input_args=operation_input_args,
-            response_key=response_key
+            summaries_key=summaries_key,
+            summary_key=summary_key
         )
         return formatted_method
         

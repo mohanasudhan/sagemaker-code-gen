@@ -18,6 +18,7 @@ import botocore
 import time
 from boto3.session import Session
 from typing import TypeVar, Generic, Type
+from src.code_injection.codec import transform
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -107,12 +108,14 @@ class ResourceIterator(Generic[T]):
     def __init__(
         self, 
         client: SageMakerClient, 
-        response_key: str, 
+        summaries_key: str, 
+        summary_key: str,
         resource_cls: Type[T],
         list_method: str, 
         list_method_kwargs: dict = {}, 
     ):
-        self.response_key = response_key
+        self.summaries_key = summaries_key
+        self.summary_key = summary_key
         self.client = client
         self.list_method = list_method
         self.list_method_kwargs = list_method_kwargs
@@ -131,11 +134,9 @@ class ResourceIterator(Generic[T]):
             item = self.items[self.index]
             self.index += 1
             
-            # TODO: deserialize item and return instance of self.resource_cls()
-            # init_data = deserilze(item)
-            # return self.resource_cls(**init_data)
-            
-            return item
+
+            init_data = transform(item, self.summary_key)
+            return self.resource_cls(**init_data)
         elif len(self.items) > 0 and self.index >= len(self.items) and self.next_token is None:
             raise StopIteration
         else:
@@ -152,7 +153,7 @@ class ResourceIterator(Generic[T]):
                     logger.debug(f"ThrottlingException encountered. Retrying in {sleep} seconds.")
                     return self.__next__(sleep=sleep, retry=retry)
                 raise error
-            self.items = response.get(self.response_key, [])
+            self.items = response.get(self.summaries_key, [])
             self.next_token = response.get('NextToken', None)
             self.index = 0
             if len(self.items) == 0:
