@@ -19,7 +19,10 @@ from typing import Optional
 import pandas as pd
 
 from src.tools.constants import CLASS_METHODS, OBJECT_METHODS
-from src.tools.data_extractor import load_combined_operations_data, load_combined_shapes_data
+from src.tools.data_extractor import (
+    load_combined_operations_data,
+    load_combined_shapes_data,
+)
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
@@ -61,7 +64,11 @@ class ResourcesExtractor:
         "Cluster": ["DescribeClusterNode", "ListClusterNodes"],
     }
 
-    def __init__(self, combined_shapes: Optional[dict] = None, combined_operations: Optional[dict] = None):
+    def __init__(
+        self,
+        combined_shapes: Optional[dict] = None,
+        combined_operations: Optional[dict] = None,
+    ):
         """
         Initializes a ResourceExtractor object.
 
@@ -86,9 +93,15 @@ class ResourcesExtractor:
             None
         """
         for resource in sorted(resources, key=len, reverse=True):
-            filtered_actions = set([a for a in self.actions if a.endswith(resource)
-                                    or (a.startswith('List') and a.endswith(resource +'s'))
-                                    or a.startswith('Invoke'+resource)])
+            filtered_actions = set(
+                [
+                    a
+                    for a in self.actions
+                    if a.endswith(resource)
+                    or (a.startswith("List") and a.endswith(resource + "s"))
+                    or a.startswith("Invoke" + resource)
+                ]
+            )
             self.actions_under_resource.update(filtered_actions)
             self.resource_actions[resource] = filtered_actions
 
@@ -278,13 +291,13 @@ class ResourcesExtractor:
                             ):
                                 chain_resource_names.add(chain_resource_name)
                 action_split = action_low.split(resource_low)
-                if action_split[0] == 'invoke':
+                if action_split[0] == "invoke":
                     if not action_split[1]:
-                        invoke_method = 'invoke'
-                    elif action_split[1] == 'async':
-                        invoke_method = 'invoke_async'
+                        invoke_method = "invoke"
+                    elif action_split[1] == "async":
+                        invoke_method = "invoke_async"
                     else:
-                        invoke_method = 'invoke_with_response_stream'
+                        invoke_method = "invoke_with_response_stream"
                     object_methods.add(invoke_method)
                 elif action_split[0] in CLASS_METHODS:
                     class_methods.add(action_split[0])

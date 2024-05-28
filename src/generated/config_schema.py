@@ -944,7 +944,7 @@ SAGEMAKER_PYTHON_SDK_CONFIG_SCHEMA = {
                 }
             },
             "required": ["PythonSDK"],
-        }
+        },
     },
     "required": ["SageMaker"],
 }

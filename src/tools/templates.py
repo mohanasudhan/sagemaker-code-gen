@@ -113,11 +113,11 @@ def load(
     return cls.get({get_args}, session=session, region=region)
 """
 
-UPDATE_METHOD_TEMPLATE = '''
+UPDATE_METHOD_TEMPLATE = """
 def update(self,
  {update_args}
  ) -> Optional[object]:
-    logger.debug(f"Creating {resource_lower} resource.")
+    logger.debug("Creating {resource_lower} resource.")
     client = SageMakerClient().client
 
     operation_input_args = {{
@@ -136,7 +136,7 @@ def update(self,
     return self
 """
 
-INVOKE_METHOD_TEMPLATE = '''
+INVOKE_METHOD_TEMPLATE = """
 def invoke(self, 
 {invoke_args}
 ) -> Optional[object]:
@@ -155,9 +155,9 @@ def invoke(self,
     logger.debug(f"Response: {{response}}")
 
     return response
-'''
+"""
 
-INVOKE_ASYNC_METHOD_TEMPLATE = '''
+INVOKE_ASYNC_METHOD_TEMPLATE = """
 def invoke_async(self, 
 {create_args}
 ) -> Optional[object]:
@@ -177,9 +177,9 @@ def invoke_async(self,
     logger.debug(f"Response: {{response}}")
 
     return response
-'''
+"""
 
-INVOKE_WITH_RESPONSE_STREAM_METHOD_TEMPLATE = '''
+INVOKE_WITH_RESPONSE_STREAM_METHOD_TEMPLATE = """
 def invoke_with_response_stream(self, 
 {create_args}
 ) -> Optional[object]:
@@ -199,7 +199,7 @@ def invoke_with_response_stream(self,
     logger.debug(f"Response: {{response}}")
 
     return response
-'''
+"""
 
 
 GET_CONFIG_VALUE_TEMPLATE = """
@@ -219,9 +219,9 @@ def populate_inputs_decorator(create_func):
 {config_schema_for_resource}
         create_func(*args, **Base.get_updated_kwargs_with_configured_attributes(config_schema_for_resource, "{resource_name}", **kwargs))
     return wrapper
-'''
+"""
 
-CREATE_METHOD_TEMPLATE_WITHOUT_DECORATOR = '''
+CREATE_METHOD_TEMPLATE_WITHOUT_DECORATOR = """
 @classmethod
 def create(
     cls,
@@ -229,7 +229,7 @@ def create(
     session: Optional[Session] = None,
     region: Optional[str] = None,
 ) -> Optional[object]:
-    logger.debug(f"Creating {resource_lower} resource.")
+    logger.debug("Creating {resource_lower} resource.")
     client = SageMakerClient(session=session, region_name=region, service_name='{service_name}')
 
     operation_input_args = {{
@@ -245,7 +245,7 @@ def create(
     logger.debug(f"Response: {{response}}")
 
     return cls.get({resource_identifier}, session=session, region=region)
-'''
+"""
 
 GET_METHOD_TEMPLATE = """
 @classmethod
@@ -388,7 +388,7 @@ class Base(BaseModel):
                  global_defaults):
                     kwargs[formatted_attribute] = config_value
         return kwargs
-'''
+"""
 
 LOAD_DEFAULT_CONFIGS_AND_HELPERS_TEMPLATE = '''
 _APP_NAME = "sagemaker"

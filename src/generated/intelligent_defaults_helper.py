@@ -53,6 +53,7 @@ ENV_VARIABLE_USER_CONFIG_OVERRIDE = "SAGEMAKER_USER_CONFIG_OVERRIDE"
 
 S3_PREFIX = "s3://"
 
+
 def load_default_configs(additional_config_paths: List[str] = None, s3_resource=None):
     default_config_path = os.getenv(
         ENV_VARIABLE_ADMIN_CONFIG_OVERRIDE, _DEFAULT_ADMIN_CONFIG_FILE_PATH

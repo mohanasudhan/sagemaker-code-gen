@@ -104,11 +104,18 @@ class SageMakerClient(metaclass=SingletonMeta):
         self.service_name = service_name
         self.client = session.client(service_name, region_name)
 
+
 class SageMakerRuntimeClient(metaclass=SingletonMeta):
     """
     A singleton class for creating a SageMaker client.
     """
-    def __init__(self, session: Session = None, region_name: str = None, service_name='sagemaker-runtime'):
+
+    def __init__(
+        self,
+        session: Session = None,
+        region_name: str = None,
+        service_name="sagemaker-runtime",
+    ):
         """
         Initializes the SageMakerClient with a boto3 session, region name, and service name.
         Creates a boto3 client using the provided session, region, and service.
@@ -125,5 +132,3 @@ class SageMakerRuntimeClient(metaclass=SingletonMeta):
         self.region_name = region_name
         self.service_name = service_name
         self.client = session.client(service_name, region_name)
-
-

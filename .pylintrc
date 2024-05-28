@@ -23,6 +23,7 @@ disable=
     duplicate-code,
     fixme,
     line-too-long,
+    logging-fstring-interpolation,
     missing-class-docstring,
     missing-function-docstring,
     missing-module-docstring,

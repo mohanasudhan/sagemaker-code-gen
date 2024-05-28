@@ -26,7 +26,10 @@ from src.tools.constants import (
 from src.tools.shapes_extractor import ShapesExtractor
 from src.util.util import add_indent, convert_to_snake_case
 from src.tools.templates import SHAPE_CLASS_TEMPLATE, SHAPE_BASE_CLASS_TEMPLATE
-from src.tools.data_extractor import load_combined_shapes_data, load_combined_operations_data
+from src.tools.data_extractor import (
+    load_combined_shapes_data,
+    load_combined_operations_data,
+)
 
 
 class ShapesCodeGen:

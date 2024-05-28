@@ -278,13 +278,16 @@ def wait_for_status(
             raise Exception("Timeout exceeded. Final resource state - " + current_status)
         print("-", end="")
         time.sleep(poll)
-'''
-        assert self.resource_generator.generate_wait_for_status_method("InferenceComponent") == expected_output
-
-
+"""
+        assert (
+            self.resource_generator.generate_wait_for_status_method(
+                "InferenceComponent"
+            )
+            == expected_output
+        )
 
     def test_generate_invoke_method(self):
-        expected_output = '''
+        expected_output = """
 def invoke(self, 
     body: str,
     content_type: Optional[str] = Unassigned(),
@@ -323,12 +326,16 @@ def invoke(self,
     logger.debug(f"Response: {response}")
 
     return response
-'''
-        assert self.resource_generator.generate_invoke_method("Endpoint", resource_attributes=['endpoint_name']) == expected_output
-
+"""
+        assert (
+            self.resource_generator.generate_invoke_method(
+                "Endpoint", resource_attributes=["endpoint_name"]
+            )
+            == expected_output
+        )
 
     def test_generate_invoke_async_method(self):
-        expected_output = '''
+        expected_output = """
 def invoke_async(self, 
     input_location: str,
     content_type: Optional[str] = Unassigned(),
@@ -361,11 +368,16 @@ def invoke_async(self,
     logger.debug(f"Response: {response}")
 
     return response
-'''
-        assert self.resource_generator.generate_invoke_async_method("Endpoint", resource_attributes=['endpoint_name']) == expected_output
+"""
+        assert (
+            self.resource_generator.generate_invoke_async_method(
+                "Endpoint", resource_attributes=["endpoint_name"]
+            )
+            == expected_output
+        )
 
     def test_generate_invoke_with_response_stream_method(self):
-        expected_output = '''
+        expected_output = """
 def invoke_with_response_stream(self, 
     body: str,
     content_type: Optional[str] = Unassigned(),
@@ -400,5 +412,10 @@ def invoke_with_response_stream(self,
     logger.debug(f"Response: {response}")
 
     return response
-'''
-        assert self.resource_generator.generate_invoke_with_response_stream_method("Endpoint", resource_attributes=['endpoint_name']) == expected_output
+"""
+        assert (
+            self.resource_generator.generate_invoke_with_response_stream_method(
+                "Endpoint", resource_attributes=["endpoint_name"]
+            )
+            == expected_output
+        )

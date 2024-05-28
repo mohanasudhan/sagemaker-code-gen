@@ -31,7 +31,7 @@ class ShapesExtractor:
         :param combined_shapes: All the shapes put together from all Sagemaker Service JSONs
         """
         self.combined_shapes = combined_shapes or load_combined_shapes_data()
-         
+
         self.shape_dag = self.get_shapes_dag()
         with open(SHAPE_DAG_FILE_PATH, "w") as f:
             f.write("SHAPE_DAG=")

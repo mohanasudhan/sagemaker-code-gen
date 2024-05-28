@@ -9843,10 +9843,18 @@ SHAPE_DAG = {
             {"name": "EndpointName", "shape": "EndpointName", "type": "string"},
             {"name": "ContentType", "shape": "Header", "type": "string"},
             {"name": "Accept", "shape": "Header", "type": "string"},
-            {"name": "CustomAttributes", "shape": "CustomAttributesHeader", "type": "string"},
+            {
+                "name": "CustomAttributes",
+                "shape": "CustomAttributesHeader",
+                "type": "string",
+            },
             {"name": "InferenceId", "shape": "InferenceId", "type": "string"},
             {"name": "InputLocation", "shape": "InputLocationHeader", "type": "string"},
-            {"name": "RequestTTLSeconds", "shape": "RequestTTLSecondsHeader", "type": "integer"},
+            {
+                "name": "RequestTTLSeconds",
+                "shape": "RequestTTLSecondsHeader",
+                "type": "integer",
+            },
             {
                 "name": "InvocationTimeoutSeconds",
                 "shape": "InvocationTimeoutSecondsHeader",
@@ -9869,7 +9877,11 @@ SHAPE_DAG = {
             {"name": "Body", "shape": "BodyBlob", "type": "blob"},
             {"name": "ContentType", "shape": "Header", "type": "string"},
             {"name": "Accept", "shape": "Header", "type": "string"},
-            {"name": "CustomAttributes", "shape": "CustomAttributesHeader", "type": "string"},
+            {
+                "name": "CustomAttributes",
+                "shape": "CustomAttributesHeader",
+                "type": "string",
+            },
             {"name": "TargetModel", "shape": "TargetModelHeader", "type": "string"},
             {"name": "TargetVariant", "shape": "TargetVariantHeader", "type": "string"},
             {
@@ -9878,7 +9890,11 @@ SHAPE_DAG = {
                 "type": "string",
             },
             {"name": "InferenceId", "shape": "InferenceId", "type": "string"},
-            {"name": "EnableExplanations", "shape": "EnableExplanationsHeader", "type": "string"},
+            {
+                "name": "EnableExplanations",
+                "shape": "EnableExplanationsHeader",
+                "type": "string",
+            },
             {
                 "name": "InferenceComponentName",
                 "shape": "InferenceComponentHeader",
@@ -9892,7 +9908,11 @@ SHAPE_DAG = {
             {"name": "Body", "shape": "BodyBlob", "type": "blob"},
             {"name": "ContentType", "shape": "Header", "type": "string"},
             {"name": "InvokedProductionVariant", "shape": "Header", "type": "string"},
-            {"name": "CustomAttributes", "shape": "CustomAttributesHeader", "type": "string"},
+            {
+                "name": "CustomAttributes",
+                "shape": "CustomAttributesHeader",
+                "type": "string",
+            },
         ],
         "type": "structure",
     },
@@ -9902,7 +9922,11 @@ SHAPE_DAG = {
             {"name": "Body", "shape": "BodyBlob", "type": "blob"},
             {"name": "ContentType", "shape": "Header", "type": "string"},
             {"name": "Accept", "shape": "Header", "type": "string"},
-            {"name": "CustomAttributes", "shape": "CustomAttributesHeader", "type": "string"},
+            {
+                "name": "CustomAttributes",
+                "shape": "CustomAttributesHeader",
+                "type": "string",
+            },
             {"name": "TargetVariant", "shape": "TargetVariantHeader", "type": "string"},
             {
                 "name": "TargetContainerHostname",
@@ -9923,7 +9947,11 @@ SHAPE_DAG = {
             {"name": "Body", "shape": "ResponseStream", "type": "structure"},
             {"name": "ContentType", "shape": "Header", "type": "string"},
             {"name": "InvokedProductionVariant", "shape": "Header", "type": "string"},
-            {"name": "CustomAttributes", "shape": "CustomAttributesHeader", "type": "string"},
+            {
+                "name": "CustomAttributes",
+                "shape": "CustomAttributesHeader",
+                "type": "string",
+            },
         ],
         "type": "structure",
     },
@@ -15854,7 +15882,11 @@ SHAPE_DAG = {
     "ResponseStream": {
         "members": [
             {"name": "PayloadPart", "shape": "PayloadPart", "type": "structure"},
-            {"name": "ModelStreamError", "shape": "ModelStreamError", "type": "structure"},
+            {
+                "name": "ModelStreamError",
+                "shape": "ModelStreamError",
+                "type": "structure",
+            },
             {
                 "name": "InternalStreamFailure",
                 "shape": "InternalStreamFailure",
