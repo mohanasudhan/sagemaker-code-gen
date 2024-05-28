@@ -9826,6 +9826,107 @@ SHAPE_DAG = {
         "member_type": "structure",
         "type": "list",
     },
+    "InternalDependencyException": {
+        "members": [{"name": "Message", "shape": "Message", "type": "string"}],
+        "type": "structure",
+    },
+    "InternalFailure": {
+        "members": [{"name": "Message", "shape": "Message", "type": "string"}],
+        "type": "structure",
+    },
+    "InternalStreamFailure": {
+        "members": [{"name": "Message", "shape": "Message", "type": "string"}],
+        "type": "structure",
+    },
+    "InvokeEndpointAsyncInput": {
+        "members": [
+            {"name": "EndpointName", "shape": "EndpointName", "type": "string"},
+            {"name": "ContentType", "shape": "Header", "type": "string"},
+            {"name": "Accept", "shape": "Header", "type": "string"},
+            {"name": "CustomAttributes", "shape": "CustomAttributesHeader", "type": "string"},
+            {"name": "InferenceId", "shape": "InferenceId", "type": "string"},
+            {"name": "InputLocation", "shape": "InputLocationHeader", "type": "string"},
+            {"name": "RequestTTLSeconds", "shape": "RequestTTLSecondsHeader", "type": "integer"},
+            {
+                "name": "InvocationTimeoutSeconds",
+                "shape": "InvocationTimeoutSecondsHeader",
+                "type": "integer",
+            },
+        ],
+        "type": "structure",
+    },
+    "InvokeEndpointAsyncOutput": {
+        "members": [
+            {"name": "InferenceId", "shape": "Header", "type": "string"},
+            {"name": "OutputLocation", "shape": "Header", "type": "string"},
+            {"name": "FailureLocation", "shape": "Header", "type": "string"},
+        ],
+        "type": "structure",
+    },
+    "InvokeEndpointInput": {
+        "members": [
+            {"name": "EndpointName", "shape": "EndpointName", "type": "string"},
+            {"name": "Body", "shape": "BodyBlob", "type": "blob"},
+            {"name": "ContentType", "shape": "Header", "type": "string"},
+            {"name": "Accept", "shape": "Header", "type": "string"},
+            {"name": "CustomAttributes", "shape": "CustomAttributesHeader", "type": "string"},
+            {"name": "TargetModel", "shape": "TargetModelHeader", "type": "string"},
+            {"name": "TargetVariant", "shape": "TargetVariantHeader", "type": "string"},
+            {
+                "name": "TargetContainerHostname",
+                "shape": "TargetContainerHostnameHeader",
+                "type": "string",
+            },
+            {"name": "InferenceId", "shape": "InferenceId", "type": "string"},
+            {"name": "EnableExplanations", "shape": "EnableExplanationsHeader", "type": "string"},
+            {
+                "name": "InferenceComponentName",
+                "shape": "InferenceComponentHeader",
+                "type": "string",
+            },
+        ],
+        "type": "structure",
+    },
+    "InvokeEndpointOutput": {
+        "members": [
+            {"name": "Body", "shape": "BodyBlob", "type": "blob"},
+            {"name": "ContentType", "shape": "Header", "type": "string"},
+            {"name": "InvokedProductionVariant", "shape": "Header", "type": "string"},
+            {"name": "CustomAttributes", "shape": "CustomAttributesHeader", "type": "string"},
+        ],
+        "type": "structure",
+    },
+    "InvokeEndpointWithResponseStreamInput": {
+        "members": [
+            {"name": "EndpointName", "shape": "EndpointName", "type": "string"},
+            {"name": "Body", "shape": "BodyBlob", "type": "blob"},
+            {"name": "ContentType", "shape": "Header", "type": "string"},
+            {"name": "Accept", "shape": "Header", "type": "string"},
+            {"name": "CustomAttributes", "shape": "CustomAttributesHeader", "type": "string"},
+            {"name": "TargetVariant", "shape": "TargetVariantHeader", "type": "string"},
+            {
+                "name": "TargetContainerHostname",
+                "shape": "TargetContainerHostnameHeader",
+                "type": "string",
+            },
+            {"name": "InferenceId", "shape": "InferenceId", "type": "string"},
+            {
+                "name": "InferenceComponentName",
+                "shape": "InferenceComponentHeader",
+                "type": "string",
+            },
+        ],
+        "type": "structure",
+    },
+    "InvokeEndpointWithResponseStreamOutput": {
+        "members": [
+            {"name": "Body", "shape": "ResponseStream", "type": "structure"},
+            {"name": "ContentType", "shape": "Header", "type": "string"},
+            {"name": "InvokedProductionVariant", "shape": "Header", "type": "string"},
+            {"name": "CustomAttributes", "shape": "CustomAttributesHeader", "type": "string"},
+        ],
+        "type": "structure",
+    },
     "JsonContentTypes": {
         "member_shape": "JsonContentType",
         "member_type": "string",
@@ -12811,6 +12912,15 @@ SHAPE_DAG = {
         ],
         "type": "structure",
     },
+    "ModelError": {
+        "members": [
+            {"name": "Message", "shape": "Message", "type": "string"},
+            {"name": "OriginalStatusCode", "shape": "StatusCode", "type": "integer"},
+            {"name": "OriginalMessage", "shape": "Message", "type": "string"},
+            {"name": "LogStreamArn", "shape": "LogStreamArn", "type": "string"},
+        ],
+        "type": "structure",
+    },
     "ModelExplainabilityAppSpecification": {
         "members": [
             {"name": "ImageUri", "shape": "ImageUri", "type": "string"},
@@ -12922,6 +13032,10 @@ SHAPE_DAG = {
             {"name": "Bias", "shape": "Bias", "type": "structure"},
             {"name": "Explainability", "shape": "Explainability", "type": "structure"},
         ],
+        "type": "structure",
+    },
+    "ModelNotReadyException": {
+        "members": [{"name": "Message", "shape": "Message", "type": "string"}],
         "type": "structure",
     },
     "ModelPackage": {
@@ -13282,6 +13396,13 @@ SHAPE_DAG = {
     },
     "ModelStepMetadata": {
         "members": [{"name": "Arn", "shape": "String256", "type": "string"}],
+        "type": "structure",
+    },
+    "ModelStreamError": {
+        "members": [
+            {"name": "Message", "shape": "Message", "type": "string"},
+            {"name": "ErrorCode", "shape": "ErrorCode", "type": "string"},
+        ],
         "type": "structure",
     },
     "ModelSummary": {
@@ -14174,6 +14295,10 @@ SHAPE_DAG = {
         "type": "list",
     },
     "Parents": {"member_shape": "Parent", "member_type": "structure", "type": "list"},
+    "PayloadPart": {
+        "members": [{"name": "Bytes", "shape": "PartBlob", "type": "blob"}],
+        "type": "structure",
+    },
     "PendingDeploymentSummary": {
         "members": [
             {
@@ -15726,6 +15851,18 @@ SHAPE_DAG = {
         "member_type": "string",
         "type": "list",
     },
+    "ResponseStream": {
+        "members": [
+            {"name": "PayloadPart", "shape": "PayloadPart", "type": "structure"},
+            {"name": "ModelStreamError", "shape": "ModelStreamError", "type": "structure"},
+            {
+                "name": "InternalStreamFailure",
+                "shape": "InternalStreamFailure",
+                "type": "structure",
+            },
+        ],
+        "type": "structure",
+    },
     "RetentionPolicy": {
         "members": [
             {"name": "HomeEfsFileSystem", "shape": "RetentionType", "type": "string"}
@@ -16118,6 +16255,10 @@ SHAPE_DAG = {
                 "type": "list",
             },
         ],
+        "type": "structure",
+    },
+    "ServiceUnavailable": {
+        "members": [{"name": "Message", "shape": "Message", "type": "string"}],
         "type": "structure",
     },
     "ShadowModeConfig": {
@@ -18674,6 +18815,10 @@ SHAPE_DAG = {
                 "type": "list",
             },
         ],
+        "type": "structure",
+    },
+    "ValidationError": {
+        "members": [{"name": "Message", "shape": "Message", "type": "string"}],
         "type": "structure",
     },
     "VariantProperty": {

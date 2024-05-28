@@ -113,9 +113,11 @@ def load(
     return cls.get({get_args}, session=session, region=region)
 """
 
-UPDATE_METHOD_TEMPLATE = """
-def update(self) -> Optional[object]:
-    logger.debug("Creating {resource_lower} resource.")
+UPDATE_METHOD_TEMPLATE = '''
+def update(self,
+ {update_args}
+ ) -> Optional[object]:
+    logger.debug(f"Creating {resource_lower} resource.")
     client = SageMakerClient().client
 
     operation_input_args = {{
@@ -134,23 +136,71 @@ def update(self) -> Optional[object]:
     return self
 """
 
-GET_CONFIG_VALUE_TEMPLATE = """
-def get_config_value(attribute, resource_defaults, global_defaults):
-   if attribute in resource_defaults:
-       return resource_defaults[attribute]
-   if attribute in global_defaults:
-       return global_defaults[attribute]
-   raise Exception("Configurable value not present in Configs")
-"""
+INVOKE_METHOD_TEMPLATE = '''
+def invoke(self, 
+{invoke_args}
+) -> Optional[object]:
+    logger.debug(f"Invoking {resource_lower} resource.")
+    client = SageMakerRuntimeClient(service_name="{service_name}").client
+    operation_input_args = {{
+{operation_input_args}
+    }}
+    logger.debug(f"Input request: {{operation_input_args}}")
+    # serialize the input request
+    operation_input_args = {resource_name}._serialize(operation_input_args)
+    logger.debug(f"Serialized input request: {{operation_input_args}}")
 
-POPULATE_DEFAULTS_DECORATOR_TEMPLATE = """
-def populate_inputs_decorator(create_func):
-    def wrapper(*args, **kwargs):
-        config_schema_for_resource = \\
-{config_schema_for_resource}
-        create_func(*args, **Base.get_updated_kwargs_with_configured_attributes(config_schema_for_resource, **kwargs))
-    return wrapper
-"""
+    # create the resource
+    response = client.{operation}(**operation_input_args)
+    logger.debug(f"Response: {{response}}")
+
+    return response
+'''
+
+INVOKE_ASYNC_METHOD_TEMPLATE = '''
+def invoke_async(self, 
+{create_args}
+) -> Optional[object]:
+    logger.debug(f"Invoking {resource_lower} resource Async.")
+    client = SageMakerRuntimeClient(service_name="{service_name}").client
+    
+    operation_input_args = {{
+{operation_input_args}
+    }}
+    logger.debug(f"Input request: {{operation_input_args}}")
+    # serialize the input request
+    operation_input_args = {resource_name}._serialize(operation_input_args)
+    logger.debug(f"Serialized input request: {{operation_input_args}}")
+
+    # create the resource
+    response = client.{operation}(**operation_input_args)
+    logger.debug(f"Response: {{response}}")
+
+    return response
+'''
+
+INVOKE_WITH_RESPONSE_STREAM_METHOD_TEMPLATE = '''
+def invoke_with_response_stream(self, 
+{create_args}
+) -> Optional[object]:
+    logger.debug(f"Invoking {resource_lower} resource with Response Stream.")
+    client = SageMakerRuntimeClient(service_name="{service_name}").client
+
+    operation_input_args = {{
+{operation_input_args}
+    }}
+    logger.debug(f"Input request: {{operation_input_args}}")
+    # serialize the input request
+    operation_input_args = {resource_name}._serialize(operation_input_args)
+    logger.debug(f"Serialized input request: {{operation_input_args}}")
+
+    # create the resource
+    response = client.{operation}(**operation_input_args)
+    logger.debug(f"Response: {{response}}")
+
+    return response
+'''
+
 
 GET_CONFIG_VALUE_TEMPLATE = """
 def get_config_value(attribute, resource_defaults, global_defaults):
@@ -169,7 +219,33 @@ def populate_inputs_decorator(create_func):
 {config_schema_for_resource}
         create_func(*args, **Base.get_updated_kwargs_with_configured_attributes(config_schema_for_resource, "{resource_name}", **kwargs))
     return wrapper
-"""
+'''
+
+CREATE_METHOD_TEMPLATE_WITHOUT_DECORATOR = '''
+@classmethod
+def create(
+    cls,
+{create_args}
+    session: Optional[Session] = None,
+    region: Optional[str] = None,
+) -> Optional[object]:
+    logger.debug(f"Creating {resource_lower} resource.")
+    client = SageMakerClient(session=session, region_name=region, service_name='{service_name}')
+
+    operation_input_args = {{
+{operation_input_args}
+    }}
+    logger.debug(f"Input request: {{operation_input_args}}")
+    # serialize the input request
+    operation_input_args = cls._serialize(operation_input_args)
+    logger.debug(f"Serialized input request: {{operation_input_args}}")
+
+    # create the resource
+    response = client.{operation}(**operation_input_args)
+    logger.debug(f"Response: {{response}}")
+
+    return cls.get({resource_identifier}, session=session, region=region)
+'''
 
 GET_METHOD_TEMPLATE = """
 @classmethod
@@ -276,34 +352,30 @@ def stop(self) -> None:
 RESOURCE_BASE_CLASS_TEMPLATE = """
 class Base(BaseModel):
     @classmethod
-    def _serialize_dict(cls, data: Dict) -> Dict:
+    def _serialize(cls, data: Dict) -> Dict:
         result = {}
         for attr, value in data.items():
             if isinstance(value, Unassigned):
                 continue
-            formatted_attribute = snake_to_pascal(attr) if '_' in attr else cls._capfirst(attr)
-            serialized_value = cls._serialize(value)
-            result[formatted_attribute] = serialized_value
+            
+            if isinstance(value, List):
+                result[attr] = cls._serialize_list(value)
+            elif isinstance(value, Dict):
+                result[attr] = cls._serialize_dict(value)
+            elif hasattr(value, 'serialize'):
+                result[attr] = value.serialize()
+            else:
+                result[attr] = value
         return result
     
     @classmethod
     def _serialize_list(cls, value: List):
-        return [cls._serialize(v) for v in value]
-
+        return [v.serialize() if hasattr(v, 'serialize') else v for v in value]
+    
     @classmethod
-    def _serialize(cls, value: any):
-        if isinstance(value, List):
-            return cls._serialize_list(value)
-        if isinstance(value, Dict):
-            return cls._serialize_dict(value)
-        if hasattr(value, 'serialize'):
-            return value.serialize()
-        return value
-
-    @staticmethod
-    def _capfirst(s: str):
-        return s[:1].upper() + s[1:]
-            
+    def _serialize_dict(cls, value: Dict):
+        return {k: v.serialize() if hasattr(v, 'serialize') else v for k, v in value.items()}
+    
     @staticmethod
     def get_updated_kwargs_with_configured_attributes(config_schema_for_resource: dict, resource_name: str, **kwargs):
         for configurable_attribute in config_schema_for_resource:
@@ -316,8 +388,7 @@ class Base(BaseModel):
                  global_defaults):
                     kwargs[formatted_attribute] = config_value
         return kwargs
-        
-"""
+'''
 
 LOAD_DEFAULT_CONFIGS_AND_HELPERS_TEMPLATE = '''
 _APP_NAME = "sagemaker"
@@ -338,7 +409,6 @@ ENV_VARIABLE_USER_CONFIG_OVERRIDE = "SAGEMAKER_USER_CONFIG_OVERRIDE"
 
 S3_PREFIX = "s3://"
 
-@lru_cache(maxsize=None)
 def load_default_configs(additional_config_paths: List[str] = None, s3_resource=None):
     default_config_path = os.getenv(
         ENV_VARIABLE_ADMIN_CONFIG_OVERRIDE, _DEFAULT_ADMIN_CONFIG_FILE_PATH
