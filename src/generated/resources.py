@@ -7376,7 +7376,7 @@ class StudioLifecycleConfig(Base):
 class TrainingJob(Base):
     training_job_name: str
     training_job_arn: str
-    model_artifacts: Optional[ModelArtifacts] = None
+    model_artifacts: ModelArtifacts
     training_job_status: str
     secondary_status: str
     algorithm_specification: AlgorithmSpecification
