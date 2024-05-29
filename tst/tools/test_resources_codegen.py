@@ -225,17 +225,20 @@ def wait(
         current_status = self.training_job_status
 
         if current_status in terminal_states:
+            
+            if "failed" in current_status.lower():
+                raise FailedStatusError(resource_type="TrainingJob", status=current_status, reason=self.failure_reason)
+
             return
 
-        # TODO: Raise some generated TimeOutError
         if timeout is not None and time.time() - start_time >= timeout:
-            raise Exception("Timeout exceeded. Final resource state - " + current_status)
+            raise TimeoutExceededError(resouce_type="TrainingJob", status=current_status)
         print("-", end="")
         time.sleep(poll)
 '''
         assert self.resource_generator.generate_wait_method("TrainingJob") == expected_output
         
-    def test_generate_wait_for_status_method(self):
+    def test_generate_wait_for_status_method_with_failed_state(self):
         expected_output = '''
 @validate_call
 def wait_for_status(
@@ -252,16 +255,41 @@ def wait_for_status(
 
         if status == current_status:
             return
+        
+        if "failed" in current_status.lower():
+            raise FailedStatusError(resource_type="InferenceComponent", status=current_status, reason=self.failure_reason)
 
-        # TODO: Raise some generated TimeOutError
         if timeout is not None and time.time() - start_time >= timeout:
-            raise Exception("Timeout exceeded. Final resource state - " + current_status)
+            raise TimeoutExceededError(resouce_type="InferenceComponent", status=current_status)
         print("-", end="")
         time.sleep(poll)
 '''
         assert self.resource_generator.generate_wait_for_status_method("InferenceComponent") == expected_output
 
+    def test_generate_wait_for_status_method_without_failed_state(self):
+        expected_output = '''
+@validate_call
+def wait_for_status(
+    self,
+    status: Literal['Creating', 'Created', 'Updating', 'Running', 'Starting', 'Stopping', 'Completed', 'Cancelled'],
+    poll: int = 5,
+    timeout: Optional[int] = None
+) -> Optional[object]:
+    start_time = time.time()
 
+    while True:
+        self.refresh()
+        current_status = self.status
+
+        if status == current_status:
+            return
+
+        if timeout is not None and time.time() - start_time >= timeout:
+            raise TimeoutExceededError(resouce_type="InferenceExperiment", status=current_status)
+        print("-", end="")
+        time.sleep(poll)
+'''
+        assert self.resource_generator.generate_wait_for_status_method("InferenceExperiment") == expected_output
 
     def test_generate_invoke_method(self):
         expected_output = '''
@@ -382,3 +410,4 @@ def invoke_with_response_stream(self,
     return response
 '''
         assert self.resource_generator.generate_invoke_with_response_stream_method("Endpoint", resource_attributes=['endpoint_name']) == expected_output
+    

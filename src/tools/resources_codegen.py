@@ -39,7 +39,7 @@ from src.tools.templates import (CREATE_METHOD_TEMPLATE,
                                  CREATE_METHOD_TEMPLATE_WITHOUT_DEFAULTS,
                                  INVOKE_METHOD_TEMPLATE,
                                  INVOKE_ASYNC_METHOD_TEMPLATE, INVOKE_WITH_RESPONSE_STREAM_METHOD_TEMPLATE,
-                                 IMPORT_METHOD_TEMPLATE)
+                                 IMPORT_METHOD_TEMPLATE, FAILED_STATUS_ERROR_TEMPLATE)
 from src.tools.data_extractor import load_combined_shapes_data, load_combined_operations_data
 
 logging.basicConfig(level=logging.INFO)
@@ -144,7 +144,8 @@ class ResourcesCodeGen:
             "from .utils import SageMakerClient, SageMakerRuntimeClient, Unassigned, snake_to_pascal, pascal_to_snake",
             "from .intelligent_defaults_helper import load_default_configs_for_resource_name, get_config_value",
             "from src.code_injection.codec import transform",
-            "from .shapes import *"
+            "from .shapes import *",
+            "from .exceptions import *"
         ]
 
         formated_imports = "\n".join(imports)
@@ -883,7 +884,26 @@ class ResourcesCodeGen:
             operation=operation,
         )
         return formatted_method
+    
+    def _get_failure_reason_ref(self, resource_name: str) -> str:
+        """Get the failure reason reference for a resource object.
 
+        Args:
+            resource_name (str): The resource name.
+
+        Returns:
+            str: The failure reason reference for resource object
+        """
+        describe_output = self.operations["Describe" + resource_name]["output"]["shape"]
+        shape_members = self.shapes[describe_output]
+        
+        for member in shape_members["members"]:
+            if "FailureReason" in member or "StatusMessage" in member:
+                return f"self.{convert_to_snake_case(member)}"
+             
+        return "'(Unknown)'"
+        
+        
     def generate_wait_method(self, resource_name: str) -> str:
         """Auto-Generate WAIT Method for a waitable resource.
 
@@ -907,10 +927,16 @@ class ResourcesCodeGen:
         status_key_path = ""
         for member in resource_status_chain:
             status_key_path += f'.{convert_to_snake_case(member["name"])}'
-
+            
+        failure_reason = self._get_failure_reason_ref(resource_name)
+        formatted_failed_block = FAILED_STATUS_ERROR_TEMPLATE.format(resource_name=resource_name, reason=failure_reason)
+        formatted_failed_block = add_indent(formatted_failed_block, 12)
+        
         formatted_method = WAIT_METHOD_TEMPLATE.format(
             terminal_resource_states=terminal_resource_states,
-            status_key_path=status_key_path
+            status_key_path=status_key_path,
+            failed_error_block=formatted_failed_block,
+            resource_name=resource_name
         )
         return formatted_method
     
@@ -929,10 +955,18 @@ class ResourcesCodeGen:
         status_key_path = ""
         for member in resource_status_chain:
             status_key_path += f'.{convert_to_snake_case(member["name"])}'
+            
+        formatted_failed_block = ""
+        if any("failed" in state.lower() for state in resource_states):
+            failure_reason = self._get_failure_reason_ref(resource_name)
+            formatted_failed_block = FAILED_STATUS_ERROR_TEMPLATE.format(resource_name=resource_name, reason=failure_reason)
+            formatted_failed_block = add_indent(formatted_failed_block, 8)
 
         formatted_method = WAIT_FOR_STATUS_METHOD_TEMPLATE.format(
             resource_states=resource_states,
-            status_key_path=status_key_path
+            status_key_path=status_key_path,
+            failed_error_block=formatted_failed_block,
+            resource_name=resource_name
         )
         return formatted_method
 
