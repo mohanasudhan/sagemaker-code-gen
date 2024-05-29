@@ -158,7 +158,7 @@ def _load_config_from_file(file_path: str) -> dict:
     if os.path.isdir(file_path):
         inferred_file_path = os.path.join(file_path, _CONFIG_FILE_NAME)
     if not os.path.exists(inferred_file_path):
-        raise LocalConfigNotFoundError(file_path=file_path)
+        raise ValueError
     logger.debug("Fetching defaults config from location: %s", file_path)
     with open(inferred_file_path, "r") as f:
         content = yaml.safe_load(f)
