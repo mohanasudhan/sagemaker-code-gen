@@ -1075,7 +1075,11 @@ class ResourcesCodeGen:
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             TYPE: OBJECT,
             PROPERTIES: {
-                "SchemaVersion": "1.0",
+                "SchemaVersion": {
+                    TYPE: "string",
+                    "enum": ["1.0"],
+                    "description": "The schema version of the document.",
+                },
                 SAGEMAKER: {
                     TYPE: OBJECT,
                     PROPERTIES: {
