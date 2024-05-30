@@ -423,6 +423,11 @@ class ResourcesCodeGen:
                 resource_name, "import", class_methods
             ):
                 resource_class += add_indent(import_method, 4)
+
+            if describe_node_method := self._evaluate_method(
+                resource_name, "describe_node", object_methods
+            ):
+                resource_class += add_indent(describe_node_method, 4)
         else:
             # If there's no 'get' method, log a message
             # TODO: Handle the resources without 'get' differently
