@@ -31,14 +31,14 @@ class ShapesExtractor:
         :param combined_shapes: All the shapes put together from all Sagemaker Service JSONs
         """
         self.combined_shapes = combined_shapes or load_combined_shapes_data()
-         
+
         self.shape_dag = self.get_shapes_dag()
-        with open(SHAPE_DAG_FILE_PATH, 'w') as f:
-           f.write("SHAPE_DAG=")
-           f.write(textwrap.indent(pprint.pformat(self.shape_dag, width=1), '') + '\n')
+        with open(SHAPE_DAG_FILE_PATH, "w") as f:
+            f.write("SHAPE_DAG=")
+            f.write(textwrap.indent(pprint.pformat(self.shape_dag, width=1), "") + "\n")
         reformat_file_with_black(SHAPE_DAG_FILE_PATH)
 
-    #@property
+    # @property
     def get_shapes_dag(self):
         """
         Parses the Service Json and generates the Shape DAG.
@@ -118,7 +118,8 @@ class ShapesExtractor:
         list_shape_type = self.combined_shapes[list_shape_name]["type"]
         if list_shape_type in ["list", "map"]:
             raise Exception(
-                "Unhandled list shape key type encountered, needs extra logic to handle this")
+                "Unhandled list shape key type encountered, needs extra logic to handle this"
+            )
         if list_shape_type == "structure":
             # handling an edge case of nested structure
             if list_shape_name == "SearchExpression":
@@ -139,23 +140,32 @@ class ShapesExtractor:
         # Map keys are always expected to be "string" type
         if map_key_shape_type != "string":
             raise Exception(
-                "Unhandled map shape key type encountered, needs extra logic to handle this")
+                "Unhandled map shape key type encountered, needs extra logic to handle this"
+            )
         if map_value_shape_type == "structure":
-            member_type = f"Dict[{BASIC_JSON_TYPES_TO_PYTHON_TYPES[map_key_shape_type]}, " \
-                          f"{map_value_shape_name}]"
+            member_type = (
+                f"Dict[{BASIC_JSON_TYPES_TO_PYTHON_TYPES[map_key_shape_type]}, "
+                f"{map_value_shape_name}]"
+            )
         elif map_value_shape_type == "list":
-            member_type = f"Dict[{BASIC_JSON_TYPES_TO_PYTHON_TYPES[map_key_shape_type]}, " \
-                          f"{self._evaluate_list_type(map_value_shape)}]"
+            member_type = (
+                f"Dict[{BASIC_JSON_TYPES_TO_PYTHON_TYPES[map_key_shape_type]}, "
+                f"{self._evaluate_list_type(map_value_shape)}]"
+            )
         elif map_value_shape_type == "map":
-            member_type = f"Dict[{BASIC_JSON_TYPES_TO_PYTHON_TYPES[map_key_shape_type]}, " \
-                          f"{self._evaluate_map_type(map_value_shape)}]"
+            member_type = (
+                f"Dict[{BASIC_JSON_TYPES_TO_PYTHON_TYPES[map_key_shape_type]}, "
+                f"{self._evaluate_map_type(map_value_shape)}]"
+            )
         else:
-            member_type = f"Dict[{BASIC_JSON_TYPES_TO_PYTHON_TYPES[map_key_shape_type]}, " \
-                          f"{BASIC_JSON_TYPES_TO_PYTHON_TYPES[map_value_shape_type]}]"
+            member_type = (
+                f"Dict[{BASIC_JSON_TYPES_TO_PYTHON_TYPES[map_key_shape_type]}, "
+                f"{BASIC_JSON_TYPES_TO_PYTHON_TYPES[map_value_shape_type]}]"
+            )
         return member_type
 
-    def generate_data_shape_members_and_string_body(self, shape):
-        shape_members = self.generate_shape_members(shape)
+    def generate_data_shape_members_and_string_body(self, shape, required_override=()):
+        shape_members = self.generate_shape_members(shape, required_override)
         init_data_body = ""
         for attr, value in shape_members.items():
             if attr == "lambda":
@@ -164,17 +174,21 @@ class ShapesExtractor:
                 init_data_body += f"{attr}: {value}\n"
         return shape_members, init_data_body
 
-    def generate_data_shape_string_body(self, shape):
-        return self.generate_data_shape_members_and_string_body(shape)[1]
+    def generate_data_shape_string_body(self, shape, required_override=()):
+        return self.generate_data_shape_members_and_string_body(
+            shape, required_override
+        )[1]
 
-    def generate_data_shape_members(self, shape):
-        return self.generate_data_shape_members_and_string_body(shape)[0]
+    def generate_data_shape_members(self, shape, required_override=()):
+        return self.generate_data_shape_members_and_string_body(
+            shape, required_override
+        )[0]
 
     @lru_cache
-    def generate_shape_members(self, shape):
+    def generate_shape_members(self, shape, required_override=()):
         shape_dict = self.combined_shapes[shape]
         members = shape_dict["members"]
-        required_args = shape_dict.get("required", [])
+        required_args = list(required_override) or shape_dict.get("required", [])
         init_data_body = {}
         # bring the required members in front
         ordered_members = {key: members[key] for key in required_args if key in members}
@@ -194,14 +208,18 @@ class ShapesExtractor:
                     # Shape is a simple type like string
                     member_type = BASIC_JSON_TYPES_TO_PYTHON_TYPES[member_shape_type]
             else:
-                raise Exception("The Shape definition mush exist. The Json Data might be corrupt")
+                raise Exception(
+                    "The Shape definition mush exist. The Json Data might be corrupt"
+                )
             member_name_snake_case = convert_to_snake_case(member_name)
             if member_name in required_args:
                 init_data_body[f"{member_name_snake_case}"] = f"{member_type}"
             else:
-                init_data_body[f"{member_name_snake_case}"] = f"Optional[{member_type}] = Unassigned()"
+                init_data_body[f"{member_name_snake_case}"] = (
+                    f"Optional[{member_type}] = Unassigned()"
+                )
         return init_data_body
-    
+
     def get_required_members(self, shape):
         shape_dict = self.combined_shapes[shape]
         required_args = shape_dict.get("required", [])
